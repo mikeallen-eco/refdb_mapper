@@ -1,11 +1,13 @@
+prepare_data_for_LOSO <- function(refdb){
+
 # create directories if needed
-if (!dir.exists(GB_out)) {
-  dir.create(GB_out)
+if (!dir.exists(out)) {
+  dir.create(out)
 }
 
 # make a temporary directory for diminished reference databases
-if (!dir.exists(paste0(GB_out, "tmp/"))) {
-  dir.create(paste0(GB_out, "tmp/"))
+if (!dir.exists(paste0(out, "tmp/"))) {
+  dir.create(paste0(out, "tmp/"))
 }
 
 # read in broader reference database
@@ -29,3 +31,5 @@ sp_names.loc <- unique(rn.loc$s)
 # get vector of local sequences (with n > 1) to loop through in broader database
 local_seqnums_vector <- grep(paste(sp_names.loc, 
                                    collapse = "|"), names(r))
+
+}
