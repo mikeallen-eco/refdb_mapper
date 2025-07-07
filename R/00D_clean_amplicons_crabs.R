@@ -3,8 +3,10 @@
 clean_amplicons_crabs <- function(input = "crabs_amplicons_pga.txt",
                                   out, l, L,
                                   db_name = "amplicon_source_date",
+                                  taxon = "Mammalia",
                                   conda_dir = "/Users/mikea/miniconda3/bin/conda",
-                                  conda_env = "crb2") {
+                                  conda_env = "crb2",
+                                  verbose = FALSE) {
 
 # dereplicate amplicon-species combinations
 system2(conda_dir, 
@@ -40,5 +42,17 @@ system2(conda_dir,
                  paste0(out, "refdb_", db_name, ".fasta"),
                  "--export-format 'rdp'"), 
         stdout = TRUE, stderr = TRUE)
+
+# re-subset database by taxon
+  # (required due to some higher taxonomy errors in midori2 that were fixed by importing into crabs)
+r <- subset_raw_refdb_by_taxon(paste0(out, "refdb_", db_name, ".fasta"),
+                               taxon = taxon)
+
+# over-write final fasta with re-subsetted version
+writeXStringSet(r, paste0(out, "refdb_", db_name, ".fasta"), append = FALSE)
+
+# Remove temporary files created for crabs
+unlink(paste0(out, "raw_seqs.fasta"))
+unlink(paste0(out, "crabs_*"))
 
 }

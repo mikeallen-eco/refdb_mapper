@@ -2,21 +2,10 @@
   # inputs = reference database in dada2 format, species to leave out
   # output = diminished reference database OR sequences of only the "left out" species
 
-LOOseq_refdb_subset <- function(refdb, # path to a reference fasta file (RDP format required)
+LOSO_subset <- function(refdb,
                       seq_num, 
                       return_db = T,
                       verbose = F){
-
-# load libraries
-library(Biostrings, warn.conflicts = FALSE)
-library(dplyr)
-library(tidyr)
-
-# inputs for testing
-# refdb <- "data/midori_GB263_v16S.pga70.uni.l100.L300.n10.rdp.ama.fasta"
-# seq_num <- 1 # sequence number ordered from 1 - total num sequences.
-# return_db <- TRUE # if TRUE, return entire database minus LOO sequence; if FALSE, return just the LOO sequence
-# verbose <- TRUE
 
 # load reference database
 if(class(refdb)[[1]] %in% "DNAStringSet"){
