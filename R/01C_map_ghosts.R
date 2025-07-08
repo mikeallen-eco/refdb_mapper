@@ -1,6 +1,7 @@
 map_ghosts <- function(df,
                        hydrobasin_map,
-                       just_US){
+                       just_US,
+                       save_maps = "figures/"){
   
   hydrobasins <- st_read(hydrobasin_map)
   
@@ -45,11 +46,11 @@ map_ghosts <- function(df,
       theme_minimal() +
       theme(legend.text = element_text(size = 9)))
   
-  if (save_maps == TRUE) {
+  if (!is.null(save_maps)) {
     library(patchwork)
-    ghost_map$num_ghosts / ghost_map$num_all / ghost_map$pct_ghosts
+    ghost_map$num_all / ghost_map$num_ghosts / ghost_map$pct_ghosts
     ggsave(
-      "figures/ghost_maps.png",
+      paste0(save_maps, "ghost_maps.png"),
       height = 5.5,
       width = 4,
       dpi = 400,
