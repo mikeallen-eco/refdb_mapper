@@ -3,7 +3,7 @@ library(ghostblaster)
 library(dplyr)
 library(Biostrings)
 the_files <- list.files("R", full.names = T)
-the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|help")]
+the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|help")]
 lapply(the_files_to_load, FUN = source)
 
 # ---- SET-UP
@@ -26,18 +26,21 @@ curate_amplicons(refdb = "~/Documents/mikedata/refdb_geo/MIDORI2_UNIQ_NUC_GB265_
 
 # ---- Step 1 identify & map ghosts
 
-hg <- identify_ghosts(
+hydrobasin_ghosts <- identify_ghosts(
   hydrobasin_species = "~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv",
   geotax_path = "data/geotax.csv",
   LOSO_refdb_path = paste0(out_path, "refdb_", db_name, ".fasta")
 )
 
-(hg_tally <- tally_ghosts(hg))
+(hydrobasin_ghosts_tally <- tally_ghosts(hydrobasin_ghosts))
 
-ghost_map <- map_ghosts(df = hg,
-                        hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
-                        just_US = TRUE,
-                        save_maps = TRUE)
+hybas_subset <- subset_hydrobasins_countries(
+  hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
+  countries = c("United States of America", "Mexico", "Canada"))
+
+ghost_map <- map_ghosts(df = hydrobasin_ghosts,
+                        hydrobasin_map = hybas_subset,
+                        save_maps = "figures/")
 
 # ---- Step 2 LOSO analysis
 
@@ -49,7 +52,14 @@ LOSO_ghostblaster(LOSO_refdb = paste0(out_path, "refdb_", db_name, ".fasta"),
                   BLAST_args = "-max_target_seqs 5000 -perc_identity 75 -qcov_hsp_perc 90",
                   verbose = TRUE)
 
-# ---- Step 3 fit model of error rates based on LOSO analysis, NND, and order
+LOSpO_ghostblaster(LOSpO_refdb = paste0(out_path, "refdb_", db_name, ".fasta"),
+                  out = out_path,
+                  marker = "Vences_16S",
+                  start_seq = 1,
+                  BLAST_args = "-max_target_seqs 5000 -perc_identity 75 -qcov_hsp_perc 90",
+                  verbose = TRUE)
+
+# ---- Step 3 fit model of error rates based on LOSO analysis, NND, and n_seqs
 
 loso_refdb_ndd <- get_NND_per_sp_within_refdb(
   refdb = paste0(out_path, "refdb_", db_name, ".fasta"),
@@ -63,257 +73,58 @@ loso_refdb_ndd <- get_NND_per_sp_within_refdb(
 loso_GB_compiled <- compile_loso_ghostblaster_results(loso_path = paste0(out_path, "loso"),
                            loso_refdb_ndd_df = loso_refdb_ndd)
 
-loso_GB_outcomes <- compile_loso_ghostblaster_outcomes(loso_GB_compiled)
+preds <- model_error_rates(loso_GB_compiled)
 
+plot_predicted_error(preds)
 
-# model_blast_error_rates <- function(loso_GB_outcomes){
+# ---- Step 4 get NND, n_seqs, & error rate predictions for each sp within hydrobasins
+  
+hybas_subset <- subset_hydrobasins_countries(
+  hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
+  countries = c("United States of America", "Mexico", "Canada"))
 
-library(brms) 
-blast_df <- loso_GB_outcomes$b %>%
-  group_by(true_ncbi_name, order, nnd) %>%
-  summarize(thresh98 = sum(thresh98_i),
-            ecotag_i = sum(ecotag_i),
-            conf90_i = sum(conf90_i),
-            thresh98_i = sum(thresh98_i),
-            ecotag_c = sum(ecotag_c),
-            thresh99_i = sum(thresh99_i),
-            thresh98_c = sum(thresh98_c),
-            conf90_c = sum(conf90_c),
-            n = length(true_ncbi_name),
-            .groups = "drop")
-
-library(lme4)
-
-m_ecotag_i <- glmer(
-  cbind(ecotag_i, n - ecotag_i) ~ nnd + (1 | true_ncbi_name),
-  family = binomial,
-  data = blast_df
-); summary(m_ecotag_i)
-
-m_thresh98_i <- glmer(
-  cbind(thresh98_i, n - thresh98_i) ~ nnd + (1 | true_ncbi_name),
-  family = binomial,
-  data = blast_df
-); summary(m_thresh98_i)
-
-m_thresh99_i <- glmer(
-  cbind(thresh99_i, n - thresh98_i) ~ nnd + (1 | true_ncbi_name),
-  family = binomial,
-  data = blast_df
-); summary(m_thresh99_i)
-
-m_conf90_i <- glmer(
-  cbind(conf90_i, n - conf90_i) ~ nnd + (1 | true_ncbi_name),
-  family = binomial,
-  data = blast_df
-); summary(m_conf90_i)
-
-m_ecotag_c <- glmer(
-  cbind(ecotag_c, n - ecotag_c) ~ nnd + (1 | true_ncbi_name),
-  family = binomial,
-  data = blast_df
-); summary(m_ecotag_c)
-
-m_thresh98_c <- glmer(
-  cbind(thresh98_c, n - thresh98_c) ~ nnd + (1 | true_ncbi_name),
-  family = binomial,
-  data = blast_df
-); summary(m_thresh98_c)
-
-m_conf90_c <- glmer(
-  cbind(conf90_c, n - conf90_i) ~ nnd + (1 | true_ncbi_name),
-  family = binomial,
-  data = blast_df
-); summary(m_conf90_c)
-
-true_ncbi_name <- unique(loso_GB_outcomes$b$true_ncbi_name)
-
-preds_ecotag_i <- predict(
-  m_ecotag_i,
-  newdata = expand.grid(
-    nnd = seq(0, 200, length.out = 100)
-  ),
-  type = "response",
-  re.form = NA
+tictoc::tic()
+hybas_nnd <- get_NDD_per_sp_all_hydrobasins(
+  hydrobasin_map = hybas_subset,
+  hydrobasin_species = "~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv",
+  tree = "data/phyl.tre",
+  phyltax = "data/phyltax.csv",
+  sp_list_tax = "data/geotax.csv",
+  verbose = T
 )
+tictoc::toc() # ~ .74 s per hydrobasin (n = 2599 in NA)
+saveRDS(hybas_nnd, paste0(out_path, "hybas_nnd_NA2.rds"))
+hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_NA2.rds"))
 
-preds_thresh98_i <- predict(
-  m_thresh98_i,
-  newdata = expand.grid(
-    nnd = seq(0, 200, length.out = 100)
-  ),
-  type = "response",
-  re.form = NA
-)
+hybas_nnd_n_seqs <- add_n_seqs_to_hybas_ndd(
+  hybas_nnd,
+  refdb = paste0(out_path,"refdb_", db_name, ".fasta"))
 
-preds_thresh99_i <- predict(
-  m_thresh99_i,
-  newdata = expand.grid(
-    nnd = seq(0, 200, length.out = 100)
-  ),
-  type = "response",
-  re.form = NA
-)
+hybas_pred_i = predict_error_rate_hybas(hybas_nnd_n_seqs = hybas_nnd_n_seqs,
+                         preds = preds)
 
-preds_conf90_i <- predict(
-  m_conf90_i,
-  newdata = expand.grid(
-    nnd = seq(0, 200, length.out = 100)
-    # note: do not need to specify true_ncbi_name here if excluding random effects
-  ),
-  type = "response",
-  re.form = NA
-)
+# ---- Step 5 map error rates across hydrobasins
 
-preds_ecotag_c <- predict(
-  m_ecotag_c,
-  newdata = expand.grid(
-    nnd = seq(0, 200, length.out = 100)
-  ),
-  type = "response",
-  re.form = NA
-)
-
-
-preds_thresh98_c <- predict(
-  m_thresh98_c,
-  newdata = expand.grid(
-    nnd = seq(0, 200, length.out = 100)
-  ),
-  type = "response",
-  re.form = NA
-)
-
-preds_conf90_c <- predict(
-  m_conf90_c,
-  newdata = expand.grid(
-    nnd = seq(0, 200, length.out = 100)
-    # note: do not need to specify true_ncbi_name here if excluding random effects
-  ),
-  type = "response",
-  re.form = NA
-)
-
-pred_df_ecotag_i <- expand.grid(nnd = seq(0, 200, length.out = 100),
-                       n = 100) %>%
-  mutate(preds = preds_ecotag_i)
-
-pred_df_thresh98_i <- expand.grid(nnd = seq(0, 200, length.out = 100),
-                                n = 100) %>%
-  mutate(preds = preds_thresh98_i)
-
-pred_df_thresh99_i <- expand.grid(nnd = seq(0, 200, length.out = 100),
-                                  n = 100) %>%
-  mutate(preds = preds_thresh99_i)
-
-pred_df_conf90_i <- expand.grid(nnd = seq(0, 200, length.out = 100),
-                                n = 100) %>%
-  mutate(preds = preds_conf90_i)
-
-pred_df_ecotag_c <- expand.grid(nnd = seq(0, 200, length.out = 100),
-                                n = 100) %>%
-  mutate(preds = preds_ecotag_c)
-
-pred_df_thresh98_c <- expand.grid(nnd = seq(0, 200, length.out = 100),
-                                  n = 100) %>%
-  mutate(preds = preds_thresh98_c)
-
-pred_df_conf90_c <- expand.grid(nnd = seq(0, 200, length.out = 100),
-                                n = 100) %>%
-  mutate(preds = preds_conf90_c)
-
-ggplot(pred_df_ecotag_i) +
-  geom_line(aes(x = nnd, y = 100*preds)) +
-  scale_y_continuous(limits = c(0,10))
-
-ggplot(pred_df_thresh98_i) +
-  geom_line(aes(x = nnd, y = 100*preds)) +
-  scale_y_continuous(limits = c(0,10))
-
-ggplot(pred_df_thresh99_i) +
-  geom_line(aes(x = nnd, y = 100*preds)) +
-  scale_y_continuous(limits = c(0,10))
-
-ggplot(pred_df_conf90_i) +
-  geom_line(aes(x = nnd, y = 100*preds)) +
-  scale_y_continuous(limits = c(0,10))
-
-ggplot(pred_df_thresh98_c) +
-  geom_line(aes(x = nnd, y = 100*preds)) +
-  scale_y_continuous(limits = c(0,100))
-
-ggplot(pred_df_conf90_c) +
-  geom_line(aes(x = nnd, y = 100*preds)) +
-  scale_y_continuous(limits = c(0,100))
-
-ggplot(pred_df_ecotag_c) +
-  geom_line(aes(x = nnd, y = 100*preds)) +
-  scale_y_continuous(limits = c(0,100))
-
-# FORMAT MODEL PREDICTION DATA FOR PLOTTING
-
-# format plot data - LOOsp FP
-set.seed(523); plotdata <- 
-  tidybayes::epred_draws(b_ecotag_i, newdata = expand.grid(
-    nnd = seq(0,200,length.out = 100),
-    n = 100,
-    order = orders), 
-    probs = c(0.025, 0.1, 0.5, 0.90, 0.975)) %>%
-  group_by(nnd, order) %>%
-  summarize(mean = mean(.epred),
-            Q2.5 = quantile(.epred, 0.025),
-            Q10 = quantile(.epred, 0.1),
-            Q50 = quantile(.epred, 0.5),
-            Q90 = quantile(.epred, 0.9),
-            Q97.5 = quantile(.epred, 0.975),
-            .groups = "drop") %>% 
-  mutate(metric = "incorrect",
-         marker = "V16S",
-         method = "BLAST (ecotag)")
+hybas_pred_map <- get_sf_error_rate_hybas(hydrobasin_map = hybas_subset,
+                                       hybas_pred = hybas_pred_i)
 
 library(ggplot2)
-library(wesanderson)
-col5 <- c(wes_palettes$FantasticFox1[c(1,2,3)], "darkgray", wes_palettes$Zissou1[5])
+hybas_pred_map %>%
+  ggplot() +
+  geom_sf(aes(fill = thresh99_i_mean_min1),
+          color = "transparent") +
+  scale_fill_viridis_c(option = "inferno") +
+  labs(fill = "Mean\npredicted\nmisclass.\nrate (%)\nfor sp.\nw seqs",
+       title = "Leave-one-sequence-out\n(BLAST 99%)") +
+  theme_minimal()
 
-(plot <-
-    plotdata %>%
-    ggplot() +
-    geom_ribbon(aes(x = nnd, 
-                    ymin = Q2.5, ymax = Q97.5, 
-                    fill = order),
-                alpha = 0.25) + # color = "darkgray", 
-    geom_line(aes(x = nnd, y = Q50,
-                  color = order),
-              linewidth = 1) +
-    # facet_wrap(~method) +
-    # facet_grid(cols = vars(method), rows = vars(type),
-    #            scale = "free_y") +
-    scale_x_continuous(limits = c(0,200)) +
-    # scale_color_manual(values = col5) +
-    # scale_fill_manual(values = col5) +
-    labs(x = "Nearest evolutionary neighbor (MY)",
-         y = "Probability incorrect (%)",
-         color = "Taxonomic\ngroup") +
-    theme_bw() +
-    theme(text = element_text(size = 15),
-          strip.background = element_rect(fill = "white"),
-          legend.text = element_text(size = 12),
-          strip.text = element_text(size = 12),
-          legend.title = element_text(size = 13),
-          legend.position = "bottom") +
-    guides(fill = "none")
+ggsave(
+  paste0("figures/", "misclassification_map_NA2.png"),
+  height = 3,
+  width = 4,
+  dpi = 400,
+  bg = "white"
 )
-
-ggsave("figures/Fig4_plot_nearest_evgap_vs_LOO_accuracy_w_BLAST8.png",
-       dpi = 400, width = 8, height = 5)
-
-# ---- Step 4 get NND for each sp within hydrobasins for error rate predictions
-  
-  
-  species_NND <- get_NND_per_sp_within_list(species_list)
-
-# get nearest neighbor distance within watersheds for each species on list
-
 
 # Map: % ghosts; or % of species with ≥ n (0,1,2,10) sequences
 # mean n sequences per species

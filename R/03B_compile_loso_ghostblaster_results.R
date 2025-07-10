@@ -15,7 +15,7 @@ compile_loso_ghostblaster_results <- function(loso_path = paste0(out_path, "loso
     left_join(loso_refdb_ndd %>% dplyr::rename(true_ncbi_name = ncbi_name),
               by = join_by(true_ncbi_name)) %>%
     select(-phyl_name) %>%
-    filter(grepl(top_match_loc_ecto, pattern = "Skip"))
+    filter(!grepl(top_match_loc_ecto, pattern = "Skip"))
   
   return(loso_compiled)
 }

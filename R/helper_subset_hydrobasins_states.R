@@ -43,7 +43,7 @@ subset_hydrobasins_states <- function(hydrobasin_map,
   # 6. Identify which hydrobasins intersect the US boundary
   #    This will give logical vector of TRUE/FALSE for each polygon
   sf_use_s2(FALSE)
-  hydrobasins$in_states <- st_intersects(hydrobasins, regions_boundary, sparse = FALSE)[, 1]
+  hydrobasins$in_states <- st_intersects(hydrobasins, region_boundary, sparse = FALSE)[, 1]
   
   # 7. Optionally, filter to only basins inside US
   hydrobasins_region <- hydrobasins %>%

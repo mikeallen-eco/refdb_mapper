@@ -1,9 +1,8 @@
-# function to run leave-one-sequence-out loop for ghostblaster
+# function to run leave-one-species-out loop for ghostblaster
 
-LOSO_ghostblaster <- function(LOSO_refdb,
+LOSpO_ghostblaster <- function(LOSpO_refdb,
                                 out,
                                 marker,
-                                min_n = 2,
                                 start_seq = 1,
                                 blast_path = "/usr/local/ncbi/blast/bin",
                                 BLAST_args = "-max_target_seqs 5000 -perc_identity 80 -qcov_hsp_perc 90",
@@ -15,15 +14,15 @@ LOSO_ghostblaster <- function(LOSO_refdb,
   }
   
   # make a temporary directory for diminished reference databases
-  if (!dir.exists(paste0(out, "loso/"))) {
-    dir.create(paste0(out, "loso/"))
+  if (!dir.exists(paste0(out, "lospo/"))) {
+    dir.create(paste0(out, "lospo/"))
   }
   
   # read in reference database
-  if (grepl(LOSO_refdb[1], pattern = "fasta")) {
-    r <- readDNAStringSet(LOSO_refdb)
+  if (grepl(LOSpO_refdb[1], pattern = "fasta")) {
+    r <- readDNAStringSet(LOSpO_refdb)
   } else{
-    r <- LOSO_refdb
+    r <- LOSpO_refdb
   }
   
   # get df of reference database
@@ -31,29 +30,29 @@ LOSO_ghostblaster <- function(LOSO_refdb,
     group_by(s) %>%
     mutate(n = length(s)) %>%
     ungroup()
-  
-  # get index positions of sequences from species with > min_n variants present
-  seqnums_vector <- which(rn$n >= min_n)
+  sp_names <- sort(unique(rn$s))
   
   # make a locals list placeholder (nothing is local) until locals = NULL is implemented
   loc_p <- c("Yeti yeti", "Gallus gallus")
   
   # loop through species list to test for
   # allsp_results_list <- list()
-  for (i in start_seq:length(seqnums_vector)) { 
-    if(verbose == TRUE){message("Testing sequence ", i, " of ", length(seqnums_vector), ": ", rn[seqnums_vector[i],]$s)}
+  for (i in start_seq:length(sp_names)) { 
+    if(verbose == TRUE){message("Testing sequence ", i, " of ", length(sp_names), ": ", sp_names[i])}
     tictoc::tic()
     
-    seq_num <- seqnums_vector[i]
-    
     # create diminished reference database subset (minus target sequence)
-    refdb_dim <- LOSO_subset(refdb = r, seq_num, return_db = TRUE)
+    refdb_dim <- LOSpO_subset(refdb = LOSpO_refdb,
+                              species = sp_names[i], 
+                              return_db = TRUE)
     
-    # isolate the LOSO target sequence
-    refdb_looseq <- LOSO_subset(refdb = r, seq_num, return_db = FALSE)
+    # isolate the LOSpO target sequence
+    refdb_loosp <- LOSpO_subset(refdb = LOSpO_refdb,
+                                species = sp_names[i], 
+                                return_db = FALSE)
     
     # run ghostblaster
-    ghost_data <- ghostblaster(as.character(refdb_looseq),
+    ghost_data <- ghostblaster(as.character(refdb_loosp),
                                refdb = refdb_dim,
                                out = out,
                                locals = loc_p,
@@ -62,7 +61,7 @@ LOSO_ghostblaster <- function(LOSO_refdb,
                                BLAST_args = BLAST_args) 
     
     write.csv(ghost_data$ghost_data, 
-              file = paste0(out, "loso/gd_", i, "_",
+              file = paste0(out, "lospo/gd_lospo_", i, "_",
                             ghost_data$ghost_data$qseqid[1],".csv"),
               row.names = F)
     

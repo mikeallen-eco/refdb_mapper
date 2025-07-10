@@ -1,11 +1,13 @@
 map_ghosts <- function(df,
                        hydrobasin_map,
-                       just_US,
                        save_maps = "figures/"){
   
-  hydrobasins <- st_read(hydrobasin_map)
-  
-  if(just_US == TRUE){hydrobasins <- subset_hydrobasins_US(hydrobasin_map)}
+  # read in map of hydrobasins
+  if (class(hydrobasin_map)[1] %in% "character") {
+    hydrobasins <- st_read(hydrobasin_map)
+  } else{
+    hydrobasins <- hydrobasin_map
+  }  
 
   # summarize % ghosts by hydrobasin
   ghosts_by_hydro <- df %>%
@@ -18,8 +20,6 @@ map_ghosts <- function(df,
   # join data to map  
   hydrobasins_ghosts <- hydrobasins %>%
     left_join(ghosts_by_hydro, by = join_by(HYBAS_ID))
-  
-  plot(hydrobasins_ghosts[,"pct_ghosts"])
   
   library(ggplot2)
 (map_pct_ghosts <- ggplot() +
@@ -48,10 +48,10 @@ map_ghosts <- function(df,
   
   if (!is.null(save_maps)) {
     library(patchwork)
-    ghost_map$num_all / ghost_map$num_ghosts / ghost_map$pct_ghosts
+    map_num_all / map_num_ghosts / map_pct_ghosts
     ggsave(
-      paste0(save_maps, "ghost_maps.png"),
-      height = 5.5,
+      paste0(save_maps, "ghost_maps_NA.png"),
+      height = 7.5,
       width = 4,
       dpi = 400,
       bg = "white"

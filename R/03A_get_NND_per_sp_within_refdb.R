@@ -37,7 +37,7 @@ get_NND_per_sp_within_refdb <- function(
   
   # get list of species (NCBI) with ≥ min_n variants present that can be matched to phylogeny
     # note: 683 of 724 mammals were matchable, the remainder mainly extinct or domestic species
-  species_list <- gsub("_", " ", sort(unique(rn$s[which(rn$n > min_n)]))) %>%
+  species_list <- gsub("_", " ", sort(unique(rn$s[which(rn$n >= min_n)]))) %>%
     as.data.frame() %>%
     dplyr::rename(ncbi_name = 1) %>%
     left_join(phyl_tax %>% select(ncbi_name, phyl_name_via_ncbi = phyl_name), by = join_by(ncbi_name)) %>%
@@ -64,6 +64,13 @@ get_NND_per_sp_within_refdb <- function(
   row.names(dist.mat1) <- gsub("\\.", "-", row.names(dist.mat1)) # fix species with hyphens that got changed to periods
   colnames(dist.mat1) <- gsub("\\.", "-", colnames(dist.mat1)) # fix species with hyphens that got changed to periods
   
+  # get order & sequence count from reference data
+  rn_sp <- rn %>% 
+    mutate(ncbi_name = ununderscore(s), order = o) %>% 
+    group_by(ncbi_name, order) %>% 
+    summarize(n = length(ncbi_name),
+              .groups = "drop")
+  
  # get nearest neighbor co-phenetic distance for each phyl_name & add NCBI name
  NND_df <- apply(dist.mat1, 2, 
         FUN = function(x){
@@ -73,11 +80,11 @@ get_NND_per_sp_within_refdb <- function(
    dplyr::rename(nnd = 1) %>%
    tibble::rownames_to_column("phyl_name") %>%
    mutate(phyl_name = ununderscore(phyl_name)) %>%
-   left_join(species_list_ncbi,
+   left_join(species_list,
              by = join_by(phyl_name)) %>%
-   left_join(rn %>% mutate(ncbi_name = ununderscore(s)) %>% select(ncbi_name, order = o) %>% distinct(),
+   left_join(rn_sp,
              by = join_by(ncbi_name)) %>%
-   select(ncbi_name, phyl_name, order, nnd)
+   select(ncbi_name, phyl_name, order, nnd, n)
   
   return(NND_df)
   

@@ -16,7 +16,7 @@ rn <- RDP_to_dataframe(LOSO_refdb) %>%
 refsp <- rn$join_name
 
 # which hydrobasin species are ghosts
-h_data_g <- all %>%
+h_data_g <- h_data %>%
   left_join(select(geotax, sciname, gbif_name, ncbi_name), 
             by = join_by(sciname)) %>%
   mutate(ghost = case_when(!(sciname %in% refsp |
