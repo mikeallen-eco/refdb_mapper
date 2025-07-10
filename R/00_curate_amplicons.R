@@ -6,6 +6,7 @@ curate_amplicons <- function(refdb,
                              l,
                              L,
                              db_name,
+                             dl_tax = FALSE,
                              conda_dir,
                              conda_env,
                              verbose = FALSE) {

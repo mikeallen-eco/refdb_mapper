@@ -1,23 +1,29 @@
 predict_error_rate_hybas <- function(hybas_nnd_n_seqs,
                                      preds){
   
-  pred_df <- lapply(hybas_nnd_n_seqs, function(x){
+  pred_df <- hybas_nnd_n_seqs %>%
+    do.call(bind_rows, .)
     
-    preds_thresh99_i <- predict(
-      preds$mod_thresh99_i,
-      newdata = x,
+    preds_i <- predict(
+      preds$mod,
+      newdata = pred_df,
       type = "response",
       re.form = NA
     )
     
-    df <- x %>%
-      mutate(thresh99_i = 100*preds_thresh99_i)
+    # predictions for 
+    preds10_i <- predict(
+      preds$mod,
+      newdata = data.frame(nnd = pred_df$nnd, 
+                           n_seqs = ifelse(pred_df$n_seqs < 10, 10, pred_df$n_seqs)),
+      type = "response",
+      re.form = NA
+    )
+    
+    df <- pred_df %>%
+      mutate(preds = 100*preds_i,
+             preds10 = 100*preds10_i)
     
     return(df)
-    
-  }) %>%
-    do.call(bind_rows, .)
-  
-  return(pred_df)
   
 }

@@ -28,6 +28,8 @@ get_NND_per_sp_within_list <- function(
   # read in input species list taxonomy
   geo_tax <- read.csv(sp_list_tax) %>%
     dplyr::rename(geo_name = orig_name) %>%
+    mutate(ncbi_name = case_when(grepl(ncbi_name, pattern = "sp\\.| x ") ~ NA,
+                                 TRUE ~ ncbi_name)) %>%
     mutate(seq_species = case_when(!is.na(ncbi_name) ~ ncbi_name,
                                    is.na(ncbi_name) & !is.na(gbif_name) ~ gbif_name,
                                    TRUE ~ geo_name))

@@ -1,4 +1,4 @@
-get_sf_error_rate_hybas <- function(hydrobasin_map = hybas_subset,
+map_error_rate_hybas <- function(hydrobasin_map = hybas_subset,
                                     hybas_pred = hybas_pred_i) {
   # read in map of hydrobasins
   if (class(hydrobasin_map)[1] %in% "character") {
@@ -9,7 +9,13 @@ get_sf_error_rate_hybas <- function(hydrobasin_map = hybas_subset,
   
   hybas_pred_sum <- hybas_pred %>%
     group_by(HYBAS_ID) %>%
-    summarize(thresh99_i_mean_min1 = mean(thresh99_i, na.rm = T),
+    summarize(mean_seqs = mean(preds_loso, na.rm = T),
+              mean_ghosts = mean(preds_ghosts, na.rm = T),
+              mean_all = mean(preds, na.rm = T),
+              mean10 = mean(preds10, na.rm = T),
+              num_above_2 = sum(preds > 2, na.rm = T),
+              num10_above_2 = sum(preds10 > 2, na.rm = T),
+              num_sp = length(preds),
               .groups = "drop")
   
   # join hydrobasins map with predicted error data
