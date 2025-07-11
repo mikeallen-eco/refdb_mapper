@@ -9,7 +9,7 @@ library(dplyr)
 
 subset_hydrobasins_countries <- function(hydrobasin_map,
                                          countries = "United States of America",
-                                         contig_US = TRUE) {
+                                         exclude_states = c("Alaska", "Hawaii", "Puerto Rico")) {
   
 # 1. Read your hydrobasins geopackage
 hydrobasins <- st_read(hydrobasin_map)
@@ -17,11 +17,9 @@ hydrobasins <- st_read(hydrobasin_map)
 # 2. Download US states from rnaturalearth
 states <- ne_states(country = countries, returnclass = "sf")
 
-# 3. Keep only the 48 contiguous states
-if(contig_US == TRUE){
+# 3. Exclude states as indicated by exclude_states argument
 contig_states <- states %>%
-  filter(!name %in% c("Alaska", "Hawaii", "Puerto Rico"))
-}else{contig_states <- states}
+  filter(!name %in% exclude_states)
 
 # 4. Combine into a single US contiguous polygon
 contig_boundary <- st_union(contig_states)

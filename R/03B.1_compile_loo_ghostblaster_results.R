@@ -1,7 +1,7 @@
 # compile GhostBLASTer & BLAST results for leave-one-sequence-out data & add info
 
 compile_loo_ghostblaster_results <- function(loo_path,
-                                       loo_refdb_ndd_df,
+                                       loo_refdb_nnd_df,
                                        include_skips = TRUE,
                                        verbose = FALSE) {
   
@@ -12,8 +12,8 @@ compile_loo_ghostblaster_results <- function(loo_path,
     separate(tmp, into = c("g", "s", "acc"), sep = "_") %>%
     mutate(true_ncbi_name = paste0(g, " ", s)) %>%
     select(-g, -s, acc) %>%
-    filter(true_ncbi_name %in% loo_refdb_ndd_df$ncbi_name) %>%
-    left_join(loo_refdb_ndd_df %>% dplyr::rename(true_ncbi_name = ncbi_name),
+    filter(true_ncbi_name %in% loo_refdb_nnd_df$ncbi_name) %>%
+    left_join(loo_refdb_nnd_df %>% dplyr::rename(true_ncbi_name = ncbi_name),
               by = join_by(true_ncbi_name)) %>%
     select(-phyl_name) %>%
     mutate(max_pident_nei_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ 75,

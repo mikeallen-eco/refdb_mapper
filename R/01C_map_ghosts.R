@@ -1,6 +1,7 @@
 map_ghosts <- function(df,
                        hydrobasin_map,
-                       save_maps = "figures/"){
+                       save_maps = "figures/",
+                       suffix = "NA_no_AK"){
   
   # read in map of hydrobasins
   if (class(hydrobasin_map)[1] %in% "character") {
@@ -50,7 +51,7 @@ map_ghosts <- function(df,
     library(patchwork)
     map_num_all / map_num_ghosts / map_pct_ghosts
     ggsave(
-      paste0(save_maps, "ghost_maps_NA.png"),
+      paste0(save_maps, "ghost_maps_", suffix, ".png"),
       height = 7.5,
       width = 4,
       dpi = 400,
