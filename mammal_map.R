@@ -2,6 +2,7 @@ library(data.table)
 library(ghostblaster)
 library(dplyr)
 library(Biostrings)
+library(sf)
 the_files <- list.files("R", full.names = T)
 the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|help")]
 lapply(the_files_to_load, FUN = source)
@@ -34,18 +35,17 @@ hydrobasin_ghosts <- identify_ghosts(
 
 (hydrobasin_ghosts_tally <- tally_ghosts(hydrobasin_ghosts))
 
-hybas_subset <- subset_hydrobasins_countries(
-  hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
-  countries = c("United States of America", "Mexico", "Canada"))
+hydrobasin_map <- st_read("~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg")
 
-(hydrobasin_ghosts_tally_sub <- tally_ghosts(hydrobasin_ghosts %>% filter(HYBAS_ID %in% hybas_subset$HYBAS_ID)))
+seq_info_summarized_by_hydrobasin <- summarize_by_hydrobasin(hydrobasin_ghosts)
 
-(ghost_map <- map_ghosts(df = hydrobasin_ghosts,
-                        hydrobasin_map = hybas_subset,
-                        save_maps = "figures/",
-                        suffix = "NA_no_AK"))
+(ghost_plots <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
+                        hydrobasin_map = hydrobasin_map))
 
-# ---- Step 2 LOSO analysis
+(med_seqs <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
+                           hydrobasin_map = hydrobasin_map, to_plot = "med_seqs"))
+
+# ---- Step 2 LOSO analysis (takes a long time, saves csv files for convenience)
 
 LOSO_ghostblaster(LOSO_refdb = paste0(out_path, "refdb_", db_name, ".fasta"),
                   out = out_path,
@@ -81,28 +81,15 @@ preds_loso_lospo <- get_preds_loso_lospo(assign = "BLAST",
                                          accuracy_metric = "thresh98",
                                          outcomes = loo_outcomes)
 
-(predicted_loso_lopso_error_plot <- plot_predicted_loso_lopso_error(preds = preds_loso_lospo,
-                                        save_to = "figures/",
-                                        suffix = "BLAST98"))
+predicted_loso_lospo_error_plots <- plot_predicted_loso_lopso_error(preds = preds_loso_lospo)
 
 # ---- Step 4 get NND, n_seqs, & error rate predictions for each sp within hydrobasins
   
-hybas_subset <- subset_hydrobasins_countries(
-  hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
-  countries = c("United States of America", "Mexico", "Canada"))
-
 # hybas_nnd <- get_NDD_per_sp_all_hydrobasins(
-#   hydrobasin_map = hybas_subset,
-#   hydrobasin_species = "~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv",
-#   tree = "data/phyl.tre",
-#   phyltax = "data/phyltax.csv",
-#   sp_list_tax = "data/geotax.csv",
-#   verbose = T
-# ) # ~ .74 s per hydrobasin (1914 s for n = 2599 in NA)
-# saveRDS(hybas_nnd, paste0(out_path, "hybas_nnd_NA.rds"))
-hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_NA.rds"))
+#   hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg") # ~ .74 s per hydrobasin
+hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_world.rds"))
 
-hybas_error_data <- format_hybas_error_data(hybas_ndd_df = hybas_nnd,
+hybas_error_data <- format_hybas_error_data(hybas_nnd_df = hybas_nnd,
                                     ref_path = paste0(out_path,"refdb_", db_name, ".fasta"),
                                     preds_list = preds_loso_lospo)
 
@@ -111,8 +98,29 @@ hybas_error_data <- format_hybas_error_data(hybas_ndd_df = hybas_nnd,
 hybas_pred_map_sf <- make_hybas_pred_map_sf(hydrobasin_map = hybas_subset,
                                        hybas_pred = hybas_error_data)
 
-(hybas_misclass_rate_maps <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf, 
-                                                          suffix = "BLAST98"))
+hybas_misclass_rate_maps <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf)
+
+# ---- Step 6 save plots to png files
+library(patchwork)
+
+ggsave("figures/num_mammals.png", bg = "white",
+       height = 6, width = 9, plot = ghost_plots$num_all, dpi = 400)
+
+ggsave("figures/num_pct_molecular_ghosts.png", bg = "white",
+       height = 12, width = 9, plot = ghost_plots$num_ghosts/ghost_plots$pct_ghosts, dpi = 400)
+
+ggsave("figures/median_num_seqs_non_ghosts.png", bg = "white",
+       height = 6, width = 9, plot = med_seqs$med_seqs, dpi = 400)
+
+save_3_panel_plot(plot_list = list(hybas_misclass_rate_maps$i,
+                                   predicted_loso_lospo_error_plots$loso$i, 
+                                   predicted_loso_lospo_error_plots$lospo$i),
+                  save_to = "figures/predicted_pct_misclassified.png", h = 10, w = 10, res = 400)
+
+save_3_panel_plot(plot_list = list(hybas_misclass_rate_maps$a,
+                                   predicted_loso_lospo_error_plots$loso$a, 
+                                   predicted_loso_lospo_error_plots$lospo$a),
+                  save_to = "figures/predicted_pct_unclassified.png", h = 10, w = 10, res = 400)
 
 
 

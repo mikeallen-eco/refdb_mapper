@@ -18,21 +18,24 @@ get_NDD_per_sp_all_hydrobasins <- function(hydrobasin_map,
   
   hydrosp_all <- fread(hydrobasin_species)
   
-  hybas_ndd_list <- lapply(1:length(hydrobasins$HYBAS_ID), function(x){
+  hybas_nnd_list <- lapply(1:length(hydrobasins$HYBAS_ID), function(x){
     print(x)
     
     hybas_sp_list <- hydrosp_all %>%
       filter(HYBAS_ID %in% hydrobasins$HYBAS_ID[x])
     
+    if(nrow(hybas_sp_list) > 0){
     df <- get_NND_per_sp_within_list(sp_list = hybas_sp_list$sciname,
                                tree = tree_path,
                                phyltax = phyltax_path,
                                sp_list_tax = sp_list_tax_path,
                                verbose = verbose) %>%
       mutate(HYBAS_ID = hydrobasins$HYBAS_ID[x])
+    }else{df <- data.frame(HYBAS_ID = hydrobasins$HYBAS_ID[x])}
+    
     return(df)
   })
   
-  return(hybas_ndd_list)
+  return(hybas_nnd_list)
   
 }

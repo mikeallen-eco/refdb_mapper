@@ -1,67 +1,43 @@
 plot_hybas_misclass_rate_maps <- function(hybas_pred_map_sf = hybas_pred_map_sf,
-                                          save_to = "figures/",
-                                          suffix = "",
-                                          h = 6, w = 8, res = 400){
+                                          to_plot = c("i", "a")){
   
   library(ggplot2)
-  library(patchwork)
+
+  plot_list <- list()
   
-  (current <- hybas_pred_map_sf %>%
+  if("i" %in% to_plot){
+  (plot_list$i <- hybas_pred_map_sf %>%
       ggplot() +
-      geom_sf(aes(fill = mean_all),
-              color = "transparent") +
-      scale_fill_viridis_c(option = "inferno", limits = c(0,8.5)) +
-      labs(fill = "Mean\npredicted\nmisclass.\nrate (%)",
-           title = "Current reference database\n(51% ghosts, med. 1.5 seqs / sp)") +
+      geom_sf(aes(fill = mean_i),
+              color = NA) +
+      scale_fill_viridis_c(option = "inferno") +
+      labs(fill = "%",
+           title = "Mean probability that a novel sequence\nis misclassified") +
       theme_minimal())
-  
-  (future <- hybas_pred_map_sf %>%
-      ggplot() +
-      geom_sf(aes(fill = mean10),
-              color = "transparent") +
-      scale_fill_viridis_c(option = "inferno", limits = c(0,8)) +
-      labs(fill = "Mean\npredicted\nmisclass.\nrate (%)",
-           title = "Future reference database\n(≥10 seqs / sp)") +
-      theme_minimal())
-  
-  (num_current <- hybas_pred_map_sf %>%
-      ggplot() +
-      geom_sf(aes(fill = log10(num_above_2)),
-              color = "transparent") +
-      scale_fill_viridis_c(option = "inferno", limits = c(-0.35,2.3),
-                           breaks = log10(c(1,3,10,30,100)), labels = c(1,3,10,30,100)) +
-      labs(fill = "No. sp. with\npredicted\nmisclass.\nrate >2%",
-           title = "Current reference database\n(51% ghosts, med. 1.5 seqs / sp)") +
-      theme_minimal())
-  
-  (num_future <- hybas_pred_map_sf %>%
-      mutate(num10_above_2 = num10_above_2 + 0.5) %>%
-      ggplot() +
-      geom_sf(aes(fill = log10(num10_above_2)),
-              color = "transparent") +
-      scale_fill_viridis_c(option = "inferno", limits = c(-0.35,2.3),
-                           breaks = log10(c(1,3,10,30,100)), labels = c(1,3,10,30,100)) +
-      labs(fill = "No. sp. with\npredicted\nmisclass.\nrate >2%",
-           title = "Future reference database\n(≥10 seqs / sp)") +
-      theme_minimal())
-  
-  # make composite plot
-  composite_plot <- (current | future) / (num_current | num_future)
-  
-  if(!is.null(save_to)){
-    ggsave(
-      paste0(save_to, "current_future_misclass_map_", suffix, ".png"),
-      plot = composite_plot,
-      height = h,
-      width = w,
-      dpi = res,
-      bg = "white"
-    )
   }
   
-  return(list(current = current,
-              future = future,
-              num_current = num_current,
-              num_future = num_future))
+  if("a" %in% to_plot){
+  (plot_list$a <- hybas_pred_map_sf %>%
+      ggplot() +
+      geom_sf(aes(fill = mean_a),
+              color = NA) +
+      scale_fill_viridis_c(option = "inferno") +
+      labs(fill = "%",
+           title = "Mean probability that a novel sequence\nis unclassified") +
+      theme_minimal())
+  }
+  
+  if("c" %in% to_plot){
+  (plot_list$c <- hybas_pred_map_sf %>%
+      ggplot() +
+      geom_sf(aes(fill = mean_c),
+              color = NA) +
+      scale_fill_viridis_c(option = "inferno") +
+      labs(fill = "%",
+           title = "Mean probability that a novel sequence\nis correctly classified") +
+      theme_minimal())
+  }
+  
+  return(plot_list)
   
 }

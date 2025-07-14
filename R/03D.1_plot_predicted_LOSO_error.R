@@ -9,7 +9,7 @@ pred_loso_plot_i <- ggplot(preds$i$pred_df) +
   labs(x = "Nearest evolutionary neighbor (MY)",
        y = "No. sequences in reference database",
        fill = "Predicted %\nmisclassified",
-       title = "Leave-one-sequence-out") +
+       title = "Novel sequence\n(leave-one-sequence-out") +
   theme_minimal() +
   theme(axis.text = element_text(size = 10),
         axis.title = element_text(size = 12))
@@ -22,7 +22,7 @@ pred_loso_plot_a <- ggplot(preds$a$pred_df) +
   labs(x = "Nearest evolutionary neighbor (MY)",
        y = "No. sequences in reference database",
        fill = "Predicted %\nunclassified",
-       title = "Leave-one-sequence-out") +
+       title = "Novel sequence\n(leave-one-sequence-out)") +
   theme_minimal() +
   theme(axis.text = element_text(size = 10),
         axis.title = element_text(size = 12))
@@ -35,13 +35,13 @@ pred_loso_plot_c <- ggplot(preds$c$pred_df) +
   labs(x = "Nearest evolutionary neighbor (MY)",
        y = "No. sequences in reference database",
        fill = "Predicted %\ncorrect",
-       title = "Leave-one-sequence-out") +
+       title = "Novel sequence\n(leave-one-sequence-out)") +
   theme_minimal() +
   theme(axis.text = element_text(size = 10),
         axis.title = element_text(size = 12))
 
-return(list(pred_loso_plot_i,
-            pred_loso_plot_a,
-            pred_loso_plot_c))
+return(list(i = pred_loso_plot_i,
+            a = pred_loso_plot_a,
+            c = pred_loso_plot_c))
 
 }

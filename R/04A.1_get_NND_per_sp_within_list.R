@@ -53,11 +53,12 @@ get_NND_per_sp_within_list <- function(
     group_by(seq_species) %>%
     slice_head(n = 1) %>%
     ungroup()
-  
+ 
+  if(length(sp_list) > 1){ 
   # reduce tree to species list
   reduced_tree_names <- unique(gsub(" ", "_", species_list$phyl_name))
   reduced_tree <- drop.tip(phyl_tree, setdiff(phyl_tree$tip.label, reduced_tree_names))
-  
+ 
   # compute distance matrix
   dist.mat1 <- cophenetic.phylo(reduced_tree)
   row.names(dist.mat1) <- gsub("\\.", "-", row.names(dist.mat1)) # fix species with hyphens that got changed to periods
@@ -76,6 +77,9 @@ get_NND_per_sp_within_list <- function(
              by = join_by(phyl_name)) %>%
    select(order, geo_name, seq_species, ncbi_name, phyl_name, in_phyl, nnd) %>%
    arrange(order, geo_name)
+  }else{NND_df <- species_list %>%
+    select(order, geo_name, seq_species, ncbi_name, phyl_name, in_phyl) %>%
+    mutate(nnd = NA)}
   
   return(NND_df)
   

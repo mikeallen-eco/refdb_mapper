@@ -13,11 +13,6 @@ get_loo_outcomes <- function(loso_gb_path = paste0(out_path, "loso"),
   loso_gb_outcomes <- loo_GB_outcomes(loso_GB_compiled)
   lospo_gb_outcomes <- loo_GB_outcomes(lospo_GB_compiled)
   
-  message("\nLOSO:")
-  print(table(loso_gb_outcomes$method, loso_gb_outcomes$thresh98))
-  message("\nLOSpO:")
-  print(table(lospo_gb_outcomes$method, lospo_gb_outcomes$thresh98))
-  
   return(list(loso_gb_outcomes = loso_gb_outcomes,
               lospo_gb_outcomes = lospo_gb_outcomes))
   

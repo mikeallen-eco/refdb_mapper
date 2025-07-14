@@ -1,5 +1,5 @@
-make_hybas_pred_map_sf <- function(hydrobasin_map = hybas_subset,
-                                          hybas_pred = hybas_pred_i) {
+make_hybas_pred_map_sf <- function(hydrobasin_map = hybas_map,
+                                          hybas_pred = hybas_error_data) {
   # read in map of hydrobasins
   if (class(hydrobasin_map)[1] %in% "character") {
     hydrobasins <- st_read(hydrobasin_map)
@@ -10,13 +10,15 @@ make_hybas_pred_map_sf <- function(hydrobasin_map = hybas_subset,
   hybas_pred_sum <- hybas_pred %>%
     group_by(HYBAS_ID) %>%
     summarize(
-      mean_seqs = mean(preds_loso, na.rm = T),
-      mean_ghosts = mean(preds_ghosts, na.rm = T),
-      mean_all = mean(preds, na.rm = T),
-      mean10 = mean(preds10, na.rm = T),
-      num_above_2 = sum(preds > 2, na.rm = T),
-      num10_above_2 = sum(preds10 > 2, na.rm = T),
-      num_sp = length(preds),
+      mean_i = mean(preds_i, na.rm = T),
+      mean_a = mean(preds_a, na.rm = T),
+      mean_c = mean(preds_c, na.rm = T),
+      mean10_i = mean(preds10_i, na.rm = T),
+      mean10_a = mean(preds10_a, na.rm = T),
+      mean10_c = mean(preds10_c, na.rm = T),
+      num_above_2_i = sum(preds_i > 2, na.rm = T),
+      num10_above_2_i = sum(preds10_i > 2, na.rm = T),
+      num_sp = length(preds_i),
       .groups = "drop"
     )
   
