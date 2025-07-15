@@ -1,15 +1,5 @@
-library(data.table)
-library(ghostblaster)
-library(dplyr)
-library(Biostrings)
-library(sf)
-the_files <- list.files("R", full.names = T)
-the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|help")]
-lapply(the_files_to_load, FUN = source)
-
 # ---- SET-UP
-out_path <- "~/Documents/mikedata/refdb_geo/mammals_Vences_16S/"
-db_name <- "V16S_mammalia_midori265_tax20250609"
+source("R/setup.R")
 
 # ---- Step 0 Make taxon-specific reference database for LOSO analysis
 # note: add crabs subset command to subset final output to Mammalia (excludes random turtle & molusks that made it in)
@@ -42,7 +32,7 @@ seq_info_summarized_by_hydrobasin <- summarize_by_hydrobasin(hydrobasin_ghosts)
 (ghost_plots <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
                         hydrobasin_map = hydrobasin_map))
 
-(med_seqs <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
+(med_num_seqs_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
                            hydrobasin_map = hydrobasin_map, to_plot = "med_seqs"))
 
 # ---- Step 2 LOSO analysis (takes a long time, saves csv files for convenience)
@@ -95,16 +85,26 @@ hybas_error_data <- format_hybas_error_data(hybas_nnd_df = hybas_nnd,
 
 # ---- Step 5 map error rates across hydrobasins
 
-hybas_pred_map_sf <- make_hybas_pred_map_sf(hydrobasin_map = hybas_subset,
+hybas_pred_map_sf <- make_hybas_pred_map_sf(hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
                                        hybas_pred = hybas_error_data)
 
 hybas_misclass_rate_maps <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf)
 
+hybas_misclass_rate_maps10 <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf%>%
+                                                              select(-starts_with("mean_")) %>%
+                                                              rename_with(~ gsub("mean10", "mean", .), 
+                                                                          starts_with("mean10")))
+
+hybas_mean_nnd_map <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf,
+                                                    to_plot = "nnd")
+
 # ---- Step 6 save plots to png files
-library(patchwork)
 
 ggsave("figures/num_mammals.png", bg = "white",
        height = 6, width = 9, plot = ghost_plots$num_all, dpi = 400)
+
+ggsave("figures/mean_nnd.png", bg = "white",
+       height = 6, width = 9, plot = hybas_mean_nnd_map$nnd, dpi = 400)
 
 ggsave("figures/num_pct_molecular_ghosts.png", bg = "white",
        height = 12, width = 9, plot = ghost_plots$num_ghosts/ghost_plots$pct_ghosts, dpi = 400)
@@ -122,7 +122,8 @@ save_3_panel_plot(plot_list = list(hybas_misclass_rate_maps$a,
                                    predicted_loso_lospo_error_plots$lospo$a),
                   save_to = "figures/predicted_pct_unclassified.png", h = 10, w = 10, res = 400)
 
-
+ggsave("figures/forecast_improved_misclassification.png", bg = "white",
+       height = 12, width = 9, plot = hybas_misclass_rate_maps$i/hybas_misclass_rate_maps10$i, dpi = 400)
 
 # mean n sequences per species (non-ghosts)
 # % of species likely to be misclassified (≥ X% probability); 

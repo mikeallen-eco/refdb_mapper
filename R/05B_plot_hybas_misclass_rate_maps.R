@@ -11,8 +11,7 @@ plot_hybas_misclass_rate_maps <- function(hybas_pred_map_sf = hybas_pred_map_sf,
       geom_sf(aes(fill = mean_i),
               color = NA) +
       scale_fill_viridis_c(option = "inferno") +
-      labs(fill = "%",
-           title = "Mean probability that a novel sequence\nis misclassified") +
+      labs(fill = "%") +
       theme_minimal())
   }
   
@@ -22,8 +21,7 @@ plot_hybas_misclass_rate_maps <- function(hybas_pred_map_sf = hybas_pred_map_sf,
       geom_sf(aes(fill = mean_a),
               color = NA) +
       scale_fill_viridis_c(option = "inferno") +
-      labs(fill = "%",
-           title = "Mean probability that a novel sequence\nis unclassified") +
+      labs(fill = "%") +
       theme_minimal())
   }
   
@@ -33,9 +31,18 @@ plot_hybas_misclass_rate_maps <- function(hybas_pred_map_sf = hybas_pred_map_sf,
       geom_sf(aes(fill = mean_c),
               color = NA) +
       scale_fill_viridis_c(option = "inferno") +
-      labs(fill = "%",
-           title = "Mean probability that a novel sequence\nis correctly classified") +
+      labs(fill = "%") +
       theme_minimal())
+  }
+  
+  if("nnd" %in% to_plot){
+    (plot_list$nnd <- hybas_pred_map_sf %>%
+       ggplot() +
+       geom_sf(aes(fill = mean_nnd),
+               color = NA) +
+       scale_fill_viridis_c(option = "inferno", direction = -1) +
+       labs(fill = "MY") +
+       theme_minimal())
   }
   
   return(plot_list)

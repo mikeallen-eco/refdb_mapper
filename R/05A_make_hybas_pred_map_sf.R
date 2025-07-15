@@ -10,6 +10,7 @@ make_hybas_pred_map_sf <- function(hydrobasin_map = hybas_map,
   hybas_pred_sum <- hybas_pred %>%
     group_by(HYBAS_ID) %>%
     summarize(
+      mean_nnd = mean(nnd, na.rm = T),
       mean_i = mean(preds_i, na.rm = T),
       mean_a = mean(preds_a, na.rm = T),
       mean_c = mean(preds_c, na.rm = T),
