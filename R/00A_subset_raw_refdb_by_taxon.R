@@ -3,7 +3,7 @@
 library(Biostrings, warn.conflicts = FALSE)
 
 subset_raw_refdb_by_taxon <- function(refdb,
-                                      taxon){ 
+                                      taxon = "Mammalia"){ 
 
 refdb_seqs <- readDNAStringSet(refdb)
 headers <- names(refdb_seqs)

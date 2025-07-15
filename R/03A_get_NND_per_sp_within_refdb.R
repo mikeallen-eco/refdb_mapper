@@ -2,10 +2,10 @@
 
 get_NND_per_sp_within_refdb <- function(
              refdb, # reference database with NCBI species names
-             min_n, # only include species with ≥ min_n sequences
+             min_n = 1, # only include species with ≥ min_n sequences
              tree = "data/phyl.tre",
              phyltax = "data/phyltax.csv",
-             verbose = FALSE) {
+             verbose = TRUE) {
   
   # load libraries and functions
   library(Biostrings, warn.conflicts = FALSE)

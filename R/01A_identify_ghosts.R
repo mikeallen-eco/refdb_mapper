@@ -1,14 +1,16 @@
 
-identify_ghosts <- function(hydrobasin_species, geotax_path, LOSO_refdb_path){
+identify_ghosts <- function(hydrobasin_species = "~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv", 
+                            geotax_path = "data/geotax.csv", 
+                            LOO_refdb_path){
   
 # read in data
 geotax <- read.csv(geotax_path) %>%
   dplyr::rename(sciname = orig_name)
 h_data <- fread(hydrobasin_species)
-LOSO_refdb <- readDNAStringSet(LOSO_refdb_path)
+LOO_refdb <- readDNAStringSet(LOO_refdb_path)
 
 # get df of reference database
-rn <- RDP_to_dataframe(LOSO_refdb) %>%
+rn <- RDP_to_dataframe(LOO_refdb) %>%
   group_by(s) %>%
   mutate(n = length(s)) %>%
   ungroup() %>%

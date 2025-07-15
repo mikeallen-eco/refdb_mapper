@@ -1,7 +1,6 @@
 save_3_panel_plot <- function(plot_list,
                               save_to = "figures/plot.png",
                               h = 4, w = 8, res = 400){
-  
   library(ggplot2)
   library(patchwork)
   
@@ -14,5 +13,4 @@ save_3_panel_plot <- function(plot_list,
     dpi = 400,
     bg = "white"
   )
-
 }

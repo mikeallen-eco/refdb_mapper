@@ -1,6 +1,6 @@
 # download the NCBI taxonomy files using crabs
 
-download_NCBI_taxonomy_crabs <- function(out,
+download_NCBI_taxonomy_crabs <- function(out = out_path,
                                    conda_dir = "/Users/mikea/miniconda3/bin/conda",
                                    conda_env = "crb2"){
   

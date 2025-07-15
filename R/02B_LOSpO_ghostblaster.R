@@ -5,8 +5,8 @@ LOSpO_ghostblaster <- function(LOSpO_refdb,
                                 marker,
                                 start_seq = 1,
                                 blast_path = "/usr/local/ncbi/blast/bin",
-                                BLAST_args = "-max_target_seqs 5000 -perc_identity 80 -qcov_hsp_perc 90",
-                                verbose = F){
+                                BLAST_args = "-max_target_seqs 5000 -perc_identity 75 -qcov_hsp_perc 90",
+                                verbose = TRUE){
 
   # create directories if needed
   if (!dir.exists(out)) {
