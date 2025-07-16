@@ -106,11 +106,11 @@ none_list[[i]] <- df
   
 }
 
-none <- none_list %>%
+none_df <- none_list %>%
   do.call(bind_rows, .) %>%
-  mutate(match = geo_to_syn)
+  mutate(match = "geo_to_syn")
 
-none2 <- none %>%
+none2 <- none_df %>%
   filter(is.na(phyl_name)) %>%
   select(-phyl_name, -match)
 
