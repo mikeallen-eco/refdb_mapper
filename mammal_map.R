@@ -7,6 +7,8 @@ source("R/settings_Vences_16S.R")
 curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, 
                  out = out_path, l = l, L = L, db_name = db_name)
 
+identify_nonamplifiers()
+
 # ---- Step 1 identify & map ghosts
 
 hydrobasin_ghosts <- identify_ghosts(LOO_refdb_path = LOO_refdb_path)
@@ -47,8 +49,8 @@ predicted_loso_lospo_error_plots <- plot_predicted_loso_lopso_error(preds = pred
 
 # ---- Step 4 get NND, n_seqs, & error rate predictions for each sp within hydrobasins
   
-# hybas_nnd <- get_NDD_per_sp_all_hydrobasins() # ~ .74 s per hydrobasin
-hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_world.rds"))
+hybas_nnd <- get_NDD_per_sp_all_hydrobasins() # ~ .74 s per hydrobasin
+hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_world_fix.rds"))
 
 hybas_error_data <- format_hybas_error_data(hybas_nnd_df = hybas_nnd,
                                     ref_path = LOO_refdb_path,
@@ -79,3 +81,22 @@ save_predicted_pct_misclassified_3panel()
 save_predicted_pct_unclassified_3panel()
 save_forecast_improved_misclassification(hybas_misclass_rate_maps$i/hybas_misclass_rate_maps10$i)
 
+# ---- Step 7 example in one hydrobasin (Delaware River)
+
+dewa <- -1529894232
+rar <- -1529894602
+# dewa_map <- hydrobasin_map %>% filter(HYBAS_ID %in% dewa)
+
+# geotax <- fread("data/geotax.csv")
+dewa_ghosts <- hydrobasin_ghosts %>%
+  filter(HYBAS_ID %in% dewa)
+
+(dewa_ghosts_tally <- tally_ghosts(dewa_ghosts))
+dewa_info_summarized <- seq_info_summarized_by_hydrobasin %>%
+  filter(HYBAS_ID %in% dewa)
+
+dewa_hybas_error_data <- hybas_error_data %>%
+  filter(HYBAS_ID %in% dewa)
+
+dewa_hybas_pred_map_sf <- hybas_pred_map_sf %>%
+  filter(HYBAS_ID %in% dewa)

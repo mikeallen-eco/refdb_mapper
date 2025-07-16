@@ -1,8 +1,12 @@
 # get evolutionary nearest neighbor distance of each species within all hydrobasins in a gpkg
 
+# load libraries and functions
 library(data.table)
+library(dplyr)
+library(tidyr)
+library(ape)
 
-get_NDD_per_sp_all_hydrobasins <- function(hydrobasin_map,
+get_NDD_per_sp_all_hydrobasins <- function(hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
                                            hydrobasin_species = "~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv",
                                            tree_path = "data/phyl.tre",
                                            phyltax_path = "data/phyltax.csv",

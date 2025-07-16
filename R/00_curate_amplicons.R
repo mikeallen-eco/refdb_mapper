@@ -23,6 +23,8 @@ curate_amplicons <- function(refdb,
     rev = rev,
     out = out,
     all_starts = include_mismatched_primers,
+    conda_dir = conda_dir,
+    conda_env = conda_env,
     verbose = verbose
   )
   

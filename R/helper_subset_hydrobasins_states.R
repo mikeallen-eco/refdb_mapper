@@ -22,8 +22,12 @@ subset_hydrobasins_states <- function(hydrobasin_map,
                                         "New Hampshire",
                                         "Maine"
                                       )) {
-  # 1. Read your hydrobasins geopackage
-  hydrobasins <- st_read(hydrobasin_map)
+  # 1. Read hydrobasins geopackage
+  if (class(hydrobasin_map)[1] %in% "character") {
+    hydrobasins <- st_read(hydrobasin_map)
+  } else{
+    hydrobasins <- hydrobasin_map
+  }
   
   # 2. Download US states from rnaturalearth
   us_states <- ne_states(country = "United States of America", returnclass = "sf")
