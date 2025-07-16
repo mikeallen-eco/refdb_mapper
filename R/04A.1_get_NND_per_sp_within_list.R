@@ -7,17 +7,20 @@ get_NND_per_sp_within_list <- function(
              sp_list, # character vector of species names
              tree = "data/phyl.tre",
              phyltax = "data/phyltax.csv",
-             sp_list_tax = "data/geotax.csv",
+             sp_list_tax = "data/geotax_phyl_mammals.csv",
              verbose = FALSE) {
   
   # read in the phylogenetic tree
   phyl_tree <- read.tree(tree) # combined tree covering all vertebrates
   
-
+  # read in the geographical species list taxonomy and link to phylogeny
+  species_list <- read.csv(sp_list_tax) %>%
+    filter(geo_name %in% sp_list)
 
   if(length(sp_list) > 1){ 
   # reduce tree to species list
   reduced_tree_names <- unique(gsub(" ", "_", unique(species_list$phyl_name)))
+  reduced_tree_names <- reduced_tree_names[!is.na(reduced_tree_names)]
   reduced_tree <- drop.tip(phyl_tree, setdiff(phyl_tree$tip.label, reduced_tree_names))
  
   # compute distance matrix
@@ -36,10 +39,10 @@ get_NND_per_sp_within_list <- function(
    mutate(phyl_name = ununderscore(phyl_name)) %>%
    full_join(species_list,
              by = join_by(phyl_name)) %>%
-   select(order, geo_name, ncbi_name, phyl_name, in_phyl, nnd) %>%
+   select(order, geo_name, ncbi_name, gbif_name, phyl_name, nnd) %>%
    arrange(order, geo_name)
   }else{NND_df <- species_list %>%
-    select(order, geo_name, ncbi_name, phyl_name, in_phyl) %>%
+    select(order, geo_name, ncbi_name, gbif_name, phyl_name) %>%
     mutate(nnd = NA)}
   
   return(NND_df)

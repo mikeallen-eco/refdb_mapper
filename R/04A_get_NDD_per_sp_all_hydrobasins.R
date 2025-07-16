@@ -10,7 +10,7 @@ get_NDD_per_sp_all_hydrobasins <- function(hydrobasin_map = "~/Documents/mikedat
                                            hydrobasin_species = "~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv",
                                            tree_path = "data/phyl.tre",
                                            phyltax_path = "data/phyltax.csv",
-                                           sp_list_tax_path = "data/geotax.csv",
+                                           sp_list_tax_path = "data/geotax_phyl_mammals.csv",
                                            verbose = T){
   
   # read in map of hydrobasins
