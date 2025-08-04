@@ -16,11 +16,18 @@ add_n_seqs_to_hybas_nnd <- function(hybas_nnd,
     dplyr::select(seq_species, n_seqs)
   
   hybas_nnd_n_seqs <- lapply(hybas_nnd, function(x) {
-    if (sum(grepl(names(x), pattern = "seq_species")) %in% 0) {
-      x <- x %>% mutate(seq_species = NA)
+    if (length(names(x)) %in% 1) {
+      # in basins with no species, df has only one field (HYBAS_ID)
+      # need to add fields so that the code below still works
+      x <- x %>%
+        mutate(geo_name = NA, ncbi_name = NA, gbif_name = NA, seq_species = NA)
     }
     
-    df <- x %>%
+    df <- x %>% 
+      mutate(seq_species = case_when(!is.na(ncbi_name) ~ ncbi_name,
+                                     is.na(ncbi_name) & !is.na(gbif_name) ~ gbif_name,
+                                     is.na(ncbi_name) & is.na(gbif_name) ~ geo_name,
+                                     TRUE ~ NA)) %>%
       left_join(rn_n_seq, by = join_by(seq_species)) %>%
       tidyr::replace_na(list(n_seqs = 0))
     

@@ -49,25 +49,21 @@ predicted_loso_lospo_error_plots <- plot_predicted_loso_lopso_error(preds = pred
 
 # ---- Step 4 get NND, n_seqs, & error rate predictions for each sp within hydrobasins
   
-hybas_nnd <- get_NDD_per_sp_all_hydrobasins() # ~ .74 s per hydrobasin
-saveRDS(hybas_nnd, paste0(out_path, "hybas_nnd_world_fixed.rds"))
-hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_world.rds"))
+# hybas_nnd <- get_NDD_per_sp_all_hydrobasins() # ~ .74 s per hydrobasin
+# saveRDS(hybas_nnd, paste0(out_path, "hybas_nnd_world_fixed.rds"))
+hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_world_fixed.rds"))
 
 hybas_error_data <- format_hybas_error_data(hybas_nnd_df = hybas_nnd,
                                     ref_path = LOO_refdb_path,
                                     preds_list = preds_loso_lospo)
 
-# ---- Step 5 map error rates across hydrobasins
-
 hybas_pred_map_sf <- make_hybas_pred_map_sf(hydrobasin_map = hydrobasin_map,
-                                       hybas_pred = hybas_error_data)
+                                            hybas_pred = hybas_error_data,
+                                            ghost_info = seq_info_summarized_by_hydrobasin)
+
+# ---- Step 5 map error rates & nnd across hydrobasins
 
 hybas_misclass_rate_maps <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf)
-
-hybas_misclass_rate_maps10 <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf%>%
-                                                              select(-starts_with("mean_")) %>%
-                                                              rename_with(~ gsub("mean10", "mean", .), 
-                                                                          starts_with("mean10")))
 
 hybas_mean_nnd_map <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf,
                                                     to_plot = "nnd")
@@ -82,7 +78,14 @@ save_predicted_pct_misclassified_3panel()
 save_predicted_pct_unclassified_3panel()
 save_forecast_improved_misclassification(hybas_misclass_rate_maps$i/hybas_misclass_rate_maps10$i)
 
-# ---- Step 7 example in one hydrobasin (Delaware River)
+# ---- Step 7 correlate mean error rate with % ghosts & num spp
+
+err_scatter <- error_rate_scatterplots(hybas_pred_map_sf)
+
+err_scatter$i | err_scatter$a | err_scatter$c
+# ggsave("figures/iac_vs_pct_ghosts.png", width = 9, height = 3, dpi = 400)
+
+# ---- Step 8 example in one hydrobasin (Delaware River)
 
 dewa <- -1529894232; rar <- -1529894602
 # dewa_map <- hydrobasin_map %>% filter(HYBAS_ID %in% dewa)
@@ -100,3 +103,10 @@ dewa_hybas_error_data <- hybas_error_data %>%
 
 dewa_hybas_pred_map_sf <- hybas_pred_map_sf %>%
   filter(HYBAS_ID %in% dewa)
+
+# ---- Step 9 map error rates across hydrobasins assuming ≥ 10 sequences per species
+
+hybas_misclass_rate_maps10 <- plot_hybas_misclass_rate_maps(hybas_pred_map_sf = hybas_pred_map_sf%>%
+                                                              select(-starts_with("mean_")) %>%
+                                                              rename_with(~ gsub("mean10", "mean", .),
+                                                                          starts_with("mean10")))

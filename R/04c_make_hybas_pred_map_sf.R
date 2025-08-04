@@ -1,5 +1,6 @@
 make_hybas_pred_map_sf <- function(hydrobasin_map = hybas_map,
-                                          hybas_pred = hybas_error_data) {
+                                   hybas_pred = hybas_error_data,
+                                   ghost_info = seq_info_summarized_by_hydrobasin) {
   # read in map of hydrobasins
   if (class(hydrobasin_map)[1] %in% "character") {
     hydrobasins <- st_read(hydrobasin_map)
@@ -25,6 +26,8 @@ make_hybas_pred_map_sf <- function(hydrobasin_map = hybas_map,
   
   # join hydrobasins map with predicted error data
   hydrobasins_pred <- hydrobasins %>%
-    left_join(hybas_pred_sum, by = join_by(HYBAS_ID))
+    left_join(hybas_pred_sum, by = join_by(HYBAS_ID)) %>%
+    left_join(ghost_info, 
+              by = join_by(HYBAS_ID))
   
 }
