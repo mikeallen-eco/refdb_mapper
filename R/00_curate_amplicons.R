@@ -9,12 +9,16 @@ curate_amplicons <- function(refdb,
                              dl_tax = FALSE,
                              conda_dir = "/Users/mikea/miniconda3/bin/conda",
                              conda_env = "crb2",
+                             crabs_path = "crabs", # or e.g., for newest version "python ~/reference_database_creator/crabs"
                              include_mismatched_primers = FALSE,
                              verbose = TRUE) {
   taxon_refdb <- subset_raw_refdb_by_taxon(refdb, taxon)
   
   if (dl_tax == TRUE) {
-    download_NCBI_taxonomy_crabs(out = out)
+    download_NCBI_taxonomy_crabs(out = out,
+                                 conda_dir = conda_dir,
+                                 conda_env = conda_env,
+                                 crabs_path = crabs_path)
   }
   
   extract_amplicons_crabs(
@@ -25,9 +29,13 @@ curate_amplicons <- function(refdb,
     all_starts = include_mismatched_primers,
     conda_dir = conda_dir,
     conda_env = conda_env,
+    crabs_path = crabs_path,
     verbose = verbose
   )
   
-  clean_amplicons_crabs(input = "crabs_amplicons_pga.txt", out, l, L, db_name)
+  clean_amplicons_crabs(input = "crabs_amplicons_pga.txt", out, l, L, db_name,
+                        conda_dir = conda_dir,
+                        conda_env = conda_env,
+                        crabs_path = crabs_path)
   
 }

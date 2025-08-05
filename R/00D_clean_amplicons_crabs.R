@@ -6,11 +6,12 @@ clean_amplicons_crabs <- function(input = "crabs_amplicons_pga.txt",
                                   taxon = "Mammalia",
                                   conda_dir = "/Users/mikea/miniconda3/bin/conda",
                                   conda_env = "crb2",
+                                  crabs_path = "crabs", # or "python ~/path/to/reference_database_creator/crabs" to use the newest version
                                   verbose = FALSE) {
 
 # dereplicate amplicon-species combinations
 system2(conda_dir, 
-        args = c("run", "-n", conda_env, "crabs", 
+        args = c("run", "-n", conda_env, crabs_path,
                  "--dereplicate", 
                  "--input", paste0(out, input),
                  "--output", paste0(out, "crabs_amplicons_pga.uni.txt"),
@@ -20,7 +21,7 @@ system2(conda_dir,
 # quality filter 
 # (length, number "N" bases, environmental samples, name issues like "sp.")
 system2(conda_dir, 
-        args = c("run", "-n", conda_env, "crabs", 
+        args = c("run", "-n", conda_env, crabs_path, 
                  "--filter", 
                  "--input",
                  paste0(out, "crabs_amplicons_pga.uni.txt"),
@@ -34,7 +35,7 @@ system2(conda_dir,
 
 # export final RDP format fasta reference database 
 system2(conda_dir, 
-        args = c("run", "-n", conda_env, "crabs", 
+        args = c("run", "-n", conda_env, crabs_path, 
                  "--export",
                  "--input",
                  paste0(out, "crabs_amplicons_pga.uni.cln.txt"), 

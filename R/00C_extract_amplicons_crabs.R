@@ -4,6 +4,7 @@ extract_amplicons_crabs <- function(ref_seqs, fwd, rev, l, L,
                                    out,
                                    conda_dir = "/Users/mikea/miniconda3/bin/conda",
                                    conda_env = "crb2",
+                                   crabs_path = "crabs", # or "python ~/path/to/reference_database_creator/crabs" to use the newest version
                                    all_starts = FALSE,
                                    verbose = TRUE){
   
@@ -27,7 +28,7 @@ extract_amplicons_crabs <- function(ref_seqs, fwd, rev, l, L,
 
   if (verbose == TRUE) {tictoc::tic("Loading complete...")}
 system2(conda_dir, 
-        args = c("run", "-n", conda_env, "crabs", 
+        args = c("run", "-n", conda_env, crabs_path, 
                  "--import",
                  "--import-format", "NCBI",
                  "--input", ref_seqs_path,
@@ -44,7 +45,7 @@ if (verbose == TRUE) {message("Performing in silico PCR ...")}
 # In silico PCR to extract amplicons with primer regions (w/ ≤ 4 mismatches)
 if (verbose == TRUE) {tictoc::tic("PCR complete ...")}
 system2(conda_dir, 
-        args = c("run", "-n", conda_env, "crabs", 
+        args = c("run", "-n", conda_env, crabs_path, 
                  "--in-silico-pcr",
                  "--input", paste0(out, "crabs_raw_seqs.txt"),
                  "--output", paste0(out, "crabs_amplicons_pcr.txt"),
@@ -55,18 +56,20 @@ if (verbose == TRUE) {tictoc::toc()}
 
 if (verbose == TRUE) {message("Performing pga to extract amplicons without primer regions ...")}
 if (verbose == TRUE) {tictoc::tic("pga complete ...")}
+pga_arg_vector <- c("run", "-n", conda_env, crabs_path, 
+                    "--pairwise-global-alignment",
+                    "--input", paste0(out, "crabs_raw_seqs.txt"),
+                    "--amplicons", paste0(out, "crabs_amplicons_pcr.txt"),
+                    "--output", paste0(out, "crabs_amplicons_pga.txt"),
+                    "--forward", fwd,
+                    "--reverse", rev2,
+                    "--size-select", "20000", 
+                    "--percent-identity", "0.70",
+                    "--coverage", "0.95")
 system2(conda_dir, 
-        args = c("run", "-n", conda_env, "crabs", 
-                 "--pairwise-global-alignment",
-                 "--input", paste0(out, "crabs_raw_seqs.txt"),
-                 "--amplicons", paste0(out, "crabs_amplicons_pcr.txt"),
-                 "--output", paste0(out, "crabs_amplicons_pga.txt"),
-                 "--forward", fwd,
-                 "--reverse", rev2,
-                 "--size-select", "20000", 
-                 "--percent-identity", "0.70",
-                 "--coverage", "0.95"), 
+        args = pga_arg_vector, 
         stdout = TRUE, stderr = TRUE)
 if (verbose == TRUE) {tictoc::toc()}
 
+message(paste(pga_arg_vector, sep = " "))
 }

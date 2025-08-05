@@ -2,7 +2,8 @@
 
 download_NCBI_taxonomy_crabs <- function(out = out_path,
                                    conda_dir = "/Users/mikea/miniconda3/bin/conda",
-                                   conda_env = "crb2"){
+                                   conda_env = "crb2",
+                                   crabs_path = "crabs"){
   
   # make working directory if needed
   if (!dir.exists(out)) {
@@ -16,7 +17,7 @@ download_NCBI_taxonomy_crabs <- function(out = out_path,
   
 # download most recent NCBI tax files if needed
 system2(conda_dir, 
-        args = c("run", "-n", conda_env, "crabs", 
+        args = c("run", "-n", conda_env, crabs_path, 
                  "--download-taxonomy",
                  "--output", paste0(out, "tax/")), 
         stdout = TRUE, stderr = TRUE)
