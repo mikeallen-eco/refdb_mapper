@@ -1,0 +1,29 @@
+name: np_simple
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python=3.11
+  - snakemake
+  - cutadapt
+  - bbmap
+  - seqkit
+  - NanoFilt
+  - porechop_abi
+  - vsearch
+  - r-base=4.4.2
+  - r-biocmanager
+  - r-devtools
+  - r-dplyr
+  - r-tibble
+  - r-tidyr
+  - r-tictoc
+  - r-ggplot2
+  - r-patchwork
+  - r-optparse
+  - blast==2.16.0
+  - r-rblast
+  - bioconductor-biostrings
+  - r-ape
+  - r-argparse

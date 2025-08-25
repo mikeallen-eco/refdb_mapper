@@ -1,0 +1,79 @@
+# Snakefile
+configfile: "config/pipeline_config.yaml"
+conda: "envs/environment.yaml"
+include: "rules/00_separate_samples.smk"
+include: "rules/01_quality_filter.smk"
+include: "rules/02_length_filter.smk"
+include: "rules/03_trim_primers.smk"
+include: "rules/04_porechop_unlinked.smk"
+include: "rules/05_combine_linked_unlinked.smk"
+include: "rules/06_final_length_filter.smk"
+include: "rules/07_simplify_fasta.smk"
+include: "rules/08_dereplicate.smk"
+include: "rules/09_pool.smk"
+include: "rules/10_cluster.smk"
+include: "rules/11_otu_table.smk"
+include: "rules/12_chimera.smk"
+include: "rules/13_min_size.smk"
+include: "rules/14_split.smk"
+include: "rules/15_blastg.smk"
+include: "rules/16_combine_blastg.smk"
+include: "rules/17_join_otu_tables.smk"
+
+DATA_FORMAT = config.get("data_format", "pooled")
+QUALITY_SCORE = config.get("quality_score", 10)
+MIN_LENGTH = config.get("raw_min_length", 100)
+MAX_LENGTH = config.get("raw_max_length", 500)
+MIN_LENGTH_FIN = config.get("fin_min_length", 100)
+MAX_LENGTH_FIN = config.get("fin_max_length", 500)
+OUTPUT_DIR = config["paths"]["output"]
+N_CHUNKS = config.get("n_chunks", 10)
+MIN_CLUSTER_SIZE = config.get("min_cluster_size")
+CHUNKS = [f"chunk_{i:02d}" for i in range(1, N_CHUNKS+1)]
+SAMPLES = config.get("samples", [])
+
+import re
+import gzip
+
+RAW_DATA = config["paths"]["raw_data"]
+OUTPUT_DIR = config["paths"]["output"]
+
+# Detect barcodes in pooled FASTQ if not explicitly given in config
+SAMPLES = config.get("samples", [])
+if not SAMPLES:
+    barcodes = set()
+    opener = gzip.open if RAW_DATA.endswith(".gz") else open
+    barcode_pattern = re.compile(r"barcode=(barcode\d+)")
+    with opener(RAW_DATA, "rt") as infile:
+        for i, line in enumerate(infile):
+            if line.startswith("@"):
+                m = barcode_pattern.search(line)
+                if m:
+                    barcodes.add(m.group(1))
+            # Stop early for speed after scanning e.g. 1e6 reads
+            if i > 1_000_000:
+                break
+    SAMPLES = sorted(barcodes)
+
+print(f"Detected samples (barcodes): {SAMPLES}")
+
+rule all:
+    input:
+        expand(f"{OUTPUT_DIR}/00_separate_samples/{{sample}}.distrib.txt", sample=SAMPLES),
+        expand(f"{OUTPUT_DIR}/01_quality_filter/{{sample}}.q{QUALITY_SCORE}.distrib.txt", sample=SAMPLES),
+        expand(f"{OUTPUT_DIR}/02_length_filter/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.distrib.txt", sample=SAMPLES),
+        expand(f"{OUTPUT_DIR}/03_trim_primers/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.linked.dd.distrib.txt", sample=SAMPLES),
+        expand(f"{OUTPUT_DIR}/04_porechop_unlinked/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.unlinked.sub.shuf.porechop.distrib.txt", sample=SAMPLES),
+        expand(f"{OUTPUT_DIR}/05_combine_linked_unlinked/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.linked_unlinked.sub.dd.distrib.txt", sample=SAMPLES),
+        expand(f"{OUTPUT_DIR}/06_final_length_filter/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.linked_unlinked.sub.dd.l{MIN_LENGTH_FIN}.L{MAX_LENGTH_FIN}.distrib.txt", sample=SAMPLES),
+        f"{OUTPUT_DIR}/09_pool/pooled.fasta",
+        f"{OUTPUT_DIR}/10_cluster/pooled.cluster.consensus.fasta",
+        f"{OUTPUT_DIR}/10_cluster/pooled.cluster.uc",
+        f"{OUTPUT_DIR}/11_otu_table/pooled.cluster.sample_counts.long.tsv",
+        f"{OUTPUT_DIR}/11_otu_table/pooled.cluster.otu_table.tsv",
+        f"{OUTPUT_DIR}/13_min_size/pooled.cluster.consensus.nochim.min{MIN_CLUSTER_SIZE}.fasta",
+        expand(f"{OUTPUT_DIR}/15_blastg/{{chunk}}/ghost_data.csv", chunk=CHUNKS),
+        expand(f"{OUTPUT_DIR}/15_blastg/{{chunk}}/ghost_sum.csv", chunk=CHUNKS),
+        f"{OUTPUT_DIR}/16_combine_blastg/ghost_data.csv",
+        f"{OUTPUT_DIR}/16_combine_blastg/ghost_sum.csv",
+        f"{OUTPUT_DIR}/17_join_otu_tables/final_otu_table.csv"

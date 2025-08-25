@@ -92,3 +92,13 @@ save_predicted_pct_unclassified_3panel <- function(plot_list = list(
   )
 }
 
+save_pct_ghost_residuals <- function(pct_ghost_residuals_plot = pct_ghost_residuals_plot) {
+  ggsave(
+    "figures/pct_ghost_residuals.png",
+    bg = "white",
+    height = 6,
+    width = 9,
+    plot = pct_ghost_residuals_plot,
+    dpi = 400
+  )
+}
