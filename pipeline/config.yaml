@@ -1,29 +1,16 @@
-# balbina_vences_16S_run1
-primers:
-  forward: AGACGAGAAGACCCYdTGGAGCTT
-  reverse: GATCCAACATCGAGGTCGTAA
-
-quality_score: 10
-
-paths:
-  raw_data: "/Users/mikea/Documents/mikedata/balbina/run1_16s/BalbinaRun01_sup_demux.q10.fastq"
-    # if data_format is "folders" then cat them into a single pooled fastq first
-  output: /Users/mikea/Documents/mikedata/balbina/run1_16s_cluster_pooled
-
-raw_min_length: 250
-raw_max_length: 500
-cutadapt_error_rate: 0.2
-fin_min_length: 170
-fin_max_length: 300
-cluster_perc_id: 0.95
-vsearch_threads: 4
-n_tax_chunks: 10
-  # number of chunks to cut up final cluster fasta file into for parallelizing taxonomy assignment
-min_cluster_size: 2
-
-blastg:
-    reference_database: "data/refdb.fasta"
-    local_species: "data/local_species.txt"
-    marker: "average"
-    blast_path: "/usr/local/ncbi/blast/bin"
-    BLAST_args: "-max_target_seqs 5000 -perc_identity 85 -qcov_hsp_perc 90 -num_threads 4"
+refdb_name: "MIDORI265"
+marker_name: "Vences_16S_MIDORI265"
+taxon_name: "Mammalia"
+raw_refdb: "/Users/mikea/Documents/mikedata/refdb_geo/MIDORI2_UNIQ_NUC_GB265_lrRNA_RDP.fasta"
+tax_dir: "/Users/mikea/Documents/mikedata/refdb_geo/mammals_Vences_16S/tax/"
+tax_dl_date: "20250609"
+results_dir: "/Users/mikea/Documents/mikedata/refdb_geo/Vences_16S_Mammalia/"
+n_chunks: 1
+fwd: "AGACGAGAAGACCCYdTGGAGCTT"
+rev: "GATCCAACATCGAGGTCGTAA"
+min_len: 100
+max_len: 300
+max_n: 10
+pga_identity: 0.70
+pga_cov: 0.95
+pga_max_len: 20000

@@ -1,79 +1,196 @@
 # Snakefile
-configfile: "config/pipeline_config.yaml"
-conda: "envs/environment.yaml"
-include: "rules/00_separate_samples.smk"
-include: "rules/01_quality_filter.smk"
-include: "rules/02_length_filter.smk"
-include: "rules/03_trim_primers.smk"
-include: "rules/04_porechop_unlinked.smk"
-include: "rules/05_combine_linked_unlinked.smk"
-include: "rules/06_final_length_filter.smk"
-include: "rules/07_simplify_fasta.smk"
-include: "rules/08_dereplicate.smk"
-include: "rules/09_pool.smk"
-include: "rules/10_cluster.smk"
-include: "rules/11_otu_table.smk"
-include: "rules/12_chimera.smk"
-include: "rules/13_min_size.smk"
-include: "rules/14_split.smk"
-include: "rules/15_blastg.smk"
-include: "rules/16_combine_blastg.smk"
-include: "rules/17_join_otu_tables.smk"
-
-DATA_FORMAT = config.get("data_format", "pooled")
-QUALITY_SCORE = config.get("quality_score", 10)
-MIN_LENGTH = config.get("raw_min_length", 100)
-MAX_LENGTH = config.get("raw_max_length", 500)
-MIN_LENGTH_FIN = config.get("fin_min_length", 100)
-MAX_LENGTH_FIN = config.get("fin_max_length", 500)
-OUTPUT_DIR = config["paths"]["output"]
+configfile: "config.yaml"
+conda: "environment.yaml"
+results_dir = config["results_dir"]
+tax_dir = config["tax_dir"]
+taxon_name = config["taxon_name"]
+tax_dl_date = config["tax_dl_date"]
+marker_name = config["marker_name"]
+refdb_name = config["refdb_name"]
 N_CHUNKS = config.get("n_chunks", 10)
-MIN_CLUSTER_SIZE = config.get("min_cluster_size")
 CHUNKS = [f"chunk_{i:02d}" for i in range(1, N_CHUNKS+1)]
-SAMPLES = config.get("samples", [])
-
-import re
-import gzip
-
-RAW_DATA = config["paths"]["raw_data"]
-OUTPUT_DIR = config["paths"]["output"]
-
-# Detect barcodes in pooled FASTQ if not explicitly given in config
-SAMPLES = config.get("samples", [])
-if not SAMPLES:
-    barcodes = set()
-    opener = gzip.open if RAW_DATA.endswith(".gz") else open
-    barcode_pattern = re.compile(r"barcode=(barcode\d+)")
-    with opener(RAW_DATA, "rt") as infile:
-        for i, line in enumerate(infile):
-            if line.startswith("@"):
-                m = barcode_pattern.search(line)
-                if m:
-                    barcodes.add(m.group(1))
-            # Stop early for speed after scanning e.g. 1e6 reads
-            if i > 1_000_000:
-                break
-    SAMPLES = sorted(barcodes)
-
-print(f"Detected samples (barcodes): {SAMPLES}")
+fwd = config["fwd"]
+rev = config["rev"]
+min_len = config["min_len"]
+max_len = config["max_len"]
+max_n = config["max_n"]
+pga_identity = config["pga_identity"]
+pga_cov = config["pga_cov"]
+pga_max_len = config["pga_max_len"]
 
 rule all:
     input:
-        expand(f"{OUTPUT_DIR}/00_separate_samples/{{sample}}.distrib.txt", sample=SAMPLES),
-        expand(f"{OUTPUT_DIR}/01_quality_filter/{{sample}}.q{QUALITY_SCORE}.distrib.txt", sample=SAMPLES),
-        expand(f"{OUTPUT_DIR}/02_length_filter/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.distrib.txt", sample=SAMPLES),
-        expand(f"{OUTPUT_DIR}/03_trim_primers/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.linked.dd.distrib.txt", sample=SAMPLES),
-        expand(f"{OUTPUT_DIR}/04_porechop_unlinked/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.unlinked.sub.shuf.porechop.distrib.txt", sample=SAMPLES),
-        expand(f"{OUTPUT_DIR}/05_combine_linked_unlinked/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.linked_unlinked.sub.dd.distrib.txt", sample=SAMPLES),
-        expand(f"{OUTPUT_DIR}/06_final_length_filter/{{sample}}.q{QUALITY_SCORE}.l{MIN_LENGTH}.L{MAX_LENGTH}.linked_unlinked.sub.dd.l{MIN_LENGTH_FIN}.L{MAX_LENGTH_FIN}.distrib.txt", sample=SAMPLES),
-        f"{OUTPUT_DIR}/09_pool/pooled.fasta",
-        f"{OUTPUT_DIR}/10_cluster/pooled.cluster.consensus.fasta",
-        f"{OUTPUT_DIR}/10_cluster/pooled.cluster.uc",
-        f"{OUTPUT_DIR}/11_otu_table/pooled.cluster.sample_counts.long.tsv",
-        f"{OUTPUT_DIR}/11_otu_table/pooled.cluster.otu_table.tsv",
-        f"{OUTPUT_DIR}/13_min_size/pooled.cluster.consensus.nochim.min{MIN_CLUSTER_SIZE}.fasta",
-        expand(f"{OUTPUT_DIR}/15_blastg/{{chunk}}/ghost_data.csv", chunk=CHUNKS),
-        expand(f"{OUTPUT_DIR}/15_blastg/{{chunk}}/ghost_sum.csv", chunk=CHUNKS),
-        f"{OUTPUT_DIR}/16_combine_blastg/ghost_data.csv",
-        f"{OUTPUT_DIR}/16_combine_blastg/ghost_sum.csv",
-        f"{OUTPUT_DIR}/17_join_otu_tables/final_otu_table.csv"
+        f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}_l{min_len}_L{max_len}_n{max_n}.fasta"
+
+# Step 00: Curate amplicons
+rule subset_taxon:
+    params:
+        results_dir = results_dir,
+        taxon_name = taxon_name
+    input: 
+        config["raw_refdb"]
+    output:
+        temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.fasta")
+    shell:
+        r"""
+        echo "Subsetting by taxon a 2nd time (clean up taxonomic errors) ..." \
+        2>&1 | tee -a {log}
+
+        Rscript scripts/subset_raw_refdb_by_taxon.R \
+        --refdb {input} \
+        --taxon {taxon_name} \
+        --output_file {output} 2>&1 | tee -a {log}
+        """
+
+rule import_crabs:
+    input: 
+        f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.fasta"
+    output:
+        temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.txt")
+    log:
+        f"{results_dir}00_curate_amplicons/00A_curate_amplicons_import.log"
+    shell:
+        r"""
+        echo "Loading reference sequences into CRABS..." \
+        2>&1 | tee -a {log}
+
+        crabs --import --import-format NCBI --input {input} \
+        --names "{tax_dir}/names.dmp" \
+        --nodes "{tax_dir}/nodes.dmp" \
+        --acc2tax "{tax_dir}/nucl_gb.accession2taxid" \
+        --output {output} \
+        --ranks 'superkingdom;phylum;class;order;family;genus;species' 2>&1 | tee -a {log}
+
+        echo "Number of sequences written: " 2>&1 | tee -a {log}
+        wc {output} 2>&1 | tee -a {log}
+        """
+
+rule crabs_pcr:
+    input: 
+        f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.txt"
+    output:
+        uni = temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.txt"),
+        cln = temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.txt"),
+        pcr = temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.txt")
+    log:
+        f"{results_dir}00_curate_amplicons/00B_curate_amplicons_pcr.log"
+    shell:
+        r"""
+        echo "Performing first dereplication (for speed) ..." \
+        2>&1 | tee -a {log}
+
+        # first dereplicate amplicon-species combinations and filter to speed it up
+        # dereplicate amplicon-species combinations
+        crabs --dereplicate --input {input} \
+        --output {output.uni} \
+        --dereplication-method 'unique_species' \
+        2>&1 | tee -a {log}
+
+        echo "Performing first quality filter (for speed) ..." \
+        2>&1 | tee -a {log}
+
+        # quality filter 
+        # (environmental samples, name issues like "sp.")
+        crabs --filter --input {output.uni} \
+        --output {output.cln} --environmental --no-species-id --rank-na 3 \
+        2>&1 | tee -a {log}
+
+        echo "Performing in silico PCR ..." \
+        2>&1 | tee -a {log}
+
+        crabs --in-silico-pcr --input {output.cln} \
+        --output {output.pcr} \
+        --forward {fwd} \
+        --reverse {rev} >> {log} 2>&1
+        """
+
+rule crabs_pga:
+    input: 
+        cln = f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.txt",
+        pcr = f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.txt"
+    output:
+        temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.pga.txt")
+    log:
+        f"{results_dir}00_curate_amplicons/00C_curate_amplicons_pga.log"
+    shell:
+        r"""
+        echo "Performing pga to extract amplicons without primer regions ..." \
+        2>&1 | tee -a {log}
+
+        crabs --pairwise-global-alignment \
+        --input {input.cln} \
+        --amplicons {input.pcr} \
+        --output {output} \
+        --forward {fwd} \
+        --reverse {rev} \
+        --size-select {pga_max_len} \
+        --percent-identity {pga_identity} \
+        --coverage {pga_cov} 2>&1 | tee -a {log}
+        """
+
+rule crabs_clean:
+    input: 
+        f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.pga.txt"
+    output:
+        uni = temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.pga.uni.txt"),
+        cln = temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.pga.uni.l{min_len}.L{max_len}.n{max_n}.txt")
+    log:
+        f"{results_dir}00_curate_amplicons/00D_curate_amplicons_clean.log"
+    shell:
+        r"""
+        echo "Performing 2nd dereplication ..." \
+        2>&1 | tee -a {log}
+
+        # dereplicate amplicon-species combinations
+        crabs --dereplicate --input {input} \
+        --output {output.uni} \
+        --dereplication-method 'unique_species' \
+        2>&1 | tee -a {log}
+
+        echo "Performing 2nd quality filter ..." \
+        2>&1 | tee -a {log}
+
+        # quality filter 
+        # (environmental samples, name issues like "sp.")
+        crabs --filter --input {output.uni} \
+        --output {output.cln} \
+        --minimum-length {min_len} \
+        --maximum-length {max_len} \
+        --maximum-n {max_n} \
+        --environmental --no-species-id --rank-na 3 \
+        2>&1 | tee -a {log}
+        """
+
+rule crabs_export:
+    input: 
+        f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.pga.uni.l{min_len}.L{max_len}.n{max_n}.txt"
+    output:
+        temp(f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.pga.uni.l{min_len}.L{max_len}.n{max_n}.fasta")
+    log:
+        f"{results_dir}00_curate_amplicons/00E_curate_amplicons_export.log"
+    shell:
+        r"""
+        echo "Exporting to fasta ..." \
+        2>&1 | tee -a {log}
+
+        crabs --export --input {input} \
+        --output {output} \
+        --export-format 'rdp' \
+        2>&1 | tee -a {log}
+        """
+
+rule subset_taxon2:
+    input: 
+        f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}.crabs.uni.cln.pcr.pga.uni.l{min_len}.L{max_len}.n{max_n}.fasta"
+    output:
+        f"{results_dir}00_curate_amplicons/{refdb_name}_{marker_name}_{taxon_name}_tax{tax_dl_date}_l{min_len}_L{max_len}_n{max_n}.fasta"
+    shell:
+        r"""
+        echo "Subsetting by taxon a 2nd time (clean up taxonomic errors) ..." \
+        2>&1 | tee -a {log}
+
+        Rscript scripts/subset_raw_refdb_by_taxon.R \
+        --refdb {input} \
+        --taxon {taxon_name} \
+        --output_file {output} 2>&1 | tee -a {log}
+        """

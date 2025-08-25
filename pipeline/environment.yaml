@@ -1,21 +1,16 @@
-name: np_simple
+name: refdb_geo
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - python=3.11
+  - python=3.11.7
   - snakemake
-  - cutadapt
-  - bbmap
-  - seqkit
-  - NanoFilt
-  - porechop_abi
-  - vsearch
+  - crabs
   - r-base=4.4.2
+  - r-dplyr
   - r-biocmanager
   - r-devtools
-  - r-dplyr
   - r-tibble
   - r-tidyr
   - r-tictoc
@@ -27,3 +22,5 @@ dependencies:
   - bioconductor-biostrings
   - r-ape
   - r-argparse
+  - r-sf
+  - r-data.table
