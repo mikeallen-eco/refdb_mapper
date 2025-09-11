@@ -60,16 +60,38 @@ hydrobasin_refdb_nnd_info <- hydrobasin_refdb_info %>%
   select(HYBAS_ID, order, family, sciname, nnd, contains("12S"), contains("16S")) %>%
   arrange(HYBAS_ID, order, nnd)
 
-# saveRDS(hydrobasin_refdb_nnd_info, "~/Documents/mikedata/refdb_geo/hydrobasin_refdb_nnd_info.rds")
 hydrobasin_refdb_nnd_info <- readRDS("~/Documents/mikedata/refdb_geo/hydrobasin_refdb_nnd_info.rds")
 
 hydrobasin_ref_nnd_info_sum <- summarize_by_hydrobasin(hydrobasin_refdb_nnd_info)
+
+hydrobasin_map2 <- hydrobasin_map %>%
+  select(-NEXT_DOWN, -NEXT_SINK, -MAIN_BAS, -DIST_SINK, -DIST_MAIN, -SUB_AREA, 
+         -UP_AREA, -PFAF_ID, -ENDO, -COAST, -ORDER, -SORT, -genus_richness)
+saveRDS(hydrobasin_map2, "~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
+
+library(rmapshaper)
+
+hydrobasins <- readRDS("~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
+
+# Simplify to 5% of vertices (adjust to to taste)
+hydrobasins_simple <- ms_simplify(hydrobasins, keep = 0.05, keep_shapes = TRUE)
+
+# Save simplified version for the app
+saveRDS(hydrobasins_simple, "data/hydrobasin_map_simple.rds")
+
 
 # ---- make maps and plots
 
 (ghost_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin_MiMamm_12S,
                            hydrobasin_map = hydrobasin_map,
                            to_plot = "pct_ghosts"))
+
+
+
+
+
+
+
 
 (med_num_seqs_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
                                  hydrobasin_map = hydrobasin_map,
