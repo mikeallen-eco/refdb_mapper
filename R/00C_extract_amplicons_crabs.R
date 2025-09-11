@@ -1,10 +1,12 @@
 # function that takes a MIDORI2 RDP-format reference database and extracts amplicons
 
-extract_amplicons_crabs <- function(ref_seqs, fwd, rev, l, L,
+extract_amplicons_crabs <- function(ref_seqs = taxon_refdb, 
+                                    fwd, rev, l, L,
                                    out,
                                    conda_dir = "/Users/mikea/miniconda3/bin/conda",
                                    conda_env = "crb2",
                                    crabs_path = "crabs", # or "python ~/path/to/reference_database_creator/crabs" to use the newest version
+                                   tax_path = "/Users/mikea/Documents/mikedata/GhostBLASTer/BLASTrees/tax_20250609/",
                                    all_starts = FALSE,
                                    verbose = TRUE){
   
@@ -32,9 +34,9 @@ system2(conda_dir,
                  "--import",
                  "--import-format", "NCBI",
                  "--input", ref_seqs_path,
-                 "--names", paste0(out, "tax/names.dmp"),
-                 "--nodes", paste0(out, "tax/nodes.dmp"),
-                 "--acc2tax", paste0(out, "tax/nucl_gb.accession2taxid"),
+                 "--names", paste0(tax_path, "names.dmp"),
+                 "--nodes", paste0(tax_path, "nodes.dmp"),
+                 "--acc2tax", paste0(tax_path, "nucl_gb.accession2taxid"),
                  "--output", paste0(out, "crabs_raw_seqs.txt"),
                  "--ranks", "'superkingdom;phylum;class;order;family;genus;species'"
         ), 
@@ -71,5 +73,5 @@ system2(conda_dir,
         stdout = TRUE, stderr = TRUE)
 if (verbose == TRUE) {tictoc::toc()}
 
-message(paste(pga_arg_vector, sep = " "))
+# message(paste(pga_arg_vector, sep = " "))
 }

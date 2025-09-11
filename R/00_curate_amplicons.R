@@ -1,17 +1,18 @@
-curate_amplicons <- function(refdb,
+curate_amplicons <- function(refdb = raw_refdb_path,
                              taxon = "Mammalia",
-                             fwd,
-                             rev,
-                             out,
-                             l,
-                             L,
-                             db_name,
+                             fwd = fwd,
+                             rev = rev,
+                             out = out_path,
+                             l = l,
+                             L = L,
+                             db_name = db_name,
                              dl_tax = FALSE,
                              conda_dir = "/Users/mikea/miniconda3/bin/conda",
                              conda_env = "crb2",
                              crabs_path = "crabs", # or e.g., for newest version "python ~/reference_database_creator/crabs"
                              include_mismatched_primers = FALSE,
                              verbose = TRUE) {
+  
   taxon_refdb <- subset_raw_refdb_by_taxon(refdb, taxon)
   
   if (dl_tax == TRUE) {

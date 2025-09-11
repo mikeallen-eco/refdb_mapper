@@ -1,25 +1,35 @@
 # ---- SET-UP
 source("R/setup.R")
+
+# ---- Step 0 Make taxon-specific reference databases for LOSO analysis (takes ~ 10 min)
+
 source("R/settings_Vences_16S.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+                 out = out_path, l = l, L = L, db_name = db_name)
 
-# ---- Step 0 Make taxon-specific reference database for LOSO analysis (takes ~ 10 min)
+source("R/settings_V5_12S.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+                 out = out_path, l = l, L = L, db_name = db_name)
 
-# curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
-#                  out = out_path, l = l, L = L, db_name = db_name)
+source("R/settings_MiMamm_12S.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+                 out = out_path, l = l, L = L, db_name = db_name)
 
 # --- Step 1 Harmonize phyogeny & ref db taxonomy to MOL
 
+refdb_cur <- c(refdb_V5_12S, refdb_MiMamm_12S, refdb_Vences_16S)
 data_env <- prepare_target_data_for_harmonization(mol_tax = mol_tax,
                                       mol_group = "Mammals",
                                       tree_names = tree_names,
-                                      refdb_cur = refdb_cur)
+                                      refdb_cur = refdb_cur,
+                                      extinct = extinct)
                                       
 refdb_harmonized <- harmonize_with_mol(mol = data_env$mol,
                                       target = data_env$refdb,
                                       fuzzy_threshold = 0.97,
                                       manual_tax = manual_tax_refdb)
 
-write.csv(refdb_harmonized, "data/refdb_harmonized.csv", row.names = F)
+write.csv(refdb_harmonized, "data/refdb_mammals_harmonized.csv", row.names = F)
 
 # phyl_harmonized <- harmonize_with_mol(mol = data_env$mol,
 #                                       target = data_env$phyl,
@@ -31,74 +41,35 @@ mol <- data_env$mol
 
 # ---- Step 2 identify & map ghosts
 
-hydrobasin_ghosts <- identify_ghosts(hydrobasin_species, 
-                                     refdb_cur_path = refdb_cur_path, 
-                                     refdb_harmonized_path)
-
-(hydrobasin_ghosts_tally <- tally_ghosts(hydrobasin_ghosts))
-
-seq_info_summarized_by_hydrobasin <- summarize_by_hydrobasin(hydrobasin_ghosts)
-
-
-# ---- Step 2 LOSO analysis (takes hours, saves csv files for convenience)
-
-# LOSO_ghostblaster(LOSO_refdb = LOO_refdb_path,
-#                   out = out_path, marker = marker, start_seq = 1)
-
-# LOSpO_ghostblaster(LOSpO_refdb = LOO_refdb_path,
-#                   out = out_path, marker = marker, start_seq = 1)
-
-
-
-# ---- Step 3 fit model of error rates based on LOSO analysis, NND, and n_seqs (takes a few min)
-
-NND_per_sp_within_refdb <- get_NND_per_sp_within_refdb(refdb = LOO_refdb_path)
-
-loo_outcomes <- get_loo_outcomes(loso_gb_path = paste0(out_path, "loso"), # get tax assign outcomes
-                                  lopso_gb_path = paste0(out_path, "lospo"),
-                                  refdb_nnd = NND_per_sp_within_refdb) # 2 min
-
-preds_loso_lospo <- get_preds_loso_lospo(assign = "BLAST", # fit models
-                                         accuracy_metric = "thresh98",
-                                         outcomes = loo_outcomes)
+refdb_cur_paths <- c(V5_12S = refdb_V5_12S, MiMamm_12S = refdb_MiMamm_12S, Vences_16S = refdb_Vences_16S)
+hydrobasin_refdb_info <- identify_ghosts(hydrobasin_species, 
+                                            refdb_cur_path = refdb_cur_paths, 
+                                            refdb_harmonized_path)
 
 # ---- Step 4 get NND, n_seqs, & error rate predictions for each sp within hydrobasins
   
 # hybas_nnd <- get_NDD_per_sp_all_hydrobasins() # ~ .74 s per hydrobasin
 # saveRDS(hybas_nnd, paste0(out_path, "hybas_nnd_world_fixed.rds"))
-hybas_nnd <- readRDS(paste0(out_path, "hybas_nnd_world_fixed.rds"))
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_geo/hybas_nnd_world_fixed.rds") %>%
+  do.call(bind_rows, .) %>%
+  select(HYBAS_ID, sciname = geo_name, nnd)
 
-hybas_error_data <- format_hybas_error_data(hybas_nnd_df = hybas_nnd,
-                                    ref_path = LOO_refdb_path,
-                                    preds_list = preds_loso_lospo)
+hydrobasin_refdb_nnd_info <- hydrobasin_refdb_info %>%
+  left_join(hybas_nnd,
+            by = join_by(HYBAS_ID, sciname)) %>%
+  select(HYBAS_ID, order, family, sciname, nnd, contains("12S"), contains("16S")) %>%
+  arrange(HYBAS_ID, order, nnd)
 
-hybas_pred_map_sf <- make_hybas_pred_map_sf(hydrobasin_map = hydrobasin_map,
-                                            hybas_pred = hybas_error_data,
-                                            ghost_info = seq_info_summarized_by_hydrobasin)
+# saveRDS(hydrobasin_refdb_nnd_info, "~/Documents/mikedata/refdb_geo/hydrobasin_refdb_nnd_info.rds")
+hydrobasin_refdb_nnd_info <- readRDS("~/Documents/mikedata/refdb_geo/hydrobasin_refdb_nnd_info.rds")
 
-# ---- Step 5 correlate ghosts & NDD
+hydrobasin_ref_nnd_info_sum <- summarize_by_hydrobasin(hydrobasin_refdb_nnd_info)
 
-get_pct_ghost_residuals <- function(hybas_pred_map_sf = hybas_pred_map_sf){
-mod_data <- hybas_pred_map_sf %>% 
-  filter(!is.na(pct_ghosts),
-         !is.na(mean_i))
-mod <- lm(mean_i ~ pct_ghosts, data = mod_data)
-plot(residuals(mod) ~ mod_data$mean_nnd)
-plot(residuals(mod) ~ mod_data$med_seqs)
+# ---- make maps and plots
 
-mod2 <- lm(mean_i ~ pct_ghosts + mean_nnd + med_seqs, data = mod_data)
-summary(mod2)
-
-rmap_data <- mod_data %>%
-  mutate(r = residuals(mod))
-
-return(rmap_data)
-}
-
-# ---- Step 10 make maps and plots
-
-(ghost_plots <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
-                           hydrobasin_map = hydrobasin_map))
+(ghost_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin_MiMamm_12S,
+                           hydrobasin_map = hydrobasin_map,
+                           to_plot = "pct_ghosts"))
 
 (med_num_seqs_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
                                  hydrobasin_map = hydrobasin_map,

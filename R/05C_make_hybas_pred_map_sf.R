@@ -3,7 +3,7 @@ make_hybas_pred_map_sf <- function(hydrobasin_map = hybas_map,
                                    ghost_info = seq_info_summarized_by_hydrobasin) {
   # read in map of hydrobasins
   if (class(hydrobasin_map)[1] %in% "character") {
-    hydrobasins <- st_read(hydrobasin_map)
+    hydrobasins <- st_read(hydrobasin_map, quiet = T)
   } else{
     hydrobasins <- hydrobasin_map
   }
