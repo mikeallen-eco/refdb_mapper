@@ -17,6 +17,9 @@ curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
 
 # --- Step 1 Harmonize phyogeny & ref db taxonomy to MOL
 
+# load mol names for checking
+mol <- data_env$mol
+
 refdb_cur <- c(refdb_V5_12S, refdb_MiMamm_12S, refdb_Vences_16S)
 data_env <- prepare_target_data_for_harmonization(mol_tax = mol_tax,
                                       mol_group = "Mammals",
@@ -31,13 +34,12 @@ refdb_harmonized <- harmonize_with_mol(mol = data_env$mol,
 
 write.csv(refdb_harmonized, "data/refdb_mammals_harmonized.csv", row.names = F)
 
-# phyl_harmonized <- harmonize_with_mol(mol = data_env$mol,
-#                                       target = data_env$phyl,
-#                                       fuzzy_threshold = 0.97,
-#                                       manual_tax = NULL)
+phyl_harmonized <- harmonize_with_mol(mol = data_env$mol,
+                                      target = data_env$phyl,
+                                      fuzzy_threshold = 0.97,
+                                      manual_tax = manual_tax_phyl)
 
-# load mol names for checking
-mol <- data_env$mol
+write.csv(phyl_harmonized, "data/phyl_mammals_harmonized.csv", row.names = F)
 
 # ---- Step 2 identify & map ghosts
 
@@ -46,11 +48,11 @@ hydrobasin_refdb_info <- identify_ghosts(hydrobasin_species,
                                             refdb_cur_path = refdb_cur_paths, 
                                             refdb_harmonized_path)
 
-# ---- Step 4 get NND, n_seqs, & error rate predictions for each sp within hydrobasins
+# ---- Step 3 get NND for each sp within hydrobasins & join to seq info
   
 # hybas_nnd <- get_NDD_per_sp_all_hydrobasins() # ~ .74 s per hydrobasin
 # saveRDS(hybas_nnd, paste0(out_path, "hybas_nnd_world_fixed.rds"))
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_geo/hybas_nnd_world_fixed.rds") %>%
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_fixed.rds") %>%
   do.call(bind_rows, .) %>%
   select(HYBAS_ID, sciname = geo_name, nnd)
 
@@ -59,18 +61,17 @@ hydrobasin_refdb_nnd_info <- hydrobasin_refdb_info %>%
             by = join_by(HYBAS_ID, sciname)) %>%
   select(HYBAS_ID, order, family, sciname, nnd, contains("12S"), contains("16S")) %>%
   arrange(HYBAS_ID, order, nnd)
-
-hydrobasin_refdb_nnd_info <- readRDS("~/Documents/mikedata/refdb_geo/hydrobasin_refdb_nnd_info.rds")
+rm(hydrobasin_refdb_info)
+# hydrobasin_refdb_nnd_info <- readRDS("~/Documents/mikedata/refdb_geo/hydrobasin_refdb_nnd_info.rds")
 
 hydrobasin_ref_nnd_info_sum <- summarize_by_hydrobasin(hydrobasin_refdb_nnd_info)
 
 hydrobasin_map2 <- hydrobasin_map %>%
-  select(-NEXT_DOWN, -NEXT_SINK, -MAIN_BAS, -DIST_SINK, -DIST_MAIN, -SUB_AREA, 
+  select(-NEXT_DOWN, -NEXT_SINK, -MAIN_BAS, -DIST_SINK, -DIST_MAIN, -SUB_AREA,
          -UP_AREA, -PFAF_ID, -ENDO, -COAST, -ORDER, -SORT, -genus_richness)
 saveRDS(hydrobasin_map2, "~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
 
 library(rmapshaper)
-
 hydrobasins <- readRDS("~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
 
 # Simplify to 5% of vertices (adjust to to taste)
@@ -79,23 +80,40 @@ hydrobasins_simple <- ms_simplify(hydrobasins, keep = 0.05, keep_shapes = TRUE)
 # Save simplified version for the app
 saveRDS(hydrobasins_simple, "data/hydrobasin_map_simple.rds")
 
-
-# ---- make maps and plots
-
+# map results
 (ghost_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin_MiMamm_12S,
-                           hydrobasin_map = hydrobasin_map,
-                           to_plot = "pct_ghosts"))
-
-
-
-
-
-
-
+                          hydrobasin_map = hydrobasin_map,
+                          to_plot = "pct_ghosts"))
 
 (med_num_seqs_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
                                  hydrobasin_map = hydrobasin_map,
                                  to_plot = "med_seqs"))
+
+# ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
+
+# V5_12S
+LOSO_ghostblaster(refdb = refdb_V5_12S,
+                  out = paste0(dirname(refdb_V5_12S),"/"), marker = "V5_12S", start_seq = 3753)
+
+LOSpO_ghostblaster(refdb = refdb_V5_12S,
+                  out = paste0(dirname(refdb_V5_12S),"/"), marker = "V5_12S", start_seq = 18,
+                  parallel = F)
+
+# MiMamm_12S
+LOSO_ghostblaster(refdb = refdb_MiMamm_12S,
+                  out = paste0(dirname(refdb_MiMamm_12S),"/"), marker = "average", start_seq = 1)
+
+LOSpO_ghostblaster(refdb = refdb_MiMamm_12S,
+                   out = paste0(dirname(refdb_MiMamm_12S),"/"), marker = "average", start_seq = 1)
+
+
+
+
+
+
+
+
+###### ---- plots
 
 predicted_loso_lospo_error_plots <- plot_predicted_loso_lopso_error(preds = preds_loso_lospo)
 

@@ -16,6 +16,7 @@ hydrobasin_species <- "~/Documents/mikedata/refdb_mapper/hybas_L6_mammal_interse
 mol_tax <- "/Users/mikea/Documents/mikedata/mol_names/data/all_taxa_combined_taxonomy.csv"
 tree_names <- "data/phyltax.csv"
 manual_tax_refdb <- "data/refdb_mammals_manual_notes.tsv"
+manual_tax_phyl <- "data/phyl_mammals_manual_notes.tsv"
 refdb_harmonized_path <- "data/refdb_mammals_harmonized.csv"
 
 refdb_V5_12S <- "~/Documents/mikedata/refdb_mapper/mammals_V5_12S/refdb_V512S_mammalia_midori265_tax20250609.fasta"
@@ -35,4 +36,5 @@ extinct <- c("Homo_heidelbergensis", "Acratocnus_ye",
              "Mammuthus_columbi", "Mammuthus_jeffersonii",
              "Mammuthus_primigenius", "Megaladapis_edwardsi",
              "Megaloceros_giganteus", "Megalonyx_jeffersonii",
-             "Megatherium_americanum")
+             "Megatherium_americanum", "Mylodon darwinii",
+             "Nothrotheriops shastensis")
