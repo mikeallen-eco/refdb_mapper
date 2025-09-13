@@ -93,18 +93,17 @@ saveRDS(hydrobasins_simple, "data/hydrobasin_map_simple.rds")
 
 # V5_12S
 LOSO_ghostblaster(refdb = refdb_V5_12S,
-                  out = paste0(dirname(refdb_V5_12S),"/"), marker = "V5_12S", start_seq = 3753)
+                  out = paste0(dirname(refdb_V5_12S),"/"), start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_V5_12S,
-                  out = paste0(dirname(refdb_V5_12S),"/"), marker = "V5_12S", start_seq = 18,
-                  parallel = F)
+                  out = paste0(dirname(refdb_V5_12S),"/"), start_seq = 1)
 
 # MiMamm_12S
 LOSO_ghostblaster(refdb = refdb_MiMamm_12S,
-                  out = paste0(dirname(refdb_MiMamm_12S),"/"), marker = "average", start_seq = 1)
+                  out = paste0(dirname(refdb_MiMamm_12S),"/"), start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_MiMamm_12S,
-                   out = paste0(dirname(refdb_MiMamm_12S),"/"), marker = "average", start_seq = 1)
+                   out = paste0(dirname(refdb_MiMamm_12S),"/"), start_seq = 1)
 
 
 
