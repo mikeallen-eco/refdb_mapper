@@ -17,7 +17,8 @@ prepare_target_data_for_harmonization <- function(mol_tax = mol_tax,
     mutate(tmp = full_sci_name) %>%
     separate(tmp, into = c("g", "s", "ssp"), sep = " ") %>%
     filter(!g %in% "X",
-           class %in% phyl_groups) %>%
+           class %in% phyl_groups,
+           !uid %in% extinct) %>%
     mutate(genus_species = paste0(g, " ", s)) %>%
     suppressWarnings()
   

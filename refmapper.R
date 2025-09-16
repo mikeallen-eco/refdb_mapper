@@ -7,6 +7,10 @@ source("R/settings_Vences_16S.R")
 curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
                  out = out_path, l = l, L = L, db_name = db_name)
 
+source("R/settings_Taylor_16S.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+                 out = out_path, l = l, L = L, db_name = db_name)
+
 source("R/settings_V5_12S.R")
 curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
                  out = out_path, l = l, L = L, db_name = db_name)
@@ -15,17 +19,22 @@ source("R/settings_MiMamm_12S.R")
 curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
                  out = out_path, l = l, L = L, db_name = db_name)
 
+source("R/settings_Mamm01_12S.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+                 out = out_path, l = l, L = L, db_name = db_name)
+
 # --- Step 1 Harmonize phyogeny & ref db taxonomy to MOL
 
 # load mol names for checking
 mol <- data_env$mol
 
-refdb_cur <- c(refdb_V5_12S, refdb_MiMamm_12S, refdb_Vences_16S)
+refdb_cur <- c(refdb_RiazVert1_12S, refdb_MiMammalU_12S, refdb_Vences_16S, 
+               refdb_Taylor_16S, refdb_Mamm01_12S)
 data_env <- prepare_target_data_for_harmonization(mol_tax = mol_tax,
                                       mol_group = "Mammals",
                                       tree_names = tree_names,
                                       refdb_cur = refdb_cur,
-                                      extinct = extinct)
+                                      extinct = c(ncbi_extinct, phyl_extinct))
                                       
 refdb_harmonized <- harmonize_with_mol(mol = data_env$mol,
                                       target = data_env$refdb,
@@ -43,7 +52,8 @@ write.csv(phyl_harmonized, "data/phyl_mammals_harmonized.csv", row.names = F)
 
 # ---- Step 2 identify & map ghosts
 
-refdb_cur_paths <- c(V5_12S = refdb_V5_12S, MiMamm_12S = refdb_MiMamm_12S, Vences_16S = refdb_Vences_16S)
+refdb_cur_paths <- c(RiazVert1_12S = refdb_RiazVert1_12S, MiMammalU_12S = refdb_MiMammalU_12S, 
+                     Vences_16S = refdb_Vences_16S, Mamm01_12S = refdb_Mamm01_12S)
 hydrobasin_refdb_info <- identify_ghosts(hydrobasin_species, 
                                             refdb_cur_path = refdb_cur_paths, 
                                             refdb_harmonized_path)
@@ -66,19 +76,19 @@ rm(hydrobasin_refdb_info)
 
 hydrobasin_ref_nnd_info_sum <- summarize_by_hydrobasin(hydrobasin_refdb_nnd_info)
 
-hydrobasin_map2 <- hydrobasin_map %>%
+hydrobasin_map <- hydrobasin_map %>%
   select(-NEXT_DOWN, -NEXT_SINK, -MAIN_BAS, -DIST_SINK, -DIST_MAIN, -SUB_AREA,
          -UP_AREA, -PFAF_ID, -ENDO, -COAST, -ORDER, -SORT, -genus_richness)
-saveRDS(hydrobasin_map2, "~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
+# saveRDS(hydrobasin_map, "~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
 
 library(rmapshaper)
-hydrobasins <- readRDS("~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
+hydrobasins <- readRDS("~/Documents/mikedata/refdb_mapper/hydrobasin_map.rds")
 
 # Simplify to 5% of vertices (adjust to to taste)
 hydrobasins_simple <- ms_simplify(hydrobasins, keep = 0.05, keep_shapes = TRUE)
 
 # Save simplified version for the app
-saveRDS(hydrobasins_simple, "data/hydrobasin_map_simple.rds")
+# saveRDS(hydrobasins_simple, "data/hydrobasin_map_simple.rds")
 
 # map results
 (ghost_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin_MiMamm_12S,
@@ -91,22 +101,40 @@ saveRDS(hydrobasins_simple, "data/hydrobasin_map_simple.rds")
 
 # ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
 
-# V5_12S
-LOSO_ghostblaster(refdb = refdb_V5_12S,
-                  out = paste0(dirname(refdb_V5_12S),"/"), start_seq = 1)
+# Vences_16S (237 bp)
+LOSO_ghostblaster(refdb = refdb_Vences_16S,
+                  out = paste0(dirname(refdb_Vences_16S),"/"), start_seq = 1)
 
-LOSpO_ghostblaster(refdb = refdb_V5_12S,
-                  out = paste0(dirname(refdb_V5_12S),"/"), start_seq = 1)
+LOSpO_ghostblaster(refdb = refdb_Vences_16S,
+                   out = paste0(dirname(refdb_Vences_16S),"/"), start_seq = 1)
 
-# MiMamm_12S
-LOSO_ghostblaster(refdb = refdb_MiMamm_12S,
-                  out = paste0(dirname(refdb_MiMamm_12S),"/"), start_seq = 1)
+# RiazVert1_12S (105 bp)
+LOSO_ghostblaster(refdb = refdb_RiazVert1_12S,
+                  out = paste0(dirname(refdb_RiazVert1_12S),"/"), start_seq = 1)
 
-LOSpO_ghostblaster(refdb = refdb_MiMamm_12S,
-                   out = paste0(dirname(refdb_MiMamm_12S),"/"), start_seq = 1)
+LOSpO_ghostblaster(refdb = refdb_RiazVert1_12S,
+                  out = paste0(dirname(refdb_RiazVert1_12S),"/"), start_seq = 1)
 
+# MiMammalU_12S (169 bp)
+LOSO_ghostblaster(refdb = refdb_MiMammalU_12S,
+                  out = paste0(dirname(refdb_MiMammalU_12S),"/"), start_seq = 1)
 
+LOSpO_ghostblaster(refdb = refdb_MiMammalU_12S,
+                   out = paste0(dirname(refdb_MiMammalU_12S),"/"), start_seq = 1)
 
+# Mamm01_12S (59 bp)
+LOSO_ghostblaster(refdb = refdb_Mamm01_12S,
+                  out = paste0(dirname(refdb_Mamm01_12S),"/"), start_seq = 1028)
+
+LOSpO_ghostblaster(refdb = refdb_Mamm01_12S,
+                   out = paste0(dirname(refdb_Mamm01_12S),"/"), start_seq = 1)
+
+# Taylor_16S (92 bp)
+LOSO_ghostblaster(refdb = refdb_Taylor_16S,
+                  out = paste0(dirname(refdb_Taylor_16S),"/"), start_seq = 1)
+
+LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
+                   out = paste0(dirname(refdb_Taylor_16S),"/"), start_seq = 1)
 
 
 

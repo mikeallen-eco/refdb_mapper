@@ -7,7 +7,7 @@ extract_amplicons_crabs <- function(ref_seqs = taxon_refdb,
                                    conda_env = "crb2",
                                    crabs_path = "crabs", # or "python ~/path/to/reference_database_creator/crabs" to use the newest version
                                    tax_path = "/Users/mikea/Documents/mikedata/GhostBLASTer/BLASTrees/tax_20250609/",
-                                   all_starts = FALSE,
+                                   # all_starts = FALSE,
                                    verbose = TRUE){
   
   # make working directory if needed
@@ -15,10 +15,15 @@ extract_amplicons_crabs <- function(ref_seqs = taxon_refdb,
     dir.create(out)
   }
   
-  # set up code for all start positions
-    # (i.e., not restricted to include primer matches when true)
-  if(all_starts == TRUE){rev2 <- paste0(rev, " --all-start-positions")}else{rev2 <- rev}
+  # detect if imported crabs format exists already
+  imported_already <- file.exists(paste0(out, "crabs_raw_seqs.txt"))
   
+  # set up code for all start positions (not working due to crabs bug at the moment)
+    # (i.e., not restricted to include primer matches when true)
+  # if(all_starts == TRUE){rev2 <- paste0(rev, " --all-start-positions")}else{rev2 <- rev}
+  
+  if(imported_already == FALSE){
+    
   if (verbose == TRUE) {message("Loading reference sequences into CRABS...")}
   # detect if refseqs is a fasta file and if not treat it like a DNAStringset
   if(grepl(ref_seqs[1], pattern = "fasta")){
@@ -28,7 +33,7 @@ extract_amplicons_crabs <- function(ref_seqs = taxon_refdb,
     ref_seqs_path <- paste0(out, "raw_seqs.fasta")
   }
 
-  if (verbose == TRUE) {tictoc::tic("Loading complete...")}
+  if (verbose == TRUE) {tictoc::tic("Import complete...")}
 system2(conda_dir, 
         args = c("run", "-n", conda_env, crabs_path, 
                  "--import",
@@ -42,6 +47,7 @@ system2(conda_dir,
         ), 
         stdout = TRUE, stderr = TRUE)
 if (verbose == TRUE) {tictoc::toc()}
+}else{message("crabs_raw_seqs.txt file detected. Skipping import step ...")}
 
 if (verbose == TRUE) {message("Performing in silico PCR ...")}
 # In silico PCR to extract amplicons with primer regions (w/ ≤ 4 mismatches)
@@ -64,7 +70,7 @@ pga_arg_vector <- c("run", "-n", conda_env, crabs_path,
                     "--amplicons", paste0(out, "crabs_amplicons_pcr.txt"),
                     "--output", paste0(out, "crabs_amplicons_pga.txt"),
                     "--forward", fwd,
-                    "--reverse", rev2,
+                    "--reverse", rev,
                     "--size-select", "20000", 
                     "--percent-identity", "0.70",
                     "--coverage", "0.95")

@@ -1,9 +1,10 @@
-summarize_by_hydrobasin <- function(df = hydrobasin_ghosts_all){
+summarize_by_hydrobasin <- function(df = hydrobasin_refdb_nnd_info){
 
-  names(df)
+  # names(df)
 # summarize % ghosts by hydrobasin
   ghosts_by_hydro <- df %>%
     group_by(HYBAS_ID) %>%
+    select(-nnd) %>%
     summarise(across(
       # just drop the taxonomic text columns
       .cols = -c(sciname, order, family),
@@ -21,10 +22,15 @@ summarize_by_hydrobasin <- function(df = hydrobasin_ghosts_all){
       .cols = -c(sciname, order, family),
       .fns  = ~ median(.x[.x > 0], na.rm = TRUE),  # median of positive seq counts
       .names = "{.col}_med_seqs"
-    ), .groups = "drop")
+    ), .groups = "drop") %>%
+    dplyr::mutate(nnd_med = nnd_med_seqs) %>%
+    select(-nnd_med_seqs)
   
   ghosts_by_hydro_w_medians <- ghosts_by_hydro %>%
-    left_join(medians, by = join_by(HYBAS_ID))
+    left_join(medians, by = join_by(HYBAS_ID)) %>%
+    dplyr::rename(tmp = 3) %>%
+    mutate(total_species = tmp) %>%
+    select(-contains("num_all"), -tmp)
   
 return(ghosts_by_hydro_w_medians)
 

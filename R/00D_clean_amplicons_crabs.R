@@ -7,6 +7,7 @@ clean_amplicons_crabs <- function(input = "crabs_amplicons_pga.txt",
                                   conda_dir = "/Users/mikea/miniconda3/bin/conda",
                                   conda_env = "crb2",
                                   crabs_path = "crabs", # or "python ~/path/to/reference_database_creator/crabs" to use the newest version
+                                  keep_imported = TRUE,
                                   verbose = FALSE) {
 
 # dereplicate amplicon-species combinations
@@ -54,6 +55,15 @@ writeXStringSet(r, paste0(out, "refdb_", db_name, ".fasta"), append = FALSE)
 
 # Remove temporary files created for crabs
 unlink(paste0(out, "raw_seqs.fasta"))
-unlink(paste0(out, "crabs_*"))
+unlink(paste0(out, "crabs_amplicons*"))
+
+if(keep_imported == FALSE){unlink(paste0(out, "crabs_raw_seqs.txt"))}
+
+# export read length distribution with readlength.sh (from bbmap installed in same conda environment)
+system2(conda_dir, 
+        args = c("run", "-n", conda_env, "readlength.sh", 
+                 paste0("in=", out, "refdb_", db_name, ".fasta"), 
+                 paste0("out=", out, "refdb_", db_name, ".reads.txt")), 
+        stdout = TRUE, stderr = TRUE)
 
 }

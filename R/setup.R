@@ -19,11 +19,13 @@ manual_tax_refdb <- "data/refdb_mammals_manual_notes.tsv"
 manual_tax_phyl <- "data/phyl_mammals_manual_notes.tsv"
 refdb_harmonized_path <- "data/refdb_mammals_harmonized.csv"
 
-refdb_V5_12S <- "~/Documents/mikedata/refdb_mapper/mammals_V5_12S/refdb_V512S_mammalia_midori265_tax20250609.fasta"
-refdb_MiMamm_12S <- "~/Documents/mikedata/refdb_mapper/mammals_MiMamm_12S/refdb_MiMamm12S_mammalia_midori265_tax20250609.fasta"
+refdb_RiazVert1_12S <- "~/Documents/mikedata/refdb_mapper/mammals_V5_12S/refdb_V512S_mammalia_midori265_tax20250609.fasta"
+refdb_MiMammalU_12S <- "~/Documents/mikedata/refdb_mapper/mammals_MiMammalU_12S/refdb_MiMammalU12S_mammalia_midori265_tax20250609.fasta"
 refdb_Vences_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Vences_16S/refdb_V16S_mammalia_midori265_tax20250609.fasta"
+refdb_Mamm01_12S <- "~/Documents/mikedata/refdb_mapper/mammals_Mamm01_12S/refdb_Mamm01_12S_mammalia_midori265_tax20250609.fasta"
+refdb_Taylor_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Taylor_16S/refdb_Taylor_16S_mammalia_midori265_tax20250609.fasta"
 
-extinct <- c("Homo_heidelbergensis", "Acratocnus_ye",
+ncbi_extinct <- c("Homo_heidelbergensis", "Acratocnus_ye",
              "Arctodus_simus", "Bison_priscus",
              "Bison_schoetensacki", "Equus_dalianensis",
              "Camelus_knoblochi", "Equus_lambei",
@@ -36,5 +38,9 @@ extinct <- c("Homo_heidelbergensis", "Acratocnus_ye",
              "Mammuthus_columbi", "Mammuthus_jeffersonii",
              "Mammuthus_primigenius", "Megaladapis_edwardsi",
              "Megaloceros_giganteus", "Megalonyx_jeffersonii",
-             "Megatherium_americanum", "Mylodon darwinii",
-             "Nothrotheriops shastensis")
+             "Megatherium_americanum", "Mylodon_darwinii",
+             "Nothrotheriops_shastensis", "Ursus_deningeri",
+             "Ursus_ingressus", "Ursus_kanivetz",
+             "Ursus_kudarensis", "Ursus_spelaeus")
+
+phyl_extinct <- c("Archaeolemur_majori")

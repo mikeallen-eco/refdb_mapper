@@ -1,7 +1,8 @@
 
 identify_ghosts <- function(hydrobasin_species = hydrobasin_species, 
                             refdb_cur_paths = refdb_cur_paths,
-                            refdb_harmonized_path = refdb_harmonized_path){
+                            refdb_harmonized_path = refdb_harmonized_path,
+                            extinct = ncbi_extinct){
   
 # read in data
 

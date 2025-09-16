@@ -10,7 +10,7 @@ curate_amplicons <- function(refdb = raw_refdb_path,
                              conda_dir = "/Users/mikea/miniconda3/bin/conda",
                              conda_env = "crb2",
                              crabs_path = "crabs", # or e.g., for newest version "python ~/reference_database_creator/crabs"
-                             include_mismatched_primers = FALSE,
+                             keep_imported = TRUE,
                              verbose = TRUE) {
   
   taxon_refdb <- subset_raw_refdb_by_taxon(refdb, taxon)
@@ -27,7 +27,6 @@ curate_amplicons <- function(refdb = raw_refdb_path,
     fwd = fwd,
     rev = rev,
     out = out,
-    all_starts = include_mismatched_primers,
     conda_dir = conda_dir,
     conda_env = conda_env,
     crabs_path = crabs_path,
