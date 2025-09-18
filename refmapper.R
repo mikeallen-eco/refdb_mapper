@@ -53,7 +53,8 @@ write.csv(phyl_harmonized, "data/phyl_mammals_harmonized.csv", row.names = F)
 # ---- Step 2 identify & map ghosts
 
 refdb_cur_paths <- c(RiazVert1_12S = refdb_RiazVert1_12S, MiMammalU_12S = refdb_MiMammalU_12S, 
-                     Vences_16S = refdb_Vences_16S, Mamm01_12S = refdb_Mamm01_12S)
+                     Vences_16S = refdb_Vences_16S, Mamm01_12S = refdb_Mamm01_12S, 
+                     Taylor_16S = refdb_Taylor_16S)
 hydrobasin_refdb_info <- identify_ghosts(hydrobasin_species, 
                                             refdb_cur_path = refdb_cur_paths, 
                                             refdb_harmonized_path)
@@ -136,8 +137,9 @@ LOSO_ghostblaster(refdb = refdb_Taylor_16S,
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
                    out = paste0(dirname(refdb_Taylor_16S),"/"), start_seq = 1)
 
+# ---- Step 5 - compile LOSO/LOSpO outcomes
 
-
+get_loo_outcomes
 
 
 ###### ---- plots

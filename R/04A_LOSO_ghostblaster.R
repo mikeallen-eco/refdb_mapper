@@ -85,7 +85,7 @@ LOSO_ghostblaster <- function(refdb,
   
   # run either parallel or serial
   if (parallel) {
-    mclapply(seq_range, loop_body, mc.cores = n_cores)
+    stop("parallel=T disabled. Was skipping files.") # mclapply(seq_range, loop_body, mc.cores = n_cores)
   } else {
     for (i in seq_range) loop_body(i)
   }

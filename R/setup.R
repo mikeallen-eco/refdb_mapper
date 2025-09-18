@@ -1,13 +1,13 @@
-library(data.table)
-library(blastg)
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(stringdist)
-library(Biostrings)
-library(sf)
-library(patchwork)
-library(ape)
+library(data.table, quietly = T, warn.conflicts = F)
+library(blastg, quietly = T, warn.conflicts = F)
+library(dplyr, quietly = T, warn.conflicts = F)
+library(tidyr, quietly = T, warn.conflicts = F)
+library(purrr, quietly = T, warn.conflicts = F)
+library(stringdist, quietly = T, warn.conflicts = F)
+library(Biostrings, quietly = T, warn.conflicts = F)
+library(sf, quietly = T, warn.conflicts = F)
+library(patchwork, quietly = T, warn.conflicts = F)
+library(ape, quietly = T, warn.conflicts = F)
 the_files <- list.files("R", full.names = T)
 the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|10|11|help")]
 lapply(the_files_to_load, FUN = source)
@@ -38,9 +38,14 @@ ncbi_extinct <- c("Homo_heidelbergensis", "Acratocnus_ye",
              "Mammuthus_columbi", "Mammuthus_jeffersonii",
              "Mammuthus_primigenius", "Megaladapis_edwardsi",
              "Megaloceros_giganteus", "Megalonyx_jeffersonii",
-             "Megatherium_americanum", "Mylodon_darwinii",
-             "Nothrotheriops_shastensis", "Ursus_deningeri",
-             "Ursus_ingressus", "Ursus_kanivetz",
-             "Ursus_kudarensis", "Ursus_spelaeus")
+             "Megatherium_americanum", "Miracinonyx_trumani",
+             "Mylodon_darwinii", "Myotragus_balearicus", 
+             "Nothrotheriops_shastensis", "Nesiotites_hidalgo", 
+             "Panthera_spelaea",
+             "Ursus_deningeri", "Ursus_ingressus", 
+             "Ursus_kanivetz", "Ursus_kudarensis", "Ursus_spelaeus")
 
-phyl_extinct <- c("Archaeolemur_majori")
+phyl_extinct <- c("Archaeolemur_majori", "Coelodonta_antiquitatis",
+                  "Elephas_antiquus", "Elephas_cypriotes",
+                  "Equus_capensis", "Eudorcas_rufina", 
+                  "Homo_denisova", "Homo_neanderthalensis")
