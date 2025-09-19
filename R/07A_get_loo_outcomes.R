@@ -1,10 +1,11 @@
 # compile leave-one-out data and apply taxonomy assignment rubrics & accuracy metrics
 
-get_loo_outcomes <- function(loso_gb_path = paste0(out_path, "loso/"),
-                             lopso_gb_path = paste0(out_path, "lospo/"),
+get_loo_outcomes <- function(marker_directories = dirname(refdb_cur_paths),
                              refdb_nnd = NND_per_sp_within_refdb){
   
-  loso_GB_compiled <- compile_loo_ghostblaster_results(loo_path = loso_gb_path,
+  # for(i in 1:length(marker_directories)){
+    i=1 # TEMPORARY!
+  loso_GB_compiled <- compile_loo_ghostblaster_results(loo_path = paste0(marker_directories[i], "/loso/"),
                                                        loo_refdb_nnd_df = refdb_nnd)
   
   lospo_GB_compiled <- compile_loo_ghostblaster_results(loo_path = lopso_gb_path,

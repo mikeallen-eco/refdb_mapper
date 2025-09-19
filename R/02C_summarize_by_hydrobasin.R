@@ -9,9 +9,9 @@ summarize_by_hydrobasin <- function(df = hydrobasin_refdb_nnd_info){
       # just drop the taxonomic text columns
       .cols = -c(sciname, order, family),
       .fns = list(
-        num_ghosts = ~ sum(.x > 0, na.rm = TRUE),
+        num_ghosts = ~ sum(.x == 0, na.rm = TRUE),
         num_all    = ~ sum(!is.na(.x)),
-        pct_ghosts = ~ 100 * sum(.x > 0, na.rm = TRUE) / sum(!is.na(.x))
+        pct_ghosts = ~ 100 * sum(.x == 0, na.rm = TRUE) / sum(!is.na(.x))
       ),
       .names = "{.col}_{.fn}"
     ), .groups = "drop")

@@ -1,23 +1,31 @@
 # get nearest-neighbor evolutionary (cophenetic) distance for each species within a reference database (NCBI)
 
+library(Biostrings, warn.conflicts = FALSE)
+library(dplyr)
+library(tidyr)
+library(ape)
+
 get_NND_per_sp_within_refdb <- function(
-             refdb, # reference database with NCBI species names
+             refdb_cur = refdb_cur_paths, # vector of paths to reference databases with NCBI species names
              min_n = 1, # only include species with ≥ min_n sequences
              tree = "data/phyl.tre",
-             phyltax = "data/phyltax.csv",
+             phyl_harmonized = phyl_harmonized_path,
+             refdb_harmonized = refdb_harmonized_path,
+             extinct = ncbi_extinct,
              verbose = TRUE) {
   
-  # load libraries and functions
-  library(Biostrings, warn.conflicts = FALSE)
-  library(dplyr)
-  library(tidyr)
-  library(ape)
+  refdb_harmonized <- read.csv(refdb_harmonized_path)
+  phyl_harmonized <- read.csv(phyl_harmonized_path)
   
+  nnd_list <- lapply(1:length(refdb_cur_paths), function(i){
+    
+  message("Processing refdb: \n", refdb_cur[i])
+
   # read in reference database
-  if (grepl(refdb[1], pattern = "fasta")) {
-    r <- readDNAStringSet(refdb)
+  if (grepl(refdb_cur[i], pattern = "fasta")) {
+    r <- readDNAStringSet(refdb_cur_paths)
   } else{
-    r <- refdb
+    r <- refdb_cur[i]
   }
   
   # get df of reference database
@@ -29,35 +37,24 @@ get_NND_per_sp_within_refdb <- function(
   # read in the phylogenetic tree
   phyl_tree <- read.tree(tree) # combined tree covering all vertebrates
   
-  # read in phylogenetic tree taxonomy
-  phyl_tax <- read.csv(phyltax) %>%
-    mutate(seq_species = case_when(!is.na(ncbi_name) ~ ncbi_name,
-                                   is.na(ncbi_name) & !is.na(gbif_name) ~ gbif_name,
-                                   TRUE ~ phyl_name))
-  
-  # get list of species (NCBI) with ≥ min_n variants present that can be matched to phylogeny
-    # note: 683 of 724 mammals were matchable, the remainder mainly extinct or domestic species
-  species_list <- gsub("_", " ", sort(unique(rn$s[which(rn$n >= min_n)]))) %>%
+  # create taxonomy lookup
+  species_list <- sort(unique(rn$s[which(rn$n >= min_n)])) %>%
     as.data.frame() %>%
     dplyr::rename(ncbi_name = 1) %>%
-    left_join(phyl_tax %>% select(ncbi_name, phyl_name_via_ncbi = phyl_name), by = join_by(ncbi_name)) %>%
-    left_join(phyl_tax %>% select(ncbi_name = gbif_name,
-                                  phyl_name_via_gbif = phyl_name) %>%
-                group_by(ncbi_name) %>% slice_head(n = 1), by = join_by(ncbi_name)) %>%
-    left_join(phyl_tax %>% select(ncbi_name = phyl_name) %>% mutate(phyl_name_via_phyl = ncbi_name) %>%
-                group_by(ncbi_name) %>% slice_head(n = 1), by = join_by(ncbi_name)) %>%
-    mutate(phyl_name = case_when(!is.na(phyl_name_via_ncbi) ~ phyl_name_via_ncbi,
-                                 is.na(phyl_name_via_ncbi) & 
-                                   !is.na(phyl_name_via_gbif) ~ phyl_name_via_gbif,
-                                 TRUE ~ phyl_name_via_phyl)) %>%
-    select(ncbi_name, phyl_name) %>%
-    filter(!is.na(phyl_name)) %>%
-    group_by(ncbi_name) %>%
-    slice_head(n = 1) %>%
-    ungroup()
+    filter(!grepl(ncbi_name, pattern = "_x_"),
+           !ncbi_name %in% extinct) %>%
+    left_join(refdb_harmonized %>% mutate(ncbi_name = gsub(" ", "_", full_sci_name)),
+              by = join_by(ncbi_name)) %>%
+    left_join(phyl_harmonized %>% 
+                select(MOL_Accepted, phyl_name = full_sci_name) %>%
+                group_by(MOL_Accepted) %>% slice_head(n = 1) %>% ungroup(),
+              by = join_by(MOL_Accepted)) %>%
+    mutate(mol_name = gsub(" ", "_", MOL_Accepted)) %>%
+    select(ncbi_name, phyl_name, mol_name) %>%
+    filter(!is.na(phyl_name))
   
   # reduce tree to species list
-  reduced_tree <- drop.tip(phyl_tree, setdiff(phyl_tree$tip.label, underscore(species_list$phyl_name)))
+  reduced_tree <- drop.tip(phyl_tree, setdiff(phyl_tree$tip.label, underscore(unique(species_list$phyl_name))))
   
   # compute distance matrix
   dist.mat1 <- cophenetic.phylo(reduced_tree)
@@ -66,8 +63,8 @@ get_NND_per_sp_within_refdb <- function(
   
   # get order & sequence count from reference data
   rn_sp <- rn %>% 
-    mutate(ncbi_name = ununderscore(s), order = o) %>% 
-    group_by(ncbi_name, order) %>% 
+    mutate(ncbi_name = ununderscore(s)) %>% 
+    group_by(ncbi_name) %>% 
     summarize(n = length(ncbi_name),
               .groups = "drop")
   
@@ -84,8 +81,10 @@ get_NND_per_sp_within_refdb <- function(
              by = join_by(phyl_name)) %>%
    left_join(rn_sp,
              by = join_by(ncbi_name)) %>%
-   select(ncbi_name, phyl_name, order, nnd, n)
+   select(ncbi_name, phyl_name, nnd, n)
   
   return(NND_df)
+  })
   
+  return(nnd_list)
 }

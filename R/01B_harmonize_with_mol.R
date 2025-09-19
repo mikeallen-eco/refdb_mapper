@@ -344,6 +344,10 @@ harmonize_with_mol <- function(mol = mol_plants,
       )
     }
     
+  if("g" %in% names(final)){final <- final %>% select(-g)}
+  if("s" %in% names(final)){final <- final %>% select(-s)}
+  if("ssp" %in% names(final)){final <- final %>% select(-ssp)}
+
   message("Done.")
   
   return(final)

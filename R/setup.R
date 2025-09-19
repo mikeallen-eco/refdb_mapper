@@ -9,7 +9,7 @@ library(sf, quietly = T, warn.conflicts = F)
 library(patchwork, quietly = T, warn.conflicts = F)
 library(ape, quietly = T, warn.conflicts = F)
 the_files <- list.files("R", full.names = T)
-the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|10|11|help")]
+the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|06|07|10|11|help")]
 lapply(the_files_to_load, FUN = source)
 hydrobasin_map <- read_sf("~/Documents/mikedata/refdb_mapper/hybas_L6_with_mammal_genus_richness.gpkg")
 hydrobasin_species <- "~/Documents/mikedata/refdb_mapper/hybas_L6_mammal_intersections_harmonized.csv"
@@ -18,6 +18,7 @@ tree_names <- "data/phyltax.csv"
 manual_tax_refdb <- "data/refdb_mammals_manual_notes.tsv"
 manual_tax_phyl <- "data/phyl_mammals_manual_notes.tsv"
 refdb_harmonized_path <- "data/refdb_mammals_harmonized.csv"
+phyl_harmonized_path <- "data/phyl_mammals_harmonized.csv"
 
 refdb_RiazVert1_12S <- "~/Documents/mikedata/refdb_mapper/mammals_V5_12S/refdb_V512S_mammalia_midori265_tax20250609.fasta"
 refdb_MiMammalU_12S <- "~/Documents/mikedata/refdb_mapper/mammals_MiMammalU_12S/refdb_MiMammalU12S_mammalia_midori265_tax20250609.fasta"
@@ -39,11 +40,14 @@ ncbi_extinct <- c("Homo_heidelbergensis", "Acratocnus_ye",
              "Mammuthus_primigenius", "Megaladapis_edwardsi",
              "Megaloceros_giganteus", "Megalonyx_jeffersonii",
              "Megatherium_americanum", "Miracinonyx_trumani",
-             "Mylodon_darwinii", "Myotragus_balearicus", 
+             "Mylodon_darwinii", "Myotragus_balearicus",
+             "Neuryurus_rudis",
              "Nothrotheriops_shastensis", "Nesiotites_hidalgo", 
-             "Panthera_spelaea",
-             "Ursus_deningeri", "Ursus_ingressus", 
-             "Ursus_kanivetz", "Ursus_kudarensis", "Ursus_spelaeus")
+             "Panthera_spelaea", "Parocnus_serus",
+             "Protemnodon_anak", "Pseudonovibos_spiralis",
+             "Ursus_deningeri", 
+             "Ursus_ingressus", "Ursus_kanivetz", 
+             "Ursus_kudarensis", "Ursus_spelaeus")
 
 phyl_extinct <- c("Archaeolemur_majori", "Coelodonta_antiquitatis",
                   "Elephas_antiquus", "Elephas_cypriotes",

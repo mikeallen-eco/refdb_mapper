@@ -25,9 +25,6 @@ curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
 
 # --- Step 1 Harmonize phyogeny & ref db taxonomy to MOL
 
-# load mol names for checking
-mol <- data_env$mol
-
 refdb_cur <- c(refdb_RiazVert1_12S, refdb_MiMammalU_12S, refdb_Vences_16S, 
                refdb_Taylor_16S, refdb_Mamm01_12S)
 data_env <- prepare_target_data_for_harmonization(mol_tax = mol_tax,
@@ -35,7 +32,9 @@ data_env <- prepare_target_data_for_harmonization(mol_tax = mol_tax,
                                       tree_names = tree_names,
                                       refdb_cur = refdb_cur,
                                       extinct = c(ncbi_extinct, phyl_extinct))
-                                      
+# load mol names for checking
+mol <- data_env$mol
+
 refdb_harmonized <- harmonize_with_mol(mol = data_env$mol,
                                       target = data_env$refdb,
                                       fuzzy_threshold = 0.97,
@@ -50,11 +49,12 @@ phyl_harmonized <- harmonize_with_mol(mol = data_env$mol,
 
 write.csv(phyl_harmonized, "data/phyl_mammals_harmonized.csv", row.names = F)
 
-# ---- Step 2 identify & map ghosts
+# ---- Step 2 tally seqs per species & join to hydrobasins
 
 refdb_cur_paths <- c(RiazVert1_12S = refdb_RiazVert1_12S, MiMammalU_12S = refdb_MiMammalU_12S, 
                      Vences_16S = refdb_Vences_16S, Mamm01_12S = refdb_Mamm01_12S, 
                      Taylor_16S = refdb_Taylor_16S)
+
 hydrobasin_refdb_info <- identify_ghosts(hydrobasin_species, 
                                             refdb_cur_path = refdb_cur_paths, 
                                             refdb_harmonized_path)
@@ -77,30 +77,19 @@ rm(hydrobasin_refdb_info)
 
 hydrobasin_ref_nnd_info_sum <- summarize_by_hydrobasin(hydrobasin_refdb_nnd_info)
 
-hydrobasin_map <- hydrobasin_map %>%
-  select(-NEXT_DOWN, -NEXT_SINK, -MAIN_BAS, -DIST_SINK, -DIST_MAIN, -SUB_AREA,
-         -UP_AREA, -PFAF_ID, -ENDO, -COAST, -ORDER, -SORT, -genus_richness)
-# saveRDS(hydrobasin_map, "~/Documents/mikedata/refdb_geo/hydrobasin_map.rds")
-
-library(rmapshaper)
-hydrobasins <- readRDS("~/Documents/mikedata/refdb_mapper/hydrobasin_map.rds")
-
-# Simplify to 5% of vertices (adjust to to taste)
-hydrobasins_simple <- ms_simplify(hydrobasins, keep = 0.05, keep_shapes = TRUE)
-
-# Save simplified version for the app
-# saveRDS(hydrobasins_simple, "data/hydrobasin_map_simple.rds")
+# ---- Step 4 map all summary stats by hydrobasin
 
 # map results
-(ghost_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin_MiMamm_12S,
+markers = c("Vences_16S", "Mamm01_12s", "Taylor_16S", "RiazVert1_12S", "MiMammalU_12S")
+to_plot = c("pct_ghosts", "med_seqs", "nnd_med", "total_species")
+ghost_plot <- map_ghosts(df = hydrobasin_ref_nnd_info_sum,
                           hydrobasin_map = hydrobasin_map,
-                          to_plot = "pct_ghosts"))
+                          markers = markers,
+                          to_plot = to_plot)
+ghost_plot$Vences_16S$pct_ghosts
+ghost_plot$MiMammalU_12S$pct_ghosts
 
-(med_num_seqs_plot <- map_ghosts(df = seq_info_summarized_by_hydrobasin,
-                                 hydrobasin_map = hydrobasin_map,
-                                 to_plot = "med_seqs"))
-
-# ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
+# ---- Step 6 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
 
 # Vences_16S (237 bp)
 LOSO_ghostblaster(refdb = refdb_Vences_16S,
@@ -137,9 +126,19 @@ LOSO_ghostblaster(refdb = refdb_Taylor_16S,
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
                    out = paste0(dirname(refdb_Taylor_16S),"/"), start_seq = 1)
 
-# ---- Step 5 - compile LOSO/LOSpO outcomes
+# ---- Step 6 - get NND for each species WITHIN each refdb
+refdb_cur_paths <- c(RiazVert1_12S = refdb_RiazVert1_12S, MiMammalU_12S = refdb_MiMammalU_12S, 
+                     Vences_16S = refdb_Vences_16S, Mamm01_12S = refdb_Mamm01_12S, 
+                     Taylor_16S = refdb_Taylor_16S)
+nnd_list <- get_NND_per_sp_within_refdb(refdb_cur = refdb_cur_paths,
+                                        phyl_harmonized = phyl_harmonized_path,
+                                        refdb_harmonized = refdb_harmonized_path,
+                                        extinct = ncbi_extinct)
 
-get_loo_outcomes
+
+# ---- Step 7 - compile LOSO/LOSpO outcomes
+
+get_loo_outcomes()
 
 
 ###### ---- plots
