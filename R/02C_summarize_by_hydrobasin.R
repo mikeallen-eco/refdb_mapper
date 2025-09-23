@@ -7,7 +7,7 @@ summarize_by_hydrobasin <- function(df = hydrobasin_refdb_nnd_info){
     select(-nnd) %>%
     summarise(across(
       # just drop the taxonomic text columns
-      .cols = -c(sciname, order, family),
+      .cols = -c(mol_name, phyl_name, order, family),
       .fns = list(
         num_ghosts = ~ sum(.x == 0, na.rm = TRUE),
         num_all    = ~ sum(!is.na(.x)),
@@ -19,7 +19,7 @@ summarize_by_hydrobasin <- function(df = hydrobasin_refdb_nnd_info){
   medians <- df %>%
     group_by(HYBAS_ID) %>%
     summarise(across(
-      .cols = -c(sciname, order, family),
+      .cols = -c(mol_name, phyl_name, order, family),
       .fns  = ~ median(.x[.x > 0], na.rm = TRUE),  # median of positive seq counts
       .names = "{.col}_med_seqs"
     ), .groups = "drop") %>%

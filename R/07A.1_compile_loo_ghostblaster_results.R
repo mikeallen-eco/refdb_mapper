@@ -1,42 +1,37 @@
 # compile GhostBLASTer & BLAST results for leave-one-sequence-out data & add info
 
 compile_loo_ghostblaster_results <- function(loo_path,
-                                       loo_refdb_nnd_df,
-                                       include_skips = TRUE,
-                                       verbose = FALSE) {
+                                       verbose = F) {
   
   loo_compiled <- read_csvs(loo_path, pattern_str = "csv") %>%
-    mutate(local = 1) %>% 
-    ghostsum(., marker = "Vences_16S", verbose = verbose) %>%
+    mutate(local = 1) %>%
+    filter(!grepl(seq_species, pattern = "_x_")) %>%
+    filter(!seq_species %in% ununderscore(ncbi_extinct)) %>%
+    ghostsum(., marker = "average", verbose = verbose) %>%
     mutate(tmp = qseqid) %>%
     separate(tmp, into = c("g", "s", "acc"), sep = "_") %>%
     mutate(true_ncbi_name = paste0(g, " ", s)) %>%
     select(-g, -s, acc) %>%
-    filter(true_ncbi_name %in% loo_refdb_nnd_df$ncbi_name) %>%
-    left_join(loo_refdb_nnd_df %>% dplyr::rename(true_ncbi_name = ncbi_name),
+    filter(!grepl(qseqid, pattern = "_x_")) %>%
+    filter(!true_ncbi_name %in% ununderscore(ncbi_extinct)) %>%
+    mutate(maxpident = case_when(grepl(blastg_local, pattern = "Skip") ~ 75,
+                                           TRUE ~ maxpident_blast_all),
+           gap = case_when(grepl(blastg_local, pattern = "Skip") ~ 0,
+                                               TRUE ~ gap_blast_all),
+           blast_all = case_when(grepl(blastg_local, pattern = "Skip") ~ "skipped",
+                                          TRUE ~ blast_all)) %>%
+    left_join(refdb_harmonized %>% select(true_ncbi_name = full_sci_name,
+                                          true_mol_name = BB_Accepted),
               by = join_by(true_ncbi_name)) %>%
-    select(-phyl_name) %>%
-    mutate(max_pident_nei_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ 75,
-                                               TRUE ~ max_pident_nei_ecto),
-           max_pident_gap_nei_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ 0,
-                                                   TRUE ~ max_pident_gap_nei_ecto),
-           max_pident_nei_no_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ 75,
-                                                  TRUE ~ max_pident_nei_no_ecto),
-           max_pident_gap_nei_no_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ 0,
-                                                      TRUE ~ max_pident_gap_nei_no_ecto),
-           top_match_nei_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ "skipped",
-                                              TRUE ~ top_match_nei_ecto),
-           top_match_nei_no_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ "skipped",
-                                                 TRUE ~ top_match_nei_no_ecto),
-           score_nei_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ 0,
-                                          TRUE ~ score_nei_ecto),
-           score_nei_no_ecto = case_when(grepl(top_match_loc_ecto, pattern = "Skip") ~ 0,
-                                             TRUE ~ score_nei_no_ecto))
-  
-  if(include_skips == FALSE){
-    loo_compiled <- loso_compiled %>%
-    filter(!grepl(top_match_loc_ecto, pattern = "Skip"))
-  }
+    mutate(assigned_ncbi_name = blast_all) %>%
+    left_join(refdb_harmonized %>% select(assigned_ncbi_name = full_sci_name,
+                                          assigned_mol_name = BB_Accepted),
+              by = join_by(assigned_ncbi_name)) %>%
+    mutate(assigned_mol_name = case_when(grepl(assigned_ncbi_name, pattern = "skip") ~ "skipped",
+                                         TRUE ~ assigned_mol_name)) %>%
+    select(qseqid, true_mol_name, assigned_mol_name, 
+           maxpident, gap, 
+           true_ncbi_name, assigned_ncbi_name)
   
   return(loo_compiled)
 }

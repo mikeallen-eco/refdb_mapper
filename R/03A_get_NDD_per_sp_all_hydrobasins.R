@@ -6,12 +6,11 @@ library(dplyr)
 library(tidyr)
 library(ape)
 
-get_NDD_per_sp_all_hydrobasins <- function(hydrobasin_map = "~/Documents/mikedata/refdb_geo/hybas_L6_with_mammal_genus_richness.gpkg",
-                                           hydrobasin_species = "~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv",
+get_NDD_per_sp_all_hydrobasins <- function(hydrobasin_map = hydrobasin_map,
+                                           hydrobasin_species = hydrobasin_species_path,
                                            tree_path = "data/phyl.tre",
-                                           phyltax_path = "data/phyltax.csv",
-                                           sp_list_tax_path = "data/geotax_phyl_mammals.csv",
-                                           verbose = T){
+                                           mol_to_phyl_harmonized = mol_to_phyl_harmonized_path,
+                                           extinct = c(ncbi_extinct, phyl_extinct)){
   
   # read in map of hydrobasins
   if (class(hydrobasin_map)[1] %in% "character") {
@@ -20,20 +19,22 @@ get_NDD_per_sp_all_hydrobasins <- function(hydrobasin_map = "~/Documents/mikedat
     hydrobasins <- hydrobasin_map
   }
   
-  hydrosp_all <- fread(hydrobasin_species)
+  hydrosp_all <- fread(hydrobasin_species) %>%
+    mutate(mol_name = underscore(sciname))
+  n_hybas <- length(hydrobasins$HYBAS_ID)
   
   hybas_nnd_list <- lapply(1:length(hydrobasins$HYBAS_ID), function(x){
-    print(x)
+    message(x, " of ", n_hybas)
     
     hybas_sp_list <- hydrosp_all %>%
       filter(HYBAS_ID %in% hydrobasins$HYBAS_ID[x])
     
     if(nrow(hybas_sp_list) > 0){
-    df <- get_NND_per_sp_within_list(sp_list = hybas_sp_list$sciname,
+    df <- get_NND_per_sp_within_list(sp_list = hybas_sp_list$mol_name,
                                tree = tree_path,
-                               phyltax = phyltax_path,
-                               sp_list_tax = sp_list_tax_path,
-                               verbose = verbose) %>%
+                               mol_to_phyl_harmonized_path = mol_to_phyl_harmonized,
+                               extinct = extinct) %>%
+      right_join(hybas_sp_list %>% select(mol_name), by = join_by(mol_name)) %>%
       mutate(HYBAS_ID = hydrobasins$HYBAS_ID[x])
     }else{df <- data.frame(HYBAS_ID = hydrobasins$HYBAS_ID[x])}
     

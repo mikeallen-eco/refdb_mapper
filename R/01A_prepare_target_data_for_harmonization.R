@@ -6,7 +6,10 @@ prepare_target_data_for_harmonization <- function(mol_tax = mol_tax,
                                                   extinct = extinct) {
   
   mol <- read.csv(mol_tax) %>%
-    filter(taxa %in% mol_group)
+    filter(taxa %in% mol_group) %>%
+    # patch to make MOL taxonomy files match the Hydrobasin species lists
+    mutate(Accepted = case_when(Accepted %in% "Alticola lemminus" ~ "Aschizomys lemminus",
+                                TRUE ~ Accepted))
   
   if (mol_group %in% "Mammals"){phyl_groups <- c("Mammalia")}else(phyl_groups <- NULL)
       
