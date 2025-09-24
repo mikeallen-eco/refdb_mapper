@@ -4,13 +4,14 @@
 #   filter(HYBAS_ID %in% "765062684"))$sciname
 
 get_NND_per_sp_within_list <- function(
-             sp_list = unique(rn$BB_Accepted), # character vector of MOL species names
+             sp_list = unique(rn$mol_name), # character vector of MOL species names
              tree = "data/phyl.tre",
              mol_to_phyl_harmonized_path = mol_to_phyl_harmonized_path,
              extinct = c(ncbi_extinct, phyl_extinct)) {
   
-  # read in the phylogenetic tree
+  # read in the phylogenetic tree (with patch to insert humans which were somehow missing)
   phyl_tree <- read.tree(tree) # combined tree covering all vertebrates
+  phyl_tree$tip.label[grepl(phyl_tree$tip.label, pattern = "Homo_neanderthalensis")] <- "Homo_sapiens"
   
   # format MOL species list
   sp_list <- sort(unique(underscore(sp_list)))

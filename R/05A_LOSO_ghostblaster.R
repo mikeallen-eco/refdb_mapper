@@ -10,6 +10,7 @@ LOSO_ghostblaster <- function(refdb,
                               start_seq = 1,
                               blast_path = "/usr/local/ncbi/blast/bin",
                               BLAST_args = "-max_target_seqs 5000 -perc_identity 75",
+                              min_length = 90,
                               verbose = TRUE,
                               parallel = FALSE,
                               n_cores = detectCores() - 1) {
@@ -66,6 +67,7 @@ LOSO_ghostblaster <- function(refdb,
       out = seq_tmp,
       locals = loc_p,
       marker = marker,
+      min_length = min_length,
       verbose = FALSE,
       BLAST_args = BLAST_args
     )

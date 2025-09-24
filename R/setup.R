@@ -22,14 +22,14 @@ refdb_harmonized_path <- "data/refdb_mammals_harmonized.csv"
 phyl_harmonized_path <- "data/phyl_mammals_harmonized.csv"
 mol_to_phyl_harmonized_path <- "data/mol_to_phyl_mammals_harmonized.csv"
 
-markers = c("Vences_16S", "Mamm01_12s", "Taylor_16S", "RiazVert1_12S", "MiMammalU_12S")
 refdb_RiazVert1_12S <- "~/Documents/mikedata/refdb_mapper/mammals_V5_12S/refdb_V512S_mammalia_midori265_tax20250609.fasta"
 refdb_MiMammalU_12S <- "~/Documents/mikedata/refdb_mapper/mammals_MiMammalU_12S/refdb_MiMammalU12S_mammalia_midori265_tax20250609.fasta"
 refdb_Vences_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Vences_16S/refdb_V16S_mammalia_midori265_tax20250609.fasta"
 refdb_Mamm01_12S <- "~/Documents/mikedata/refdb_mapper/mammals_Mamm01_12S/refdb_Mamm01_12S_mammalia_midori265_tax20250609.fasta"
 refdb_Taylor_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Taylor_16S/refdb_Taylor_16S_mammalia_midori265_tax20250609.fasta"
+markers = c("RiazVert1_12S", "MiMammalU_12S", "Vences_16S", "Mamm01_12s", "Taylor_16S")
 refdb_cur <- c(refdb_RiazVert1_12S, refdb_MiMammalU_12S, refdb_Vences_16S, 
-               refdb_Taylor_16S, refdb_Mamm01_12S)
+               refdb_Mamm01_12S, refdb_Taylor_16S)
 refdb_cur_paths <- c(RiazVert1_12S = refdb_RiazVert1_12S, MiMammalU_12S = refdb_MiMammalU_12S, 
                      Vences_16S = refdb_Vences_16S, Mamm01_12S = refdb_Mamm01_12S, 
                      Taylor_16S = refdb_Taylor_16S)

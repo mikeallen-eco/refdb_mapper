@@ -64,16 +64,14 @@ hydrobasin_refdb_info <- tally_sequences(hydrobasin_species_path,
                                             refdb_harmonized_path)
 
 # find widespread species that still need manual taxonomic matching (to prioritize)
-top_n <- head(sort(table(hydrobasin_refdb_info$mol_name), decreasing = T), n = 500) %>% c()
-to_go <- mol_to_phyl_harmonized[is.na(mol_to_phyl_harmonized$BB_Accepted),]$uid
-top_n_and_to_go <- names(top_n) %in% to_go
-(to_go_top_n <- to_go[top_n_and_to_go])
+priority_species_to_harmonize(harmonized_df = mol_to_phyl_harmonized, show = 10)
+priority_species_to_harmonize(harmonized_df = phyl_harmonized, show = 10)
 
 # ---- Step 3 get NND for each sp within hydrobasins & join to seq info
   
-hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_map = hydrobasin_map,
-                                            hydrobasin_species = hydrobasin_species_path) # ~ .74 s per hydrobasin
-saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250923.rds")
+# hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_map = hydrobasin_map,
+#                                             hydrobasin_species = hydrobasin_species_path) # ~ .7 s per hydrobasin
+# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250923.rds")
 hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250923.rds") 
 hybas_nnd <- hybas_nnd %>%
   do.call(bind_rows, .) %>%
@@ -99,7 +97,7 @@ ghost_plot <- map_ghosts(df = hydrobasin_ref_nnd_info_sum,
 ghost_plot$Vences_16S$pct_ghosts
 ghost_plot$MiMammalU_12S$pct_ghosts
 
-# ---- Step 6 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
+# ---- Step 5 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
 
 # Vences_16S (237 bp)
 LOSO_ghostblaster(refdb = refdb_Vences_16S,
@@ -136,53 +134,42 @@ LOSO_ghostblaster(refdb = refdb_Taylor_16S,
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
                    out = paste0(dirname(refdb_Taylor_16S),"/"), start_seq = 1)
 
-# ---- Step 6 - get NND for each species WITHIN each refdb
+# ---- Step 6 - build predictor data for error model
 
-NND_per_sp_within_refdb <- get_NND_per_sp_within_refdb(
+# get NND and n seqs for each species within each refdb
+error_model_predictor_data <- build_error_model_data(
   refdb_cur = refdb_cur_paths,
   refdb_harmonized = refdb_harmonized_path,
   mol_to_phyl_harmonized = mol_to_phyl_harmonized_path,
-  extinct = ncbi_extinct
+  extinct = c(ncbi_extinct),
+  marker_names = markers
 )
 
-NND_per_sp_within_refdb <-
-  lapply(1:length(markers), function(i) {
-    NND_per_sp_within_refdb[[i]] %>%
-      mutate(marker = markers[i])
-  }) %>%
-  do.call(bind_rows, .)
+# ---- Step 7 - compile outcomes for final error model data
 
-n_seqs_per_sp <- 
-    hydrobasin_refdb_nnd_info %>%
-      select(mol_name, phyl_name, contains("_16"), contains("_12S")) %>%
-      distinct()
+mdat <- get_loo_outcomes(marker_directories = dirname(refdb_cur_paths)[1:3],
+                 markers = markers[1:3],
+                 refdb_harmonized = refdb_harmonized_path,
+                 refdb_nnd = error_model_predictor_data)
 
-NND_per_sp_within_refdb_seqs <- 
-  NND_per_sp_within_refdb %>%
-  left_join(n_seqs_per_sp %>% select(-phyl_name),
-            by = join_by(mol_name)) %>%
-  mutate(across(.cols = c(contains("_12S"), contains("_16S")), 
-                function(x) replace_na(list(x = 0))))
+saveRDS(mdat, "data/error_model_data_20250924.rds")
+mdat <- readRDS("data/error_model_data_20250924.rds")
 
-# FYI species that still had NA sequence totals (it seems because they had no sequences)...
-# [1] "Alticola_macrotis"         "Bos_frontalis"             "Bos_grunniens"            
-# [4] "Bos_indicus"               "Bos_primigenius"           "Bos_taurus"               
-# [7] "Brotomys_voratus"          "Bubalus_bubalis"           "Caloprymnus_campestris"   
-# [10] "Camelus_bactrianus"        "Camelus_dromedarius"       "Capra_hircus"             
-# [13] "Equus_asinus"              "Equus_caballus"            "Felis_catus"              
-# [16] "Geocapromys_thoracatus"    "Hippotragus_leucophaeus"   "Hydrodamalis_gigas"       
-# [19] "Lama_glama"                "Lama_pacos"                "Lama_vicugna"             
-# [22] "Leptonychotes_weddellii"   "Lobodon_carcinophaga"      "Neomonachus_schauinslandi"
-# [25] "Neomonachus_tropicalis"    "Neotoma_floridana"         "Ommatophoca_rossii"       
-# [28] "Otaria_flavescens"         "Ovis_aries"                "Palaeopropithecus_ingens" 
-# [31] "Perameles_eremiana"        "Potorous_platyops"         "Pteropus_niger"           
-# [34] "Pteropus_rodricensis"      "Pteropus_tokudae"          "Taeromys_dominator"       
-# [37] "Thylacinus_cynocephalus"   "Tonatia_saurophila"        "Xenothrix_mcgregori"      
-# [40] "Zalophus_japonicus"        "Melomys_rubicola"       
+# ---- Step 8 - fit models
 
-# ---- Step 7 - compile LOSO/LOSpO outcomes
+fits <- fit_models_loso_lospo(assign_rubric = "thresh98",
+                      markers = markers[1:3],
+                      outcomes = mdat)
 
-get_loo_outcomes()
+# ---- Step 9 - make model plots
+
+eplots <- plot_predicted_loso_lopso_error(preds = fits, markers = markers[1:3])
+eplots$RiazVert1_12S$loso$i
+eplots$MiMammalU_12S$loso$i
+eplots$Vences_16S$loso$i
+
+# ---- Step 10 - predict error rates for species within hydrobasins
+
 
 
 ###### ---- plots

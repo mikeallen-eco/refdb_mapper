@@ -1,9 +1,14 @@
 # compile GhostBLASTer & BLAST results for leave-one-sequence-out data & add info
 
 compile_loo_ghostblaster_results <- function(loo_path,
-                                       verbose = F) {
+                                             refdb_harmonized_path = refdb_harmonized_path,
+                                             verbose = F) {
+  
+  refdb_harmonized_df <- read.csv(refdb_harmonized_path)
   
   loo_compiled <- read_csvs(loo_path, pattern_str = "csv") %>%
+    select(-multi_class) %>%
+    patch_old_gb_version() %>%
     mutate(local = 1) %>%
     filter(!grepl(seq_species, pattern = "_x_")) %>%
     filter(!seq_species %in% ununderscore(ncbi_extinct)) %>%
@@ -20,11 +25,11 @@ compile_loo_ghostblaster_results <- function(loo_path,
                                                TRUE ~ gap_blast_all),
            blast_all = case_when(grepl(blastg_local, pattern = "Skip") ~ "skipped",
                                           TRUE ~ blast_all)) %>%
-    left_join(refdb_harmonized %>% select(true_ncbi_name = full_sci_name,
+    left_join(refdb_harmonized_df %>% select(true_ncbi_name = full_sci_name,
                                           true_mol_name = BB_Accepted),
               by = join_by(true_ncbi_name)) %>%
     mutate(assigned_ncbi_name = blast_all) %>%
-    left_join(refdb_harmonized %>% select(assigned_ncbi_name = full_sci_name,
+    left_join(refdb_harmonized_df %>% select(assigned_ncbi_name = full_sci_name,
                                           assigned_mol_name = BB_Accepted),
               by = join_by(assigned_ncbi_name)) %>%
     mutate(assigned_mol_name = case_when(grepl(assigned_ncbi_name, pattern = "skip") ~ "skipped",
