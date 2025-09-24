@@ -71,10 +71,10 @@ top_n_and_to_go <- names(top_n) %in% to_go
 
 # ---- Step 3 get NND for each sp within hydrobasins & join to seq info
   
-# hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_map = hydrobasin_map, 
-#                                             hydrobasin_species = hydrobasin_species_path) # ~ .74 s per hydrobasin
-# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250922.rds")
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250922.rds") 
+hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_map = hydrobasin_map,
+                                            hydrobasin_species = hydrobasin_species_path) # ~ .74 s per hydrobasin
+saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250923.rds")
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250923.rds") 
 hybas_nnd <- hybas_nnd %>%
   do.call(bind_rows, .) %>%
   select(HYBAS_ID, mol_name, phyl_name, nnd)
