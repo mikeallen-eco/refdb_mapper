@@ -7,12 +7,11 @@ compile_loo_ghostblaster_results <- function(loo_path,
   refdb_harmonized_df <- read.csv(refdb_harmonized_path)
   
   loo_compiled <- read_csvs(loo_path, pattern_str = "csv") %>%
-    select(-multi_class) %>%
     patch_old_gb_version() %>%
     mutate(local = 1) %>%
     filter(!grepl(seq_species, pattern = "_x_")) %>%
     filter(!seq_species %in% ununderscore(ncbi_extinct)) %>%
-    ghostsum(., marker = "average", verbose = verbose) %>%
+    ghostsum(., marker = "average", verbose = F) %>%
     mutate(tmp = qseqid) %>%
     separate(tmp, into = c("g", "s", "acc"), sep = "_") %>%
     mutate(true_ncbi_name = paste0(g, " ", s)) %>%

@@ -7,7 +7,7 @@ get_loo_outcomes <- function(marker_directories = dirname(refdb_cur_paths),
   
   # for(i in 1:length(marker_directories)){
   loo_list <- lapply(1:length(markers), function(i) {
-    message("Processing marker: ", markers[i])
+    message("Compiling LOO outcomes for marker: ", markers[i])
     
   loso_GB_compiled <- 
     compile_loo_ghostblaster_results(loo_path = paste0(marker_directories[i], "/loso/"),

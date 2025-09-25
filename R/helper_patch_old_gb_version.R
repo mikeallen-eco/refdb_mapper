@@ -1,3 +1,4 @@
+# patch to make ghost_sum work in all LOSO/LOSpO cases, even when made with old blastg
 patch_old_gb_version <- function(df) {
   
   # for testing
@@ -9,6 +10,9 @@ patch_old_gb_version <- function(df) {
   # names(test_new1)[c(1:15, 21:31, 16:19, 32:37)]
   
   df_in <- df
+  
+  if("multi_class" %in% names(df_in)){df_in <- df_in %>% select(-multi_class)}
+  
   if("max_pident_loc_ecto" %in% names(df_in)){
   colnames(df_in) <- c("qseqid", "sseqid", "seq_species", "phyl_name", "group", "maxpident_blastg_local", 
                     "maxpident_blastg_all", "maxpident_blast", "cophenetic_from_blastg_local", 

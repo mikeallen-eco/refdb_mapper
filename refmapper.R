@@ -122,17 +122,17 @@ LOSpO_ghostblaster(refdb = refdb_MiMammalU_12S,
 
 # Mamm01_12S (59 bp)
 LOSO_ghostblaster(refdb = refdb_Mamm01_12S,
-                  out = paste0(dirname(refdb_Mamm01_12S),"/"), start_seq = 1028)
+                  out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_Mamm01_12S,
-                   out = paste0(dirname(refdb_Mamm01_12S),"/"), start_seq = 1)
+                   out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 10, start_seq = 1)
 
 # Taylor_16S (92 bp)
 LOSO_ghostblaster(refdb = refdb_Taylor_16S,
-                  out = paste0(dirname(refdb_Taylor_16S),"/"), start_seq = 1)
+                  out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
-                   out = paste0(dirname(refdb_Taylor_16S),"/"), start_seq = 1)
+                   out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
 
 # ---- Step 6 - build predictor data for error model
 
@@ -148,12 +148,12 @@ error_model_predictor_data <- build_error_model_data(
 # ---- Step 7 - compile outcomes for final error model data
 
 mdat <- get_loo_outcomes(marker_directories = dirname(refdb_cur_paths)[1:3],
-                 markers = markers[1:3],
+                 markers = markers,
                  refdb_harmonized = refdb_harmonized_path,
                  refdb_nnd = error_model_predictor_data)
 
-saveRDS(mdat, "data/error_model_data_20250924.rds")
-mdat <- readRDS("data/error_model_data_20250924.rds")
+saveRDS(mdat, "data/error_model_data_20250925.rds")
+mdat <- readRDS("data/error_model_data_20250925.rds")
 
 # ---- Step 8 - fit models
 
