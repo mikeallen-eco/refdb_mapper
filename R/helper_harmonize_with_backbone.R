@@ -334,7 +334,7 @@ harmonize_with_backbone <- function(query = mol_format,
       "      - bb_name is the Backbone Accepted name assigned.\n",
       "      - bb_name2 is a second Backbone Accepted name assigned if applicable (i.e., for splits).\n",
       "      - bb_name3 is a third Backbone Accepted name assigned if applicable (i.e., for splits).\n",
-      "      - bb_name4 is a third Backbone Accepted name assigned if applicable (i.e., for splits).\n"
+      "      - bb_name4 is a fourth Backbone Accepted name assigned if applicable (i.e., for splits).\n"
     )
   
     if (sum(is.na(final$BB_Accepted)) > 0) {

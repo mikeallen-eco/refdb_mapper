@@ -53,7 +53,7 @@ mol_format <- mol %>% select(uid = Accepted) %>% distinct() %>% mutate(uid = und
                                                                        genus_species = ununderscore(uid))
 mol_to_phyl_harmonized <- harmonize_with_backbone(query = mol_format,
                                                   backbone = phyl_synonyms,
-                                                  fuzzy_threshold = 0.97,
+                                                  fuzzy_threshold = 0.94, # only a few wrong fuzzy matches to manually correct
                                                   manual_tax = "data/mol_to_phyl_mammals_manual_notes.tsv")
 write.csv(mol_to_phyl_harmonized, "data/mol_to_phyl_mammals_harmonized.csv", row.names = F)
 
@@ -71,8 +71,8 @@ priority_species_to_harmonize(harmonized_df = phyl_harmonized, show = 10)
   
 # hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_map = hydrobasin_map,
 #                                             hydrobasin_species = hydrobasin_species_path) # ~ .7 s per hydrobasin
-# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250923.rds")
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250923.rds") 
+# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250925.rds")
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250925.rds") 
 hybas_nnd <- hybas_nnd %>%
   do.call(bind_rows, .) %>%
   select(HYBAS_ID, mol_name, phyl_name, nnd)
@@ -84,20 +84,7 @@ hydrobasin_refdb_nnd_info <- hydrobasin_refdb_info %>%
   arrange(HYBAS_ID, order, nnd)
 rm(hydrobasin_refdb_info)
 
-hydrobasin_ref_nnd_info_sum <- summarize_by_hydrobasin(hydrobasin_refdb_nnd_info)
-
-# ---- Step 4 map all summary stats by hydrobasin
-
-# map results
-to_plot = c("pct_ghosts", "med_seqs", "nnd_med", "total_species")
-ghost_plot <- map_ghosts(df = hydrobasin_ref_nnd_info_sum,
-                          hydrobasin_map = hydrobasin_map,
-                          markers = markers,
-                          to_plot = to_plot)
-ghost_plot$Vences_16S$pct_ghosts
-ghost_plot$MiMammalU_12S$pct_ghosts
-
-# ---- Step 5 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
+# ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
 
 # Vences_16S (237 bp)
 LOSO_ghostblaster(refdb = refdb_Vences_16S,
@@ -125,7 +112,7 @@ LOSO_ghostblaster(refdb = refdb_Mamm01_12S,
                   out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_Mamm01_12S,
-                   out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 10, start_seq = 1)
+                   out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
 
 # Taylor_16S (92 bp)
 LOSO_ghostblaster(refdb = refdb_Taylor_16S,
@@ -134,7 +121,7 @@ LOSO_ghostblaster(refdb = refdb_Taylor_16S,
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
                    out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
 
-# ---- Step 6 - build predictor data for error model
+# ---- Step 5 - build predictor data for error model
 
 # get NND and n seqs for each species within each refdb
 error_model_predictor_data <- build_error_model_data(
@@ -145,34 +132,63 @@ error_model_predictor_data <- build_error_model_data(
   marker_names = markers
 )
 
-# ---- Step 7 - compile outcomes for final error model data
+# ---- Step 6 - compile outcomes for final error model data
 
-mdat <- get_loo_outcomes(marker_directories = dirname(refdb_cur_paths)[1:3],
-                 markers = markers,
+mdat <- get_loo_outcomes(marker_directories = dirname(refdb_cur_paths)[1:5],
+                 markers = markers[1:5],
                  refdb_harmonized = refdb_harmonized_path,
                  refdb_nnd = error_model_predictor_data)
 
-saveRDS(mdat, "data/error_model_data_20250925.rds")
-mdat <- readRDS("data/error_model_data_20250925.rds")
-
-# ---- Step 8 - fit models
+# ---- Step 7 - fit models
 
 fits <- fit_models_loso_lospo(assign_rubric = "thresh98",
-                      markers = markers[1:3],
+                      markers = markers[1:5],
                       outcomes = mdat)
 
-# ---- Step 9 - make model plots
+# ---- Step 8 - predict error rates for species within hydrobasins
+
+complete_hybas_data <- predict_error_rate_hybas(hybas_info = hydrobasin_refdb_nnd_info,
+                                                preds = fits,
+                                                markers = markers[1:5])
+
+# ---- Step 9 - make final map sf with data
+
+final_sf <- make_complete_hybas_data_sf(complete_hybas_data = complete_hybas_data,
+                                                      map = hydrobasin_map)
+
+saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250926c.rds")
+final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250926c.rds")
+
+# ---- Step 10 - return tables & info based on coordinates
+
+hybas_info <- get_polygon_attributes_from_coords(hybas_data = final_sf)
+
+# ideas
+# marker combo that maximizes coverage
+# marker combo that minimizes % incorrect 
+# pairs of species most likely to be confused
+# marker combo that maximizes % correct
+  # for target sp list?
+
+
+# ---- Step 10 - make model plots
 
 eplots <- plot_predicted_loso_lopso_error(preds = fits, markers = markers[1:3])
 eplots$RiazVert1_12S$loso$i
 eplots$MiMammalU_12S$loso$i
 eplots$Vences_16S$loso$i
 
-# ---- Step 10 - predict error rates for species within hydrobasins
+# ---- Step 10 map all results by hydrobasin
 
+# map results
+to_plot = c("pct_ghosts", "med_seqs", "nnd_med", "total_species")
+ghost_plot <- map_ghosts(df = hydrobasin_ref_nnd_info_sum,
+                         hydrobasin_map = hydrobasin_map,
+                         markers = markers,
+                         to_plot = to_plot)
+ghost_plot$Vences_16S$pct_ghosts
+ghost_plot$MiMammalU_12S$pct_ghosts
 
-
-###### ---- plots
 
 predicted_loso_lospo_error_plots <- plot_predicted_loso_lopso_error(preds = preds_loso_lospo)
 

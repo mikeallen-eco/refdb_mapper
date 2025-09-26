@@ -9,7 +9,7 @@ library(sf, quietly = T, warn.conflicts = F)
 library(patchwork, quietly = T, warn.conflicts = F)
 library(ape, quietly = T, warn.conflicts = F)
 the_files <- list.files("R", full.names = T)
-the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|06|07|10|11|help")]
+the_files_to_load <- the_files[grepl(the_files, pattern = "00|01|02|03|04|05|06|07|08|09|10|11|help")]
 lapply(the_files_to_load, FUN = source)
 hydrobasin_map <- read_sf("~/Documents/mikedata/refdb_mapper/hybas_L6_with_mammal_genus_richness.gpkg")
 hydrobasin_map_path <- "~/Documents/mikedata/refdb_mapper/hybas_L6_with_mammal_genus_richness.gpkg"
@@ -27,7 +27,7 @@ refdb_MiMammalU_12S <- "~/Documents/mikedata/refdb_mapper/mammals_MiMammalU_12S/
 refdb_Vences_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Vences_16S/refdb_V16S_mammalia_midori265_tax20250609.fasta"
 refdb_Mamm01_12S <- "~/Documents/mikedata/refdb_mapper/mammals_Mamm01_12S/refdb_Mamm01_12S_mammalia_midori265_tax20250609.fasta"
 refdb_Taylor_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Taylor_16S/refdb_Taylor_16S_mammalia_midori265_tax20250609.fasta"
-markers = c("RiazVert1_12S", "MiMammalU_12S", "Vences_16S", "Mamm01_12s", "Taylor_16S")
+markers = c("RiazVert1_12S", "MiMammalU_12S", "Vences_16S", "Mamm01_12S", "Taylor_16S")
 refdb_cur <- c(refdb_RiazVert1_12S, refdb_MiMammalU_12S, refdb_Vences_16S, 
                refdb_Mamm01_12S, refdb_Taylor_16S)
 refdb_cur_paths <- c(RiazVert1_12S = refdb_RiazVert1_12S, MiMammalU_12S = refdb_MiMammalU_12S, 
