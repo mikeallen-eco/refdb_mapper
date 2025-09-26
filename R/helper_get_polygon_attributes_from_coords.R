@@ -3,9 +3,9 @@
 library(sf)
 library(dplyr)
 
- get_polygon_attributes_from_coords <- function(lat = -2.069209, 
-                                              lon = -59.912786, 
-                                              hybas_data = final_sf) {
+ get_polygon_attributes_from_coords <- function(lon = -59.912786,
+                                                lat = -2.069209,
+                                                polygons = final_sf) {
   # temporarily turn off the S2 engine
   sf::sf_use_s2(FALSE) %>% suppressMessages()
   
@@ -17,15 +17,15 @@ library(dplyr)
   # Ensure both are in the same CRS
   message("Transforming data if needed ...")
   tictoc::tic("Completed.")
-  if (st_crs(hybas_data) != st_crs(pt)) {
-    pt <- st_transform(pt, st_crs(hybas_data))
+  if (st_crs(polygons) != st_crs(pt)) {
+    pt <- st_transform(pt, st_crs(polygons))
   }
   tictoc::toc()
   
   # Spatial join: find the polygon that contains the point
   message("Performing join ...")
   tictoc::tic("Join complete.")
-  result <- st_join(pt, hybas_data, join = st_intersects) %>% suppressMessages()
+  result <- st_join(pt, polygons, join = st_intersects) %>% suppressMessages()
   tictoc::toc()
   
   # Drop geometry to just return attributes

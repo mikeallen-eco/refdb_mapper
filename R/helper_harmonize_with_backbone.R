@@ -130,9 +130,9 @@ harmonize_with_backbone <- function(query = mol_format,
   
   fuzzy1 <- query %>% 
     filter(!uid %in% final_after_exact$uid) %>%
-    mutate(match_res = map(full_sci_name, ~ best_jw_match(.x, candidates)),
-           full_sci_name_fuz = map_chr(match_res, "best_match"),
-           jw_score = map_dbl(match_res, "score")) %>%
+    mutate(match_res = purrr::map(full_sci_name, ~ best_jw_match(.x, candidates)),
+           full_sci_name_fuz = purrr::map_chr(match_res, "best_match"),
+           jw_score = purrr::map_dbl(match_res, "score")) %>%
     select(-match_res)
   
   # applying step 1 again with the fuzzy matches
@@ -170,9 +170,9 @@ harmonize_with_backbone <- function(query = mol_format,
     filter(!uid %in% final_after_exact$uid) %>%
     filter(!uid %in% fuzzy_sci$uid) %>%
     filter(!uid %in% dup_uids) %>%
-    mutate(match_res = map(full_sci_name, ~ best_jw_match(.x, candidates_syn)),
+    mutate(match_res = purrr::map(full_sci_name, ~ best_jw_match(.x, candidates_syn)),
            full_sci_name_fuz = map_chr(match_res, "best_match"),
-           jw_score = map_dbl(match_res, "score")) %>%
+           jw_score = purrr::map_dbl(match_res, "score")) %>%
     select(-match_res)
   
   # applying step 2 again with the fuzzy matches
@@ -229,9 +229,9 @@ harmonize_with_backbone <- function(query = mol_format,
   fuzzy3 <- query %>% 
     filter(!uid %in% final_after_exact$uid) %>%
     filter(!uid %in% unique(c(fuzzy_sci$uid, fuzzy_syn2$uid, dup_uids, dup_uids2))) %>%
-    mutate(match_res = map(genus_species, ~ best_jw_match(.x, candidates)),
-           genus_species_fuz = map_chr(match_res, "best_match"),
-           jw_score = map_dbl(match_res, "score")) %>%
+    mutate(match_res = purrr::map(genus_species, ~ best_jw_match(.x, candidates)),
+           genus_species_fuz = purrr::map_chr(match_res, "best_match"),
+           jw_score = purrr::map_dbl(match_res, "score")) %>%
     select(-match_res)
   
   fuzzy_sci_wo_ssp <- fuzzy3 %>%

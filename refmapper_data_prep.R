@@ -41,13 +41,13 @@ phyl_harmonized <- harmonize_with_backbone(backbone = data_env$mol,
 
 write.csv(phyl_harmonized, "data/phyl_mammals_harmonized.csv", row.names = F)
 
+# MOL to phylogeny
 # Build synonyms list for phylogeny names
 # phyl_synonyms <- build_rgbif_synonym_database(phyl_harmonized$uid)
 # write.csv(phyl_synonyms, "data/phylogeny_rgbif_synonyms.csv", row.names = F)
 phyl_synonyms <- read.csv("data/phylogeny_rgbif_synonyms.csv") %>%
   mutate(Accepted = ununderscore(Accepted), Synonym = ununderscore(Synonym))
 
-# MOL to phylogeny
 mol_format <- mol %>% select(uid = Accepted) %>% distinct() %>% mutate(uid = underscore(uid),
                                                                        full_sci_name = ununderscore(uid),
                                                                        genus_species = ununderscore(uid))

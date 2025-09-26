@@ -1,18 +1,73 @@
-# final data vis by hydrobasin
+# data vis & info by hydrobasin coordinates
+source("R/setup_info.R")
 
 # ---- Step 1: global locator map for hydrobasin coordinates
 
 make_global_locator_map(-74.759831, 40.568704) # Readington, NJ -59.912786, -2.069209 = Presidente Figueiredo, BR
-ggsave("figures/conceptual/globe_locator_map.png", height = 6, width = 6, dpi = 400)
+ggsave("figures/globe_locator_map_raritan.png", height = 6, width = 6, dpi = 400)
+make_global_locator_map(lon = -59.912786, lat = -2.069209)
+ggsave("figures/globe_locator_map_raritan_PF.png", height = 6, width = 6, dpi = 400)
 
-# ---- Step 3: make phylogenetic vis of attributes
+
+# ---- Step 3: phylogenetic vis of attributes
+# note: make them work on "sf_data" created using get_attributes... function once
+
+make_hybas_phylogeny_plot(metric = "p_c")
+ggsave("figures/circular_phylogeny_test_p_c_3.png", height = 12, width = 12, dpi = 400)
+make_hybas_phylogeny_plot(lon = -59.912786, lat = -2.069209, metric = "p_c")
+ggsave("figures/circular_phylogeny_test_p_c_PF.png", height = 12, width = 12, dpi = 400)
+
+make_hybas_phylogeny_plot(metric = "p_i")
+ggsave("figures/circular_phylogeny_test_p_i_1.png", height = 12, width = 12, dpi = 400)
+
+make_hybas_phylogeny_plot(metric = "p_a")
+ggsave("figures/circular_phylogeny_test_p_a_2.png", height = 12, width = 12, dpi = 400)
 
 info <- get_polygon_attributes_from_coords(-74.759831, 40.568704, polygons = final_sf)
 
+head(info)
 
-# Define orthographic projection centered on Eastern USA
-# ortho_proj <- "+proj=ortho +lat_0=40 +lon_0=-75 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
-ortho_proj <- paste0("+proj=ortho +lat_0=", round(hid_cent[,2]), " +lon_0=", round(hid_cent[,1]), " +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
+# Install if needed
+# BiocManager::install("ggtreeExtra")
+
+library(ape)
+library(ggtree)
+library(ggtreeExtra)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+phyl.tre <- read.tree("data/phyl.tre")
+
+# Keep only phyl_name + p_i columns
+traits <- info %>%
+  select(mol_name, phyl_name, ends_with("p_i")) %>%
+  filter(!is.na(phyl_name))
+
+# Prune tree to just the tips in your info
+pruned_tre <- drop.tip(phyl.tre, setdiff(phyl.tre$tip.label, traits$phyl_name))
+
+# Reshape to long format for heatmap plotting
+traits_long <- traits %>%
+  pivot_longer(-phyl_name, names_to = "marker", values_to = "p_i")
+
+# Start base plot
+p <- suppressWarnings(ggtree(pruned_tre, layout = "circular"))
+
+# Add heatmap rings (all 5 in one layer)
+p <- p + geom_fruit(
+  data = traits_long,
+  geom = geom_tile,
+  mapping = aes(y = phyl_name, x = marker, fill = p_i),
+  width = 5,        # thickness of each ring
+  offset = 0.1        # distance away from tree
+)
+
+# Continuous scale
+p <- p + scale_fill_viridis_c(option = "C", name = "p_i values")
+
+p
+
 
 
 ### TABLE
