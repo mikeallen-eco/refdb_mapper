@@ -69,12 +69,13 @@ priority_species_to_harmonize(harmonized_df = phyl_harmonized, show = 10)
 
 # ---- Step 3 get NND for each sp within hydrobasins & join to seq info
   
-# hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_map = hydrobasin_map,
-#                                             hydrobasin_species = hydrobasin_species_path) # ~ .7 s per hydrobasin
-# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250929.rds")
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250929.rds") 
+hybas_nnd <- get_NDD_per_sp_all_hydrobasins_and_markers(hydrobasin_refdb_info,
+                                                        markers = markers, n_cores = 4)
 
-hydrobasin_refdb_nnd_info <- format_hydrobasin_refdb_nnd_info(hydrobasin_refdb_info, hybas_nnd)
+# hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_refdb_info = hydrobasin_refdb_info[1:1000,],
+#                                             markers = markers) # ~ .7 s per hydrobasin
+saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20250930.rds")
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20250930.rds") 
 
 # ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
 

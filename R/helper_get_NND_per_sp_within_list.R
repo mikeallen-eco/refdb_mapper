@@ -1,15 +1,12 @@
 # get nearest-neighbor evolutionary (cophenetic) distance for each species within a list of species (e.g., MOL)
 
-# test_list = (read.csv("~/Documents/mikedata/refdb_geo/hybas_L6_mammal_intersections_harmonized.csv") %>% 
-#   filter(HYBAS_ID %in% "765062684"))$sciname
-
 get_NND_per_sp_within_list <- function(
              sp_list = unique(pf_data$mol_name), # character vector of MOL species names
              tree = "data/phyl.tre",
              mol_to_phyl_harmonized_path = mol_to_phyl_harmonized_path,
              extinct = c(ncbi_extinct, phyl_extinct)) {
   
-  # read in the phylogenetic tree (with patch to insert humans which were somehow missing)
+  # read in the phylogenetic tree (with temp patch to insert humans which were somehow missing)
   phyl_tree <- read.tree(tree) # combined tree covering all vertebrates
   phyl_tree$tip.label[grepl(phyl_tree$tip.label, pattern = "Homo_neanderthalensis")] <- "Homo_sapiens"
   
