@@ -71,18 +71,10 @@ priority_species_to_harmonize(harmonized_df = phyl_harmonized, show = 10)
   
 # hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_map = hydrobasin_map,
 #                                             hydrobasin_species = hydrobasin_species_path) # ~ .7 s per hydrobasin
-# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250925.rds")
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250925.rds") 
-hybas_nnd <- hybas_nnd %>%
-  do.call(bind_rows, .) %>%
-  select(HYBAS_ID, mol_name, phyl_name, nnd)
+# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250929.rds")
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_20250929.rds") 
 
-hydrobasin_refdb_nnd_info <- hydrobasin_refdb_info %>%
-  left_join(hybas_nnd,
-            by = join_by(HYBAS_ID, mol_name)) %>%
-  select(HYBAS_ID, order, family, mol_name, phyl_name, nnd, contains("12S"), contains("16S")) %>%
-  arrange(HYBAS_ID, order, nnd)
-rm(hydrobasin_refdb_info)
+hydrobasin_refdb_nnd_info <- format_hydrobasin_refdb_nnd_info(hydrobasin_refdb_info, hybas_nnd)
 
 # ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
 
@@ -156,8 +148,16 @@ complete_hybas_data <- predict_error_rate_hybas(hybas_info = hydrobasin_refdb_nn
 final_sf <- make_complete_hybas_data_sf(complete_hybas_data = complete_hybas_data,
                                                       map = hydrobasin_map)
 
-saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250926c.rds")
-final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250926c.rds")
+saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250930.rds")
+final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250930.rds")
+
+
+
+
+
+
+# ... processes below here were (or will be) moved to refmapper_present_info.R script
+
 
 # ---- Step 10 - return tables & info based on coordinates
 

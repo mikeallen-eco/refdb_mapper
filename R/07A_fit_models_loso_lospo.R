@@ -1,3 +1,5 @@
+library(purrr)
+
 fit_models_loso_lospo <- function(assign_rubric = "thresh98",
                                  markers = markers,
                                  outcomes = mdat){
@@ -12,7 +14,21 @@ fit_models_loso_lospo <- function(assign_rubric = "thresh98",
                                   markers = markers,
                                   loo_outcomes_df = outcomes)
   
-  # reorganize error model list structure to match: reorg$marker1$loso$i, reorg$marker1$lospo$i
+  # function to reorganize list to match: reorg$marker1$loso$i, reorg$marker1$lospo$i
+  reorganize_preds <- function(preds_loso, preds_lospo) {
+    # get union of marker names across both
+    markers <- union(names(preds_loso), names(preds_lospo))
+    
+    # build reorganized list
+    purrr::map(markers, function(m) {
+      list(
+        loso  = preds_loso[[m]],
+        lospo = preds_lospo[[m]]
+      )
+    }) |> set_names(markers)
+  }
+  
+  # reorganize list to match: reorg$marker1$loso$i, reorg$marker1$lospo$i
   reorg <- reorganize_preds(preds_loso, preds_lospo)
   
   return(reorg)

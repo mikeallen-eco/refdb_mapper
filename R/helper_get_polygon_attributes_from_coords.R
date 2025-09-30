@@ -5,7 +5,8 @@ library(dplyr)
 
  get_polygon_attributes_from_coords <- function(lon = -59.912786,
                                                 lat = -2.069209,
-                                                polygons = final_sf) {
+                                                polygons = final_sf,
+                                                verbose = FALSE) {
   # temporarily turn off the S2 engine
   sf::sf_use_s2(FALSE) %>% suppressMessages()
   
@@ -15,18 +16,14 @@ library(dplyr)
   )
   
   # Ensure both are in the same CRS
-  message("Transforming data if needed ...")
-  tictoc::tic("Completed.")
   if (st_crs(polygons) != st_crs(pt)) {
     pt <- st_transform(pt, st_crs(polygons))
   }
-  tictoc::toc()
-  
+
   # Spatial join: find the polygon that contains the point
-  message("Performing join ...")
-  tictoc::tic("Join complete.")
+  if(verbose) message("Getting attributes from polygon data ...")
   result <- st_join(pt, polygons, join = st_intersects) %>% suppressMessages()
-  tictoc::toc()
+  if(verbose) message("Getting attributes from polygon data ...")
   
   # Drop geometry to just return attributes
   result_df <- result %>% st_drop_geometry()

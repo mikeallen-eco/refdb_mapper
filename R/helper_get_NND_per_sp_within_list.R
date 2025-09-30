@@ -4,7 +4,7 @@
 #   filter(HYBAS_ID %in% "765062684"))$sciname
 
 get_NND_per_sp_within_list <- function(
-             sp_list = unique(rn$mol_name), # character vector of MOL species names
+             sp_list = unique(pf_data$mol_name), # character vector of MOL species names
              tree = "data/phyl.tre",
              mol_to_phyl_harmonized_path = mol_to_phyl_harmonized_path,
              extinct = c(ncbi_extinct, phyl_extinct)) {

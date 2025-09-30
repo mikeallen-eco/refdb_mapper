@@ -9,14 +9,12 @@ if (!exists("is.waive")) {
   is.waive <- function(x) inherits(x, "waiver")
 }
 
-make_hybas_phylogeny_plot <- function(lon = -74.759831,
-                                 lat = 40.568704,
+make_hybas_phylogeny_plot <- function(hybas_data, # such as produced by get_polygon_attributes_from_coords()
                                  metric = "p_i",
                                  marker_list = markers[c(1,2,4,3,5)],
-                                 sf_db = final_sf,
                                  tree_path = "data/phyl.tre"){
   
-  info <- get_polygon_attributes_from_coords(lon, lat, polygons = sf_db)
+  info <- hybas_data
   
   phyl.tre <- read.tree(tree_path)
   
@@ -90,13 +88,16 @@ traits_long <- traits_long %>%
 if(metric %in% c("p_i", "p_a")) {
   tip_colors <- traits_long %>%
     group_by(phyl_name) %>%
-    summarise(min_metric = min(metric, na.rm = TRUE))
+    summarise(tip_metric = min(metric, na.rm = TRUE))
 } else{
   tip_colors <- traits_long %>%
     group_by(phyl_name) %>%
-    summarise(min_metric = max(metric, na.rm = TRUE))
+    summarise(tip_metric = max(metric, na.rm = TRUE))
 }
 
+traits_long <- traits_long %>%
+  mutate(metric = case_when(metric %in% 0 ~ NA,
+                            TRUE ~ metric))
 
 # Create a lookup table for tip labels
 tip_label_lookup <- traits_expanded %>%
@@ -110,8 +111,8 @@ tip_colors_labels <- tip_colors %>%
   left_join(tip_label_lookup, by = "phyl_name")
 
 # Compute global min/max across all metric values (for tips and heatmap)
-p_min <- min(traits_long$metric, tip_colors$min_metric, na.rm = TRUE)
-p_max <- max(traits_long$metric, tip_colors$min_metric, na.rm = TRUE)
+p_min <- min(traits_long$metric, tip_colors$tip_metric, na.rm = TRUE)
+p_max <- max(traits_long$metric, tip_colors$tip_metric, na.rm = TRUE)
 
 # Start base plot
 p <- suppressWarnings(
@@ -130,7 +131,7 @@ total_ring_offset <- 0.05 + n_rings * 6 * 0.5  + 19 # previous offset + half of 
 
 # Add tip labels using mol_name
 p <- p + geom_tiplab(
-  aes(label = label_to_use, color = min_metric),
+  aes(label = label_to_use, color = tip_metric),
   size = 3,
   align = TRUE,
   offset = total_ring_offset + 10
@@ -165,6 +166,38 @@ p <- p +
     guide = "none"  # hide duplicate legend
   )
 # p
+
+# Stack the ring labels in the middle, spaced vertically
+ring_labels_center <- data.frame(
+  label = rev(marker_list),        # inside → outside order
+  y = seq_along(marker_list)
+)
+
+p <- p +
+  annotate(
+    "text",
+    x = 0, y = 0,                   # center of the plot
+    label = paste(rev(marker_list), collapse = "\n"),
+    size = 4, hjust = 0.5, vjust = 0.5
+  )
+
+# Stack the ring labels in the middle, spaced vertically
+# ring_labels_center <- data.frame(
+#   label = rev(marker_list),        # inside → outside order
+#   y = seq_along(marker_list)
+# )
+# 
+# p <- p + 
+#   geom_label(
+#     data = ring_labels_center,
+#     aes(x = 0, y = y, label = label),
+#     inherit.aes = FALSE,
+#     size = 4,
+#     hjust = 0.5, vjust = 0.5,
+#     fill = "white", alpha = 0.7,   # semi-transparent white background
+#     label.size = NA                # removes the border box
+#   )
+
 
 return(p)
 

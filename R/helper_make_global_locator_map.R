@@ -26,7 +26,14 @@ make_global_locator_map <- function(lon = -74.759831, lat = 40.568704) {
   world_parts <- st_cast(world_valid, "POLYGON") %>% suppressWarnings()  # preserves attributes
   
   # Transform both the basemap and your spatial data
-  world_parts_ortho <- st_transform(world_parts, crs = ortho_proj)
+  world_parts_clean <- world %>%
+    st_make_valid() %>%
+    st_cast("POLYGON") %>%
+    filter(st_area(.) > units::set_units(1e8, "m^2")) %>% # drop tiny islands
+    suppressWarnings()
+  
+  world_parts_ortho <- st_transform(world_parts_clean, crs = ortho_proj)
+
   pt_ortho <- st_transform(pt, crs = ortho_proj)
   
   # Create circular mask using a buffer around a center point
