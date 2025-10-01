@@ -3,24 +3,36 @@ library(lme4)
 fit_models_one_loo_type <- function(loo_method = "LOSO", 
                           assign_rubric = assign_rubric,
                           markers = markers,
-                          loo_outcomes_df = outcomes){
+                          loo_outcomes_list = outcomes){
 
   
 all_pred_list <- lapply(1:length(markers), function (i){
   
 # outcomes list for one marker
-outcomes_marker <- loo_outcomes_df[markers[i]]
+outcomes_marker <- loo_outcomes_list[markers[i]]
   
 # create and empty list to hold all model predictions
 pred_list <- list()
 
 # loop through Incorrect, Abstain, and Correct metrics
-if(loo_method %in% c("loso", "LOSO")) {
+if (loo_method %in% c("loso", "LOSO")) {
   metric_vector <- c("i", "a", "c")
-  outcomes_df <- outcomes_marker[[1]]$loso
+  if (grepl(assign_rubric, pattern = "thresh")) {
+    outcomes_df <- outcomes_marker[[1]]$loso
+  }
+  if (grepl(assign_rubric, pattern = "rdp")) {
+    outcomes_df <- outcomes_marker[[1]]$loso_rdp
+  }
+  
 } else{
   metric_vector <- c("i", "a")
-  outcomes_df <- outcomes_marker[[1]]$lospo
+  if (grepl(assign_rubric, pattern = "thresh")) {
+    outcomes_df <- outcomes_marker[[1]]$lospo
+  }
+  if (grepl(assign_rubric, pattern = "rdp")) {
+    outcomes_df <- outcomes_marker[[1]]$lospo_rdp
+  }
+  
 }
 
 for(j in metric_vector){  

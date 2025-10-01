@@ -33,14 +33,6 @@ refdb_harmonized <- harmonize_with_backbone(backbone = data_env$mol,
 
 write.csv(refdb_harmonized, "data/refdb_mammals_harmonized.csv", row.names = F)
 
-# phylogeny to MOL
-phyl_harmonized <- harmonize_with_backbone(backbone = data_env$mol,
-                                           query = data_env$phyl,
-                                           fuzzy_threshold = 0.97,
-                                           manual_tax = manual_tax_phyl)
-
-write.csv(phyl_harmonized, "data/phyl_mammals_harmonized.csv", row.names = F)
-
 # MOL to phylogeny
 # Build synonyms list for phylogeny names
 # phyl_synonyms <- build_rgbif_synonym_database(phyl_harmonized$uid)
@@ -65,17 +57,14 @@ hydrobasin_refdb_info <- tally_sequences(hydrobasin_species_path,
 
 # find widespread species that still need manual taxonomic matching (to prioritize)
 priority_species_to_harmonize(harmonized_df = mol_to_phyl_harmonized, show = 10)
-priority_species_to_harmonize(harmonized_df = phyl_harmonized, show = 10)
 
 # ---- Step 3 get NND for each sp within hydrobasins & join to seq info
   
 hybas_nnd <- get_NDD_per_sp_all_hydrobasins_and_markers(hydrobasin_refdb_info,
                                                         markers = markers, n_cores = 4)
 
-# hybas_nnd <- get_NDD_per_sp_all_hydrobasins(hydrobasin_refdb_info = hydrobasin_refdb_info[1:1000,],
-#                                             markers = markers) # ~ .7 s per hydrobasin
-saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20250930.rds")
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20250930.rds") 
+saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251001.rds")
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251001.rds") 
 
 # ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
 
@@ -164,23 +153,52 @@ mdat <- get_loo_outcomes(marker_directories = dirname(refdb_cur_paths)[1:5],
 
 # ---- Step 7 - fit models
 
-fits <- fit_models_loso_lospo(assign_rubric = "thresh98",
+fits_blast97 <- fit_models_loso_lospo(assign_rubric = "thresh97",
                       markers = markers[1:5],
                       outcomes = mdat)
 
+fits_blast98 <- fit_models_loso_lospo(assign_rubric = "thresh98",
+                                      markers = markers[1:5],
+                                      outcomes = mdat)
+
+fits_blast99 <- fit_models_loso_lospo(assign_rubric = "thresh99",
+                                      markers = markers[1:5],
+                                      outcomes = mdat)
+
+fits_rdp70 <- fit_models_loso_lospo(assign_rubric = "rdp80",
+                                      markers = markers[1:5],
+                                      outcomes = mdat)
+
 # ---- Step 8 - predict error rates for species within hydrobasins
 
-complete_hybas_data <- predict_error_rate_hybas(hybas_info = hydrobasin_refdb_nnd_info,
-                                                preds = fits,
-                                                markers = markers[1:5])
+hybas_preds_blast97 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                                preds = fits_blast97,
+                                                markers = markers[1:5],
+                                                assign_rubric = "blast97")
+
+hybas_preds_blast98 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                                preds = fits_blast98,
+                                                markers = markers[1:5],
+                                                assign_rubric = "blast98")
+
+hybas_preds_blast99 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                                preds = fits_blast99,
+                                                markers = markers[1:5],
+                                                assign_rubric = "blast99")
 
 # ---- Step 9 - make final map sf with data
 
-final_sf <- make_complete_hybas_data_sf(complete_hybas_data = complete_hybas_data,
+final_sf <- make_complete_hybas_data_sf(complete_hybas_preds = list(hybas_preds_blast97,
+                                                                   hybas_preds_blast98,
+                                                                   hybas_preds_blast99),
                                                       map = hydrobasin_map)
 
-saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250930.rds")
-final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20250930.rds")
+saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251001.rds")
+final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251001.rds")
+
+
+
+
 
 
 

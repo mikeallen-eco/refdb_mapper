@@ -1,13 +1,17 @@
-predict_error_rate_hybas <- function(hybas_info = hydrobasin_refdb_nnd_info,
-                                     preds = fits,
-                                     markers = markers[1:3]){
+predict_error_rate_hybas <- function(hybas_info = hybas_nnd,
+                                     preds = fits_blast97,
+                                     markers = markers[1:5],
+                                     assign_rubric){
   
   hybas_preds <- lapply(1:length(markers), function(i){
 
   message("Predicting error rates globally for marker: ", markers[i])    
   
   pred_df <- hybas_info %>%
-    select(HYBAS_ID:nnd, n_seqs = markers[i])
+    select(HYBAS_ID:phyl_name, contains(markers[i]))
+  colnames(pred_df)[grepl(colnames(pred_df), pattern = "nnd|n_seqs")] <- c("nnd", "n_seqs")
+  
+  names(preds[[i]]) <- c("loso", "lospo") # to standardize in cases where loso_rdp etc. was used
   
   p_predictions = data.frame(
   loso_preds_i = predict(
@@ -56,6 +60,12 @@ predict_error_rate_hybas <- function(hybas_info = hydrobasin_refdb_nnd_info,
                            TRUE ~ loso_preds_c)) %>%
     select(-c(starts_with("loso"), starts_with("lospo")))
   
+  colnames(pred_df_final)[grepl(colnames(pred_df_final), 
+                                pattern = "nnd|n_seqs|p_")] <- paste0(markers[i], "_", 
+                                                                      assign_rubric, "_",
+                                                                      c("nnd", "n_seqs", "p_i",
+                                                                        "p_a", "p_c"))
+
     return(pred_df_final)
   })
   

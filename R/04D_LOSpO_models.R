@@ -25,8 +25,16 @@ LOSpO_models <- function(refdb,
     r <- readDNAStringSet(refdb)
   }else{r <- refdb}
   
+  # Extract species names
+  nms <- names(r)
+  species <- sub(".*;", "", nms)
+  keep <- !(species %in% extinct | grepl("_x_", species))
+  
+  # Subset the DNAStringSet to exclude extinct & hybrid species
+  r_filtered <- r[keep]
+  
   # get df of reference database
-  rn <- RDP_to_dataframe(r)
+  rn <- RDP_to_dataframe(r_filtered)
   sp_names <- sort(unique(rn$s))
 
   if(verbose %in% T){
@@ -40,9 +48,9 @@ LOSpO_models <- function(refdb,
     message("Testing species ", i, " of ", length(sp_names), ": ", species_name)
     
     # diminished refdb (minus this species)
-    refdb_dim <- LOSpO_subset(refdb = r, species = species_name, return_db = TRUE)
+    refdb_dim <- LOSpO_subset(refdb = r_filtered, species = species_name, return_db = TRUE)
     # LOSpO target (just this species)
-    refdb_loosp <- LOSpO_subset(refdb = r, species = species_name, return_db = FALSE)
+    refdb_loosp <- LOSpO_subset(refdb = r_filtered, species = species_name, return_db = FALSE)
     
     # format the target sequence for taxonomy assignment
     seqs <- as.character(refdb_loosp)

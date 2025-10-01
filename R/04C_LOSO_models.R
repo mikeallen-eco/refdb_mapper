@@ -9,21 +9,9 @@ LOSO_models <- function(refdb,
                           out,
                           min_n = 2,
                           start_seq = 1,
+                          extinct = ncbi_extinct,
                           random_seed = 100,
                           verbose = F){
-  # set paths to RDP reference database for testing
-  testmode <- F
-  if(testmode %in% T){
-    refdb <- refdb_Taylor_16S
-    out <- paste0(dirname(refdb_Taylor_16S),"/loso_rdp/")
-    min_n = 2
-    random_seed = 100
-    verbose = T
-    start_seq = 1
-  }
-  
-  # hard coded settings
-  minBoot <- 0
   
   # read in arguments to pass through to helper functions
   RDP_out <- out
@@ -38,8 +26,16 @@ LOSO_models <- function(refdb,
     r <- readDNAStringSet(refdb)
   }else{r <- refdb}
   
+  # Extract species names
+  nms <- names(r)
+  species <- sub(".*;", "", nms)
+  keep <- !(species %in% extinct | grepl("_x_", species))
+  
+  # Subset the DNAStringSet to exclude extinct & hybrid species
+  r_filtered <- r[keep]
+  
   # get df of broader reference database
-  rn <- RDP_to_dataframe(r)
+  rn <- RDP_to_dataframe(r_filtered)
   
   if(verbose %in% T){
     check_taxonomy_consistency(rn)
@@ -62,10 +58,10 @@ LOSO_models <- function(refdb,
     seq_num <- seqnums_vector[i]
     
     # create diminished reference database subset (minus target sequence)
-    refdb_dim <- LOSO_subset(refdb = r, seq_num, return_db = TRUE)
+    refdb_dim <- LOSO_subset(refdb = r_filtered, seq_num, return_db = TRUE)
     
     # create a reference database of just the LOO target sequence
-    refdb_looseq <- LOSO_subset(refdb = r, seq_num, return_db = FALSE)
+    refdb_looseq <- LOSO_subset(refdb = r_filtered, seq_num, return_db = FALSE)
     
     # format the target sequence for taxonomy assignment
     seqs <- as.character(refdb_looseq)
