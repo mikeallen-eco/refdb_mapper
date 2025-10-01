@@ -83,12 +83,18 @@ hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_mark
 LOSO_ghostblaster(refdb = refdb_Vences_16S,
                   out = paste0(dirname(refdb_Vences_16S),"/"), start_seq = 1)
 
+LOSO_models(refdb = refdb_Vences_16S, out = paste0(dirname(refdb_Vences_16S), "/loso_rdp/"),
+            start_seq = 1)
+
 LOSpO_ghostblaster(refdb = refdb_Vences_16S,
                    out = paste0(dirname(refdb_Vences_16S),"/"), start_seq = 1)
 
 # RiazVert1_12S (105 bp)
 LOSO_ghostblaster(refdb = refdb_RiazVert1_12S,
                   out = paste0(dirname(refdb_RiazVert1_12S),"/"), start_seq = 1)
+
+LOSO_models(refdb = refdb_RiazVert1_12S, out = paste0(dirname(refdb_RiazVert1_12S), "/loso_rdp/"),
+            start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_RiazVert1_12S,
                   out = paste0(dirname(refdb_RiazVert1_12S),"/"), start_seq = 1)
@@ -97,6 +103,9 @@ LOSpO_ghostblaster(refdb = refdb_RiazVert1_12S,
 LOSO_ghostblaster(refdb = refdb_MiMammalU_12S,
                   out = paste0(dirname(refdb_MiMammalU_12S),"/"), start_seq = 1)
 
+LOSO_models(refdb = refdb_MiMammalU_12S, out = paste0(dirname(refdb_MiMammalU_12S), "/loso_rdp/"),
+            start_seq = 1)
+
 LOSpO_ghostblaster(refdb = refdb_MiMammalU_12S,
                    out = paste0(dirname(refdb_MiMammalU_12S),"/"), start_seq = 1)
 
@@ -104,12 +113,18 @@ LOSpO_ghostblaster(refdb = refdb_MiMammalU_12S,
 LOSO_ghostblaster(refdb = refdb_Mamm01_12S,
                   out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
 
+LOSO_models(refdb = refdb_Mamm01_12S, out = paste0(dirname(refdb_Mamm01_12S), "/loso_rdp/"),
+            start_seq = 1)
+
 LOSpO_ghostblaster(refdb = refdb_Mamm01_12S,
                    out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
 
 # Taylor_16S (92 bp)
 LOSO_ghostblaster(refdb = refdb_Taylor_16S,
                   out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
+
+LOSO_models(refdb = refdb_Taylor_16S, out = paste0(dirname(refdb_Taylor_16S), "/loso_rdp/"),
+            start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
                    out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
