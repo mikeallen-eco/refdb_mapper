@@ -14,8 +14,8 @@ LOSO_models <- function(refdb,
   # set paths to RDP reference database for testing
   testmode <- F
   if(testmode %in% T){
-    refdb <- refdb_Vences_16S
-    out <- paste0(dirname(refdb_Vences_16S),"/loso_rdp/")
+    refdb <- refdb_Taylor_16S
+    out <- paste0(dirname(refdb_Taylor_16S),"/loso_rdp/")
     min_n = 2
     random_seed = 100
     verbose = T
@@ -46,7 +46,7 @@ LOSO_models <- function(refdb,
   }
   
   # dataframe of reference db
-  rn <- RDP_to_dataframe(r) %>%
+  rn <- rn %>%
     group_by(s) %>%
     mutate(n = length(s)) %>%
     ungroup()
@@ -56,7 +56,7 @@ LOSO_models <- function(refdb,
   seq_range <- start_seq:length(seqnums_vector)
   
   # loop through species list to test for
-  for (i in start_seq:length(test_seqnums_vector)) { 
+  for (i in start_seq:length(seqnums_vector)) { 
     message("Testing sequence ", i, " of ", length(test_seqnums_vector), ": ", rn[seqnums_vector[i],]$s)
     
     seq_num <- seqnums_vector[i]

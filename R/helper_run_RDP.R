@@ -14,8 +14,8 @@ run_RDP <- function(q_seqs, # named character vector of sequences (names = uniqu
   tic()
   
   # make a temporary directory
-  if (!dir.exists(paste0(out, "tmp/"))) {
-    dir.create(paste0(out, "tmp/"))
+  if (!dir.exists(file.path(out, "tmp/"))) {
+    dir.create(file.path(out, "tmp/"))
   }
   
   # change header format to BayesANT
@@ -24,11 +24,11 @@ run_RDP <- function(q_seqs, # named character vector of sequences (names = uniqu
   
   # write formatted reference database as a fasta in a tmp folder
   writeXStringSet(r,
-                  paste0(out,"tmp/tmp_RDP_refdb.fasta"),
+                  file.path(out,"tmp/tmp_RDP_refdb.fasta"),
                   append = F)
   
   set.seed(seed) # Initialize random number generator for reproducibility
-  taxa.RDP <- assignTaxonomy(q_seqs, paste0(out, "tmp/tmp_RDP_refdb.fasta"), 
+  taxa.RDP <- assignTaxonomy(q_seqs, file.path(out, "tmp/tmp_RDP_refdb.fasta"), 
                              multithread=T, 
                              minBoot=0,
                              outputBootstraps = TRUE)

@@ -89,6 +89,9 @@ LOSO_models(refdb = refdb_Vences_16S, out = paste0(dirname(refdb_Vences_16S), "/
 LOSpO_ghostblaster(refdb = refdb_Vences_16S,
                    out = paste0(dirname(refdb_Vences_16S),"/"), start_seq = 1)
 
+LOSpO_models(refdb = refdb_Vences_16S, out = dirname(refdb_Vences_16S),
+             start_sp = 1)
+
 # RiazVert1_12S (105 bp)
 LOSO_ghostblaster(refdb = refdb_RiazVert1_12S,
                   out = paste0(dirname(refdb_RiazVert1_12S),"/"), start_seq = 1)
@@ -98,6 +101,9 @@ LOSO_models(refdb = refdb_RiazVert1_12S, out = paste0(dirname(refdb_RiazVert1_12
 
 LOSpO_ghostblaster(refdb = refdb_RiazVert1_12S,
                   out = paste0(dirname(refdb_RiazVert1_12S),"/"), start_seq = 1)
+
+LOSpO_models(refdb = refdb_RiazVert1_12S, out = dirname(refdb_RiazVert1_12S),
+             start_sp = 1)
 
 # MiMammalU_12S (169 bp)
 LOSO_ghostblaster(refdb = refdb_MiMammalU_12S,
@@ -109,6 +115,9 @@ LOSO_models(refdb = refdb_MiMammalU_12S, out = paste0(dirname(refdb_MiMammalU_12
 LOSpO_ghostblaster(refdb = refdb_MiMammalU_12S,
                    out = paste0(dirname(refdb_MiMammalU_12S),"/"), start_seq = 1)
 
+LOSpO_models(refdb = refdb_MiMammalU_12S, out = dirname(refdb_MiMammalU_12S),
+            start_sp = 200)
+
 # Mamm01_12S (59 bp)
 LOSO_ghostblaster(refdb = refdb_Mamm01_12S,
                   out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
@@ -119,6 +128,9 @@ LOSO_models(refdb = refdb_Mamm01_12S, out = paste0(dirname(refdb_Mamm01_12S), "/
 LOSpO_ghostblaster(refdb = refdb_Mamm01_12S,
                    out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
 
+LOSpO_models(refdb = refdb_Mamm01_12S, out = dirname(refdb_Mamm01_12S),
+             start_sp = 1)
+
 # Taylor_16S (92 bp)
 LOSO_ghostblaster(refdb = refdb_Taylor_16S,
                   out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
@@ -128,6 +140,9 @@ LOSO_models(refdb = refdb_Taylor_16S, out = paste0(dirname(refdb_Taylor_16S), "/
 
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
                    out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
+
+LOSpO_models(refdb = refdb_Taylor_16S, out = dirname(refdb_Taylor_16S),
+             start_sp = 1)
 
 # ---- Step 5 - build predictor data for error model
 
