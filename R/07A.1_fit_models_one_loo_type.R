@@ -17,7 +17,7 @@ pred_list <- list()
 # loop through Incorrect, Abstain, and Correct metrics
 if (loo_method %in% c("loso", "LOSO")) {
   metric_vector <- c("i", "a", "c")
-  if (grepl(assign_rubric, pattern = "thresh")) {
+  if (grepl(assign_rubric, pattern = "blast|ecotag")) {
     outcomes_df <- outcomes_marker[[1]]$loso
   }
   if (grepl(assign_rubric, pattern = "rdp")) {
@@ -26,7 +26,7 @@ if (loo_method %in% c("loso", "LOSO")) {
   
 } else{
   metric_vector <- c("i", "a")
-  if (grepl(assign_rubric, pattern = "thresh")) {
+  if (grepl(assign_rubric, pattern = "blast|ecotag")) {
     outcomes_df <- outcomes_marker[[1]]$lospo
   }
   if (grepl(assign_rubric, pattern = "rdp")) {

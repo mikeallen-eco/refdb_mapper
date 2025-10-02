@@ -7,12 +7,12 @@ fit_models_loso_lospo <- function(assign_rubric = "thresh98",
   preds_loso <- fit_models_one_loo_type(loo_method = "LOSO", 
                                  assign_rubric = assign_rubric,
                                  markers = markers,
-                                 loo_outcomes_df = outcomes)
+                                 loo_outcomes_list = outcomes)
   
   preds_lospo <- fit_models_one_loo_type(loo_method = "LOSpO", 
                                   assign_rubric = assign_rubric,
                                   markers = markers,
-                                  loo_outcomes_df = outcomes)
+                                  loo_outcomes_list = outcomes)
   
   # function to reorganize list to match: reorg$marker1$loso$i, reorg$marker1$lospo$i
   reorganize_preds <- function(preds_loso, preds_lospo) {

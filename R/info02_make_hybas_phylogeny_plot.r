@@ -11,6 +11,7 @@ if (!exists("is.waive")) {
 
 make_hybas_phylogeny_plot <- function(hybas_data, # such as produced by get_polygon_attributes_from_coords()
                                  metric = "p_i",
+                                 rubric = "rdp90",
                                  marker_list = markers[c(1,2,4,3,5)],
                                  tree_path = "data/phyl.tre"){
   
@@ -18,7 +19,7 @@ make_hybas_phylogeny_plot <- function(hybas_data, # such as produced by get_poly
   
   phyl.tre <- read.tree(tree_path)
   
-  # Keep only phyl_name + p_i columns
+  # Keep only phyl_name + columns related to the chosen metric and rubric
   traits <- info %>%
     mutate(
       mol_name = case_when(
@@ -26,7 +27,7 @@ make_hybas_phylogeny_plot <- function(hybas_data, # such as produced by get_poly
         TRUE ~ mol_name
       )
     ) %>%
-    select(phyl_name, mol_name, ends_with(metric)) %>%
+    select(phyl_name, mol_name, contains(metric)&contains(rubric)) %>%
     filter(!is.na(phyl_name))
   
   if(nrow(info)-nrow(traits) > 0){
@@ -79,7 +80,7 @@ traits_long <- traits_expanded %>%
   pivot_longer(-c(phyl_name, mol_name), names_to = "marker", values_to = "metric")
 
 # Define desired order of rings
-desired_order <- paste0(marker_list, "_", metric)
+desired_order <- paste0(marker_list, "_", rubric, "_", metric)
 
 # Convert marker column to factor with that order
 traits_long <- traits_long %>%
@@ -165,7 +166,6 @@ p <- p +
     limits = c(p_min, p_max),
     guide = "none"  # hide duplicate legend
   )
-# p
 
 # Stack the ring labels in the middle, spaced vertically
 ring_labels_center <- data.frame(
@@ -180,24 +180,6 @@ p <- p +
     label = paste(rev(marker_list), collapse = "\n"),
     size = 4, hjust = 0.5, vjust = 0.5
   )
-
-# Stack the ring labels in the middle, spaced vertically
-# ring_labels_center <- data.frame(
-#   label = rev(marker_list),        # inside → outside order
-#   y = seq_along(marker_list)
-# )
-# 
-# p <- p + 
-#   geom_label(
-#     data = ring_labels_center,
-#     aes(x = 0, y = y, label = label),
-#     inherit.aes = FALSE,
-#     size = 4,
-#     hjust = 0.5, vjust = 0.5,
-#     fill = "white", alpha = 0.7,   # semi-transparent white background
-#     label.size = NA                # removes the border box
-#   )
-
 
 return(p)
 

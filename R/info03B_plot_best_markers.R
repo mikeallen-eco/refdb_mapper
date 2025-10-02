@@ -3,9 +3,13 @@
 library(ggplot2)
 library(forcats)
 
-plot_best_markers <- function(best_markers_df = pf_best, plot = "c"){
+plot_best_markers <- function(best_markers_df = pf_best, 
+                              metric = "c"){
   
-  if(plot == "c"){
+  if(metric == "c"){
+    
+  best_rubrics <- best_markers_df %>%
+    group_by()
   best_markers_df %>%
     mutate(num_markers = stringr::str_count(markers, "\\+") + 1) %>%
     arrange(desc(median_p_correct), num_markers) %>%
@@ -24,7 +28,7 @@ plot_best_markers <- function(best_markers_df = pf_best, plot = "c"){
          title = "Marker combinations")
   }
   
-  if(plot == "i"){
+  if(metric == "i"){
   x_upper <- max(max(best_markers_df$q75_p_incorrect), 20)
   best_markers_df %>%
     mutate(num_markers = stringr::str_count(markers, "\\+") + 1) %>%

@@ -63,7 +63,7 @@ priority_species_to_harmonize(harmonized_df = mol_to_phyl_harmonized, show = 10)
 hybas_nnd <- get_NDD_per_sp_all_hydrobasins_and_markers(hydrobasin_refdb_info,
                                                         markers = markers, n_cores = 4)
 
-saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251001.rds")
+# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251001.rds")
 hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251001.rds") 
 
 # ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
@@ -153,21 +153,37 @@ mdat <- get_loo_outcomes(marker_directories = dirname(refdb_cur_paths)[1:5],
 
 # ---- Step 7 - fit models
 
-fits_blast97 <- fit_models_loso_lospo(assign_rubric = "thresh97",
+fits_blast97 <- fit_models_loso_lospo(assign_rubric = "blast97",
                       markers = markers[1:5],
                       outcomes = mdat)
 
-fits_blast98 <- fit_models_loso_lospo(assign_rubric = "thresh98",
+fits_blast98 <- fit_models_loso_lospo(assign_rubric = "blast98",
                                       markers = markers[1:5],
                                       outcomes = mdat)
 
-fits_blast99 <- fit_models_loso_lospo(assign_rubric = "thresh99",
+fits_blast99 <- fit_models_loso_lospo(assign_rubric = "blast99",
                                       markers = markers[1:5],
                                       outcomes = mdat)
 
-fits_rdp70 <- fit_models_loso_lospo(assign_rubric = "rdp80",
+fits_ecotag <- fit_models_loso_lospo(assign_rubric = "ecotag",
                                       markers = markers[1:5],
                                       outcomes = mdat)
+
+fits_rdp70 <- fit_models_loso_lospo(assign_rubric = "rdp70",
+                                      markers = markers[1:5],
+                                      outcomes = mdat)
+
+fits_rdp80 <- fit_models_loso_lospo(assign_rubric = "rdp80",
+                                    markers = markers[1:5],
+                                    outcomes = mdat)
+
+fits_rdp90 <- fit_models_loso_lospo(assign_rubric = "rdp90",
+                                    markers = markers[1:5],
+                                    outcomes = mdat)
+
+fits_rdp95 <- fit_models_loso_lospo(assign_rubric = "rdp95",
+                                    markers = markers[1:5],
+                                    outcomes = mdat)
 
 # ---- Step 8 - predict error rates for species within hydrobasins
 
@@ -186,15 +202,48 @@ hybas_preds_blast99 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
                                                 markers = markers[1:5],
                                                 assign_rubric = "blast99")
 
+hybas_preds_ecotag <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                                preds = fits_ecotag,
+                                                markers = markers[1:5],
+                                                assign_rubric = "ecotag")
+
+hybas_preds_rdp70 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                               preds = fits_ecotag,
+                                               markers = markers[1:5],
+                                               assign_rubric = "rdp70")
+
+hybas_preds_rdp80 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                              preds = fits_ecotag,
+                                              markers = markers[1:5],
+                                              assign_rubric = "rdp80")
+
+hybas_preds_rdp90 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                              preds = fits_ecotag,
+                                              markers = markers[1:5],
+                                              assign_rubric = "rdp90")
+
+hybas_preds_rdp95 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
+                                              preds = fits_ecotag,
+                                              markers = markers[1:5],
+                                              assign_rubric = "rdp95")
+
 # ---- Step 9 - make final map sf with data
 
 final_sf <- make_complete_hybas_data_sf(complete_hybas_preds = list(hybas_preds_blast97,
                                                                    hybas_preds_blast98,
-                                                                   hybas_preds_blast99),
+                                                                   hybas_preds_blast99,
+                                                                   hybas_preds_ecotag,
+                                                                   hybas_preds_rdp70,
+                                                                   hybas_preds_rdp80,
+                                                                   hybas_preds_rdp90,
+                                                                   hybas_preds_rdp95
+                                                                   ),
                                                       map = hydrobasin_map)
 
-saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251001.rds")
-final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251001.rds")
+saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251002c.rds")
+final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251002c.rds")
+
+
 
 
 

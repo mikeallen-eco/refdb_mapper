@@ -6,6 +6,7 @@ LOSpO_models <- function(refdb,
                                out,
                                start_sp = 1,
                                random_seed = 100,
+                               extinct = c(ncbi_extinct, phyl_extinct),
                                verbose = TRUE) {
   
   # read in arguments to pass through to helper functions
