@@ -1,31 +1,45 @@
-# compile metrics to choose the best combinations of markers
+# compile metrics to choose the best combinations of markers for each rubric
   # in terms of predicted p(correct) and % coverage (% species with > 0 sequences)
 
 library(dplyr)
 library(combinat)
 
-pick_best_markers <- function(hybas_data = pf_data,
+pick_best_markers <- function(hybas_data = nj_data,
                               rubrics = c("blast97", "blast98", "blast99", "ecotag",
                                           "rdp70", "rdp80", "rdp90", "rdp95")){
   
   rubric_list <- lapply(seq_along(rubrics), function(i){
     
-  # pull out performance matrices
-  pc_mat <- hybas_data %>%
-    select(contains(paste0(rubrics[i], "_p_c"))) %>%
-    filter(!if_any(everything(), is.na)) %>%
-    as.matrix()
-  
-  pi_mat <- hybas_data %>%
-    select(contains(paste0(rubrics[i], "_p_i"))) %>%
-    filter(!if_any(everything(), is.na)) %>%
-    as.matrix()
+    valid_rows <- hybas_data %>%
+      select(contains(paste0(rubrics[i], "_p_c")),
+             contains(paste0(rubrics[i], "_p_i"))) %>%
+      drop_na()
+    
+    pc_mat <- valid_rows %>%
+      select(contains(paste0(rubrics[i], "_p_c"))) %>%
+      as.matrix()
+    
+    pi_mat <- valid_rows %>%
+      select(contains(paste0(rubrics[i], "_p_i"))) %>%
+      as.matrix()
+    
+    
+  # # pull out performance matrices
+  # pc_mat <- hybas_data %>%
+  #   select(contains(paste0(rubrics[i], "_p_c"))) %>%
+  #   filter(!if_any(everything(), is.na)) %>%
+  #   as.matrix()
+  # 
+  # pi_mat <- hybas_data %>%
+  #   select(contains(paste0(rubrics[i], "_p_i"))) %>%
+  #   filter(!if_any(everything(), is.na)) %>%
+  #   as.matrix()
   
   marker_names <- colnames(pc_mat)  # same set of markers for _p_c and _p_i
   
   # function to evaluate a given set of markers
-  evaluate_combo_stats <- function(markers) {
-    idx <- match(markers, marker_names)
+  evaluate_combo_stats <- function(marker_combos) {
+    idx <- match(marker_combos, marker_names)
     
     # combine by taking max across markers for p_c and p_i
     combo_scores_c <- apply(pc_mat[, idx, drop = FALSE], 1, max, na.rm = TRUE)
@@ -47,7 +61,7 @@ pick_best_markers <- function(hybas_data = pf_data,
     stats_list <- lapply(combos, evaluate_combo_stats)
     
     tibble(
-      markers = sapply(combos, paste, collapse = "+")
+      markers = sapply(combos, paste, collapse = " + ")
     ) %>%
       bind_cols(bind_rows(stats_list)) %>%
       arrange(desc(median_p_correct))
@@ -58,7 +72,6 @@ pick_best_markers <- function(hybas_data = pf_data,
               best_combos(3)) %>%
     arrange(desc(median_p_correct)) %>%
     mutate(markers = gsub(paste0("_", rubrics[i], "_p_c"), "", markers),
-           markers = gsub("\\+", " + ", markers),
            rubric = rubrics[i])
   
   return(best_df)
@@ -67,4 +80,6 @@ pick_best_markers <- function(hybas_data = pf_data,
   names(rubric_list) <- rubrics
   
   final_df <- bind_rows(rubric_list)
+  
+  return(final_df)
 }

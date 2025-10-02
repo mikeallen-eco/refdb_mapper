@@ -23,7 +23,7 @@ source("R/settings_Mamm01_12S.R")
 curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
                  out = out_path, l = l, L = L, db_name = db_name)
 
-# --- Step 1 Harmonize phyogeny & ref db taxonomy to MOL
+# ---- Step 1 Harmonize ref db taxonomy to MOL & MOL to phylogeny
 
 # ref db to MOL
 refdb_harmonized <- harmonize_with_backbone(backbone = data_env$mol,
@@ -49,7 +49,7 @@ mol_to_phyl_harmonized <- harmonize_with_backbone(query = mol_format,
                                                   manual_tax = "data/mol_to_phyl_mammals_manual_notes.tsv")
 write.csv(mol_to_phyl_harmonized, "data/mol_to_phyl_mammals_harmonized.csv", row.names = F)
 
-# ---- Step 2 tally seqs per species & marker & join to hydrobasins
+# ---- Step 2 tally n seqs per species & marker & join to hydrobasins
 
 hydrobasin_refdb_info <- tally_sequences(hydrobasin_species_path, 
                                             refdb_cur_path = refdb_cur_paths, 
@@ -66,7 +66,7 @@ hybas_nnd <- get_NDD_per_sp_all_hydrobasins_and_markers(hydrobasin_refdb_info,
 # saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251001.rds")
 hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251001.rds") 
 
-# ---- Step 4 LOSO/LOSpO analysis (takes hours, saves csv files for convenience)
+# ---- Step 4 LOSO/LOSpO analysis (takes many hours, saves csv files for convenience)
 
 # Vences_16S (237 bp)
 LOSO_ghostblaster(refdb = refdb_Vences_16S,
@@ -133,7 +133,7 @@ LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
 LOSpO_models(refdb = refdb_Taylor_16S, out = dirname(refdb_Taylor_16S),
              start_sp = 1)
 
-# ---- Step 5 - build predictor data for error model
+# ---- Step 5 build predictor data for error model
 
 # get NND and n seqs for each species within each refdb
 error_model_predictor_data <- build_error_model_data(
@@ -144,14 +144,14 @@ error_model_predictor_data <- build_error_model_data(
   marker_names = markers
 )
 
-# ---- Step 6 - compile outcomes for final error model data
+# ---- Step 6 compile outcomes for final error model data
 
 mdat <- get_loo_outcomes(marker_directories = dirname(refdb_cur_paths)[1:5],
                  markers = markers[1:5],
                  refdb_harmonized = refdb_harmonized_path,
                  refdb_nnd = error_model_predictor_data)
 
-# ---- Step 7 - fit models
+# ---- Step 7 - fit models for all markers and taxonomic assignment rubrics
 
 fits_blast97 <- fit_models_loso_lospo(assign_rubric = "blast97",
                       markers = markers[1:5],
@@ -208,26 +208,26 @@ hybas_preds_ecotag <- predict_error_rate_hybas(hybas_info = hybas_nnd,
                                                 assign_rubric = "ecotag")
 
 hybas_preds_rdp70 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
-                                               preds = fits_ecotag,
+                                               preds = fits_rdp70,
                                                markers = markers[1:5],
                                                assign_rubric = "rdp70")
 
 hybas_preds_rdp80 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
-                                              preds = fits_ecotag,
+                                              preds = fits_rdp80,
                                               markers = markers[1:5],
                                               assign_rubric = "rdp80")
 
 hybas_preds_rdp90 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
-                                              preds = fits_ecotag,
+                                              preds = fits_rdp90,
                                               markers = markers[1:5],
                                               assign_rubric = "rdp90")
 
 hybas_preds_rdp95 <- predict_error_rate_hybas(hybas_info = hybas_nnd,
-                                              preds = fits_ecotag,
+                                              preds = fits_rdp95,
                                               markers = markers[1:5],
                                               assign_rubric = "rdp95")
 
-# ---- Step 9 - make final map sf with data
+# ---- Step 9 - create final map database file (sf object)
 
 final_sf <- make_complete_hybas_data_sf(complete_hybas_preds = list(hybas_preds_blast97,
                                                                    hybas_preds_blast98,

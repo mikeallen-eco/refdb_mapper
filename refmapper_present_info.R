@@ -37,18 +37,18 @@ ggsave("figures/circular_phylogeny_blast98_p_a_PF.png", height = 12, width = 12,
 
 # ---- Step 3: choose best combinations of markers
 
-nj_best <- pick_best_markers(nj_data)
-pf_best <- pick_best_markers(pf_data)
+(nj_best <- pick_best_markers(nj_data))
+(pf_best <- pick_best_markers(pf_data))
 
-plot_best_markers(nj_best)
-ggsave("figures/best_markers_NJ3.png", height = 10, width = 10, dpi = 400)
+plot_best_markers(nj_best, metric = "c")
+ggsave("figures/best_markers_p_c_NJ.png", height = 10, width = 10, dpi = 400)
 plot_best_markers(pf_best)
-ggsave("figures/best_markers_PF3.png", height = 10, width = 10, dpi = 400)
+ggsave("figures/best_markers_p_c_PF.png", height = 10, width = 10, dpi = 400)
 
-plot_best_markers(pf_best, plot = "i")
-ggsave("figures/best_markers_PF_i.png", height = 10, width = 10, dpi = 400)
-plot_best_markers(nj_best, plot = "i")
-ggsave("figures/best_markers_NJ_i.png", height = 10, width = 10, dpi = 400)
+plot_best_markers(pf_best, metric = "i")
+ggsave("figures/best_markers_p_i_PF.png", height = 10, width = 10, dpi = 400)
+plot_best_markers(nj_best, metric = "i")
+ggsave("figures/best_markers_p_i_NJ.png", height = 10, width = 10, dpi = 400)
 
 
 
