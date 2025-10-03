@@ -1,9 +1,45 @@
 # data vis & info by hydrobasin coordinates
-source("R/setup_present.R")
+source("R/setup_present_info.R")
+
+# ---- Step 0: plot error rate model effects by marker
+
+fits <- readRDS("data/fits_20251003.rds")
+eplots <- plot_predicted_loso_lopso_error(preds = fits, markers = markers, rubrics = rubrics)
+eplots$blast98$RiazVert1_12S$loso$i
+eplots$blast98$Vences_16S$loso$i
+eplots$rdp90$RiazVert1_12S$loso$i
+eplots$rdp90$Vences_16S$loso$i
+
+eplots$blast98$RiazVert1_12S$loso$a
+eplots$blast98$Vences_16S$loso$a
+eplots$rdp90$RiazVert1_12S$loso$a
+eplots$rdp90$Vences_16S$loso$a
+
+eplots$blast98$RiazVert1_12S$loso$c
+eplots$blast98$Vences_16S$loso$c
+eplots$rdp90$RiazVert1_12S$loso$c
+eplots$rdp90$Vences_16S$loso$c
+
+
+eplots$blast98$RiazVert1_12S$lospo$i
+eplots$blast98$Vences_16S$lospo$i
+eplots$rdp90$RiazVert1_12S$lospo$i
+eplots$rdp90$Vences_16S$lospo$i
+
+summary(fits$rdp90$RiazVert1_12S$lospo$i$mod)
+
+
+eplots$blast98$RiazVert1_12S$lospo$a
+eplots$blast98$Vences_16S$lospo$a
+eplots$rdp90$RiazVert1_12S$lospo$a
+eplots$rdp90$Vences_16S$lospo$a
+
+
 
 # ---- Step 1: get marker detectability data for a hydrobasin from coordinates
 
-nj_data <- get_polygon_attributes_from_coords(-74.759831, 40.568704)
+# nj_data <- get_polygon_attributes_from_coords(-74.759831, 40.568704)
+ct_data <- get_polygon_attributes_from_coords(41.31607, -72.92116)
 pf_data <- get_polygon_attributes_from_coords(-59.912786, -2.069209)
 
 # ---- Step 2: phylogenetic visualization of detectability by marker

@@ -4,22 +4,22 @@ loo_RDP_outcomes <- function(df = loso_RDP_compiled) {
   df_rdp <- df %>%
     mutate(rdp70 = case_when(spboot >= 70 &
                                assigned_mol_name == true_mol_name ~ "correct",
-                             spboot < 70 &
+                             spboot >= 70 &
                                assigned_mol_name != true_mol_name ~ "incorrect",
                              TRUE ~ "abstain")) %>%
     mutate(rdp80 = case_when(spboot >= 80 &
                                   assigned_mol_name == true_mol_name ~ "correct",
-                             spboot < 80 &
+                             spboot >= 80 &
                                   assigned_mol_name != true_mol_name ~ "incorrect",
                                 TRUE ~ "abstain")) %>%
     mutate(rdp90 = case_when(spboot >= 90 &
                                   assigned_mol_name == true_mol_name ~ "correct",
-                                spboot < 90 &
+                                spboot >= 90 &
                                   assigned_mol_name != true_mol_name ~ "incorrect",
                                 TRUE ~ "abstain")) %>%
     mutate(rdp95 = case_when(spboot >= 95 &
                                   assigned_mol_name == true_mol_name ~ "correct",
-                                spboot < 95 &
+                                spboot >= 95 &
                                   assigned_mol_name != true_mol_name ~ "incorrect",
                                 TRUE ~ "abstain")) %>%
     filter(!is.na(true_mol_name)) # temporarily remove few remaining unmatched NCBI names
