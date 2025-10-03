@@ -6,7 +6,9 @@ library(forcats)
 plot_best_markers <- function(best_markers_df = pf_best, 
                               metric = "c",
                               rubrics = c("blast97", "blast98", 
-                                          "blast99", "ecotag")){
+                                          "blast99", "ecotag",
+                                          "rdp70", "rdp80",
+                                          "rdp90", "rdp95")){
   
   if(metric == "c"){
     
@@ -59,7 +61,7 @@ plot_best_markers <- function(best_markers_df = pf_best,
       scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 10)) +
       theme(text = element_text(size = 16)) +
       labs(
-        x = "Median p(assigned ∩ correct) or \n total species coverage (%)",
+        x = "Median p(assigned ∩ correct) or \n + = species coverage (%)",
         y = "",
         title = "Marker combinations",
         shape = ""
