@@ -159,7 +159,7 @@ fits <- lapply(rubrics, function(x) {
                         outcomes = mdat)
 })
 names(fits) <- rubrics
-saveRDS(fits, "data/fits_20251006.rds")
+saveRDS(fits, "data/fits_20251006c.rds")
         
 # ---- Step 8 - predict error rates for species within hydrobasins
 
@@ -179,8 +179,8 @@ names(hybas_preds) <- rubrics
 final_sf <- make_complete_hybas_data_sf(complete_hybas_preds = hybas_preds,
                                                       map = hydrobasin_map)
 
-saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006.rds")
-final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006.rds")
+saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006c.rds")
+final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006c.rds")
 
 
 

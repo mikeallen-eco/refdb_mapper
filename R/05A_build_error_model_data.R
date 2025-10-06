@@ -36,7 +36,7 @@ build_error_model_data <- function(
     select(mol_name = BB_Accepted) %>%
     filter(!is.na(mol_name)) %>%
     group_by(mol_name) %>%
-    summarise(n_seqs = length(mol_name)) %>%
+    summarise(n_seqs = length(mol_name) - 1) %>%
     mutate(mol_name = underscore(mol_name),
            marker = marker_names[i])
   

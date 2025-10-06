@@ -1,3 +1,4 @@
+library(data.table)
 
 tally_sequences <- function(hydrobasin_species = hydrobasin_species_path, 
                             refdb_cur_paths = refdb_cur_paths,
@@ -49,9 +50,7 @@ return(h_data_g)
 
 })
 
-library(data.table)
-
-# Example assuming h_data_g_list is your list of data.tables
+#  h_data_g_list is list of data.tables
 h_merged <- Reduce(function(x, y) merge(x, y, 
                                         by = c("HYBAS_ID", "sciname", "order", "family", "genus", "species"),
                                         all = TRUE),

@@ -70,7 +70,7 @@ preds <- predict(
 )
 
 pred_df <- expand.grid(nnd = seq(0, 30, length.out = 100),
-                       n_seqs = seq(2, 11, length.out = 100)) %>%
+                       n_seqs = seq(1, 10, length.out = 100)) %>%
   mutate(preds = preds)
 
 pred_list[[j]] <- (list(pred_df = pred_df, mod = mod_object))

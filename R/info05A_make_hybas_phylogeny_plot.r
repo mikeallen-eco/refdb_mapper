@@ -84,13 +84,19 @@ desired_order <- paste0(marker_list, "_", rubric, "_", metric)
 
 # Convert marker column to factor with that order
 traits_long <- traits_long %>%
-  mutate(marker = factor(marker, levels = desired_order))
+  mutate(marker = factor(marker, levels = desired_order)) %>%
+  mutate(metric = 100*metric) 
+
+if(metric %in% c("p_i")) {
+  traits_long <- traits_long %>%
+    mutate(metric = pmin(metric, 10))
+}
 
 if(metric %in% c("p_i", "p_a")) {
   tip_colors <- traits_long %>%
     group_by(phyl_name) %>%
-    summarise(tip_metric = min(metric, na.rm = TRUE))
-} else{
+    summarise(tip_metric = pmin(min(metric, na.rm = TRUE), 10))
+} else {
   tip_colors <- traits_long %>%
     group_by(phyl_name) %>%
     summarise(tip_metric = max(metric, na.rm = TRUE))
@@ -98,7 +104,7 @@ if(metric %in% c("p_i", "p_a")) {
 
 traits_long <- traits_long %>%
   mutate(metric = case_when(metric %in% 0 ~ NA,
-                            TRUE ~ metric))
+                            TRUE ~ metric)) 
 
 # Create a lookup table for tip labels
 tip_label_lookup <- traits_expanded %>%
@@ -153,19 +159,38 @@ if(metric %in% "p_c"){legend_title <- "p(correct)"}
 if(metric %in% "p_a"){legend_title <- "p(unclass.)"}
 
 # Use a single unified scale for both tip color and heatmap fill
-shared_scale <- scale_fill_viridis_c(
-  option = "C",
-  name = legend_title,
-  limits = c(p_min, p_max)
-)
-
-p <- p +
-  shared_scale +
-  scale_color_viridis_c(
+if(metric %in% "p_i") {
+  shared_scale <- scale_fill_viridis_c(
     option = "C",
-    limits = c(p_min, p_max),
-    guide = "none"  # hide duplicate legend
+    name = legend_title,
+    limits = c(0, 11),
+    breaks = c(0, 2, 4, 6, 8, 10),
+    labels = c(0, 2, 4, 6, 8, "10+")
   )
+  
+  p <- p +
+    shared_scale +
+    scale_color_viridis_c(
+      option = "C",
+      limits = c(0, 11),
+      guide = "none"  # hide duplicate legend
+    )
+  
+} else{
+  shared_scale <- scale_fill_viridis_c(option = "C",
+                                       name = legend_title,
+                                       limits = c(p_min, p_max))
+  
+  p <- p +
+    shared_scale +
+    scale_color_viridis_c(
+      option = "C",
+      limits = c(p_min, p_max),
+      guide = "none"  # hide duplicate legend
+    )
+}
+
+
 
 # Stack the ring labels in the middle, spaced vertically
 ring_labels_center <- data.frame(

@@ -14,63 +14,40 @@ ba_best <- pick_best_markers(ba_data)
 # ---- Step 3: plot best combinations of markers
 
 plot_best_markers(ct_best, num_markers = 1:3, top_n_rubrics = 2)
-ggsave("figures/best_markers_p_both_CT2.png", height = 10, width = 11, dpi = 400)
+ggsave("figures/best_markers_p_both_CT4.png", height = 10, width = 11, dpi = 400)
+
 plot_best_markers(ba_best, num_markers = 1:3, top_n_rubrics = 2)
-ggsave("figures/best_markers_p_both_BA2.png", height = 10, width = 11, dpi = 400)
+ggsave("figures/best_markers_p_both_BA4.png", height = 10, width = 11, dpi = 400)
 
 # ---- Step 4: plot % correct vs. % incorrect
 
 scatterplot_best_markers(ct_best, top_n = 1, num_markers = 1:3)
-ggsave("figures/best_scatter_CT_top_n_all.png", height = 6, width = 7, dpi = 400)
+ggsave("figures/best_scatter_CT_top_n_all4.png", height = 6, width = 7, dpi = 400)
 
 scatterplot_best_markers(ba_best, top_n = 1, num_markers = 1:3)
-ggsave("figures/best_scatter_BA_top_n_all.png", height = 6, width = 7, dpi = 400)
+ggsave("figures/best_scatter_BA_top_n_all4.png", height = 6, width = 7, dpi = 400)
 
-# ---- Step 4: phylogenetic visualization of detectability by marker
+# ---- Step 5: phylogenetic visualization of detectability by marker
 
 make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_c", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_c_CT.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_c_CT4.png", height = 12, width = 12, dpi = 400)
 
 make_hybas_phylogeny_plot(hybas_data = ba_data, metric = "p_c", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_c_BA.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_c_BA4.png", height = 12, width = 12, dpi = 400)
 
 make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_i", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_i_CT.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_i_CT4.png", height = 12, width = 12, dpi = 400)
 
 make_hybas_phylogeny_plot(hybas_data = ba_data, metric = "p_i", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_i_BA.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_i_BA4.png", height = 12, width = 12, dpi = 400)
 
+# ---- Step 6: plot error rate model effects by marker
 
-# ---- Step 0: plot error rate model effects by marker
-
-fits <- readRDS("data/fits_20251003.rds")
 eplots <- plot_predicted_loso_lopso_error(preds = fits, markers = markers, rubrics = rubrics)
-eplots$blast98$RiazVert1_12S$loso$i
-eplots$blast98$Vences_16S$loso$i
-eplots$rdp90$RiazVert1_12S$loso$i
 eplots$rdp90$Vences_16S$loso$i
-
-eplots$blast98$RiazVert1_12S$loso$a
-eplots$blast98$Vences_16S$loso$a
-eplots$rdp90$RiazVert1_12S$loso$a
-eplots$rdp90$Vences_16S$loso$a
-
-eplots$blast98$RiazVert1_12S$loso$c
-eplots$blast98$Vences_16S$loso$c
-eplots$rdp90$RiazVert1_12S$loso$c
+eplots$rdp90$Vences_16S$lospo$i
 eplots$rdp90$Vences_16S$loso$c
 
-
-eplots$blast98$RiazVert1_12S$lospo$i
-eplots$blast98$Vences_16S$lospo$i
-eplots$rdp90$RiazVert1_12S$lospo$i
-eplots$rdp90$Vences_16S$lospo$i
-
-
-eplots$blast98$RiazVert1_12S$lospo$a
-eplots$blast98$Vences_16S$lospo$a
-eplots$rdp90$RiazVert1_12S$lospo$a
-eplots$rdp90$Vences_16S$lospo$a
 
 ### TABLE
 

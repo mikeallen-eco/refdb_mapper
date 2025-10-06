@@ -8,7 +8,7 @@ pred_loso_plot_i <- preds_loso$i$pred_df %>%
   scale_fill_viridis_c(option = "inferno", limits = c(0,11), 
                        breaks = c(0,2,4,6,8,10), labels = c(0,2,4,6,8,"10+")) +
   scale_x_continuous(limits = c(0,30)) +
-  scale_y_continuous(limits = c(2,11), labels = 1:10, breaks = 2:11) +
+  scale_y_continuous(limits = c(1,10), labels = 1:10, breaks = 1:10) +
   labs(x = "Nearest evolutionary neighbor (MY)",
        y = "No. sequences in reference database",
        fill = "Predicted %\nmisclassified",
@@ -22,7 +22,7 @@ pred_loso_plot_a <- preds_loso$a$pred_df %>%
   geom_tile(aes(x = nnd, y = n_seqs, fill = 100*preds)) +
   scale_fill_viridis_c(option = "inferno", limits = c(0,100)) +
   scale_x_continuous(limits = c(0,30)) +
-  scale_y_continuous(limits = c(2,11), labels = 1:10, breaks = 2:11) +
+  scale_y_continuous(limits = c(1,10), labels = 1:10, breaks = 1:10) +
   labs(x = "Nearest evolutionary neighbor (MY)",
        y = "No. sequences in reference database",
        fill = "Predicted %\nunclassified",
@@ -36,7 +36,7 @@ pred_loso_plot_c <- preds_loso$c$pred_df %>%
   geom_tile(aes(x = nnd, y = n_seqs, fill = 100*preds)) +
   scale_fill_viridis_c(option = "inferno", limits = c(0,100)) +
   scale_x_continuous(limits = c(0,30)) +
-  scale_y_continuous(limits = c(2,11), labels = 1:10, breaks = 2:11) +
+  scale_y_continuous(limits = c(1,10), labels = 1:10, breaks = 1:10) +
   labs(x = "Nearest evolutionary neighbor (MY)",
        y = "No. sequences in reference database",
        fill = "Predicted %\ncorrect",
