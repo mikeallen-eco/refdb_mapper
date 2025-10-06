@@ -3,36 +3,52 @@
 library(ggplot2)
 library(forcats)
 
-plot_best_markers <- function(best_markers_df = pf_best, 
-                              metric = "c",
+plot_best_markers <- function(best_markers_df = ct_best,
+                              num_markers = c(1,2,3),
+                              top_n_rubrics = 2,
                               rubrics = c("blast97", "blast98", 
                                           "blast99", "ecotag",
                                           "rdp70", "rdp80",
                                           "rdp90", "rdp95")){
   
-  if(metric == "c"){
-    
+  num_markers_vector <- num_markers
+  
     bestrubrics <- best_markers_df %>%
       filter(rubric %in% rubrics) %>%
-      mutate(num_markers = stringr::str_count(markers, "\\+") + 1) %>%
-      arrange(rubric, desc(median_p_correct), num_markers) %>%
+      filter(num_markers %in% num_markers_vector) %>%
+      arrange(rubric, desc(std_score), num_markers) %>%
       group_by(rubric) %>%
       slice_head(n = 1) %>%
-      arrange(desc(median_p_correct)) %>%
+      arrange(desc(std_score)) %>%
       ungroup() %>%
-      slice_head(n = 2)
+      slice_head(n = top_n_rubrics)
     
     top_rubric <- bestrubrics$rubric[1]
     
     # Ordering of markers just for the top rubric
     marker_order <- best_markers_df %>%
       filter(rubric == top_rubric) %>%
-      mutate(num_markers = stringr::str_count(markers, "\\+") + 1) %>%
-      arrange(desc(median_p_correct), num_markers) %>%
+      filter(num_markers %in% num_markers_vector) %>%
+      arrange(desc(std_score), num_markers) %>%
       pull(markers)
     
-    plot_df <- best_markers_df %>%
+    plot_df_cor <- best_markers_df %>%
       filter(rubric %in% bestrubrics$rubric) %>%
+      filter(num_markers %in% num_markers_vector) %>%
+      select(markers, rubric, median = median_p_correct, q25 = q25_p_correct, 
+             q75 = q75_p_correct, pct_cov) %>%
+      mutate(metric = "p(assigned ∩ correct)")
+    
+    plot_df_incor <- best_markers_df %>%
+      filter(rubric %in% bestrubrics$rubric) %>%
+      filter(num_markers %in% num_markers_vector) %>%
+      select(markers, rubric, median = median_p_incorrect, q25 = q25_p_incorrect, 
+             q75 = q75_p_incorrect) %>%
+      mutate(pct_cov = NA,
+             metric = "p(assigned ∩ incorrect)")
+      
+    plot_df <- plot_df_cor %>%
+      bind_rows(plot_df_incor) %>%
       mutate(rubric = factor(rubric, levels = bestrubrics$rubric)) %>%
       mutate(markers = factor(markers, levels = rev(marker_order)))   # top-to-bottom
     
@@ -40,14 +56,14 @@ plot_best_markers <- function(best_markers_df = pf_best,
       ggplot() +
       geom_errorbar(
         aes(y = markers,
-            xmin = 100 * q25_p_correct,
-            xmax = 100 * q75_p_correct,
+            xmin = 100 * q25,
+            xmax = 100 * q75,
             group = rubric, color = rubric),
         position = position_dodge(width = 1),
         width = 0, linewidth = 1
       ) +
       geom_point(
-        aes(y = markers, x = 100 * median_p_correct, 
+        aes(y = markers, x = 100 * median, 
             shape = rubric, color = rubric),
         position = position_dodge(width = 1),
         size = 6
@@ -56,76 +72,22 @@ plot_best_markers <- function(best_markers_df = pf_best,
         aes(y = markers, x = 100 * pct_cov),
         size = 6, color = "steelblue", shape = "+"
       ) +
+      facet_wrap(~metric, scales = "free_x") +
       theme_bw() +
-      scale_color_manual(values = c("firebrick", "black")) +
-      scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 10)) +
+      # scale_color_manual(values = c("darkgray", "orangered")) +
+      # scale_x_continuous(breaks = seq(0, 100, by = 10)) + # limits = c(0, 100), 
       theme(text = element_text(size = 16)) +
       labs(
-        x = "Median p(assigned ∩ correct) or \n + = species coverage (%)",
+        x = "Median probability (points) or\n% species coverage (blue +)",
         y = "",
         title = "Marker combinations",
         shape = ""
       ) +
-      guides(color = "none")
+      scale_color_manual(values = c("gray30", "orangered", "olivedrab"), name = "Rubric") +
+      scale_shape_manual(values = c(16, 17, 18), name = "Rubric") #+
+      # guides(
+        # color = guide_legend(override.aes = list(shape = c(16, 17, 18)))
+      # )
     
-  }
-  
-  if(metric == "i"){
-    
-    bestrubrics <- best_markers_df %>%
-      mutate(num_markers = stringr::str_count(markers, "\\+") + 1) %>%
-      group_by(rubric) %>%
-      # get each rubric’s best marker (lowest incorrect)
-      arrange(median_p_incorrect, num_markers, .by_group = TRUE) %>%
-      slice_head(n = 1) %>%
-      ungroup() %>%
-      arrange(median_p_incorrect) %>%
-      slice_head(n = 2)   # keep two best rubrics
-    
-    lowest_rubric <- bestrubrics$rubric[1]
-    
-    marker_order <- best_markers_df %>%
-      filter(rubric == lowest_rubric) %>%
-      mutate(num_markers = stringr::str_count(markers, "\\+") + 1) %>%
-      arrange(median_p_incorrect, num_markers) %>%
-      pull(markers)
-    
-    x_upper <- max(max(bestrubrics$q75_p_incorrect), 20)
-    
-    plot_df <- best_markers_df %>%
-      filter(rubric %in% bestrubrics$rubric) %>%
-      mutate(rubric = factor(rubric, levels = bestrubrics$rubric)) %>%
-      mutate(markers = factor(markers, levels = rev(marker_order)))  # top = lowest incorrect
-    
-    plot <- plot_df %>%
-      ggplot() +
-      geom_errorbar(
-        aes(y = markers,
-            xmin = 100 * q25_p_incorrect,
-            xmax = 100 * q75_p_incorrect,
-            group = rubric, color = rubric),
-        position = position_dodge(width = 1),
-        width = 0, linewidth = 1
-      ) +
-      geom_point(
-        aes(y = markers, x = 100 * median_p_incorrect, 
-            shape = rubric, color = rubric),
-        position = position_dodge(width = 1),
-        size = 6
-      ) +
-      theme_bw() +
-      scale_color_manual(values = c("firebrick", "black")) +
-      scale_x_continuous(limits = c(0, x_upper), breaks = seq(0, 100, by = 10)) +
-      theme(text = element_text(size = 16)) +
-      labs(
-        x = "Median p(assigned ∩ incorrect)",
-        y = "",
-        title = "Marker combinations",
-        shape = ""
-      ) +
-      guides(color = "none")
- 
-  }
-  
   return(plot)
 }

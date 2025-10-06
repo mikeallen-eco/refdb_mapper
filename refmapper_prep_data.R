@@ -63,8 +63,8 @@ priority_species_to_harmonize(harmonized_df = mol_to_phyl_harmonized, show = 10)
 hybas_nnd <- get_NDD_per_sp_all_hydrobasins_and_markers(hydrobasin_refdb_info,
                                                         markers = markers, n_cores = 4)
 
-# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251003.rds")
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251003.rds") 
+# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251006.rds")
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251006.rds") 
 
 # ---- Step 4 LOSO/LOSpO analysis (takes many hours, saves csv files for convenience)
 
@@ -140,7 +140,7 @@ error_model_predictor_data <- build_error_model_data(
   refdb_cur = refdb_cur_paths,
   refdb_harmonized = refdb_harmonized_path,
   mol_to_phyl_harmonized = mol_to_phyl_harmonized_path,
-  extinct = c(ncbi_extinct),
+  extinct = c(ncbi_extinct, phyl_extinct),
   marker_names = markers
 )
 
@@ -159,7 +159,7 @@ fits <- lapply(rubrics, function(x) {
                         outcomes = mdat)
 })
 names(fits) <- rubrics
-saveRDS(fits, "data/fits_20251003.rds")
+saveRDS(fits, "data/fits_20251006.rds")
         
 # ---- Step 8 - predict error rates for species within hydrobasins
 
@@ -179,8 +179,8 @@ names(hybas_preds) <- rubrics
 final_sf <- make_complete_hybas_data_sf(complete_hybas_preds = hybas_preds,
                                                       map = hydrobasin_map)
 
-saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251003.rds")
-final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251003.rds")
+saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006.rds")
+final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006.rds")
 
 
 

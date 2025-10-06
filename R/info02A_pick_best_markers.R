@@ -3,8 +3,10 @@
 
 library(dplyr)
 library(combinat)
+library(wiqid)
+library(stringr)
 
-pick_best_markers <- function(hybas_data = nj_data,
+pick_best_markers <- function(hybas_data = ct_data,
                               rubrics = c("blast97", "blast98", "blast99", "ecotag",
                                           "rdp70", "rdp80", "rdp90", "rdp95")){
   
@@ -22,18 +24,6 @@ pick_best_markers <- function(hybas_data = nj_data,
     pi_mat <- valid_rows %>%
       select(contains(paste0(rubrics[i], "_p_i"))) %>%
       as.matrix()
-    
-    
-  # # pull out performance matrices
-  # pc_mat <- hybas_data %>%
-  #   select(contains(paste0(rubrics[i], "_p_c"))) %>%
-  #   filter(!if_any(everything(), is.na)) %>%
-  #   as.matrix()
-  # 
-  # pi_mat <- hybas_data %>%
-  #   select(contains(paste0(rubrics[i], "_p_i"))) %>%
-  #   filter(!if_any(everything(), is.na)) %>%
-  #   as.matrix()
   
   marker_names <- colnames(pc_mat)  # same set of markers for _p_c and _p_i
   
@@ -79,7 +69,9 @@ pick_best_markers <- function(hybas_data = nj_data,
   
   names(rubric_list) <- rubrics
   
-  final_df <- bind_rows(rubric_list)
+  final_df <- bind_rows(rubric_list) %>%
+    mutate(std_score = (wiqid::standardize(median_p_correct) - wiqid::standardize(median_p_incorrect))/2,
+           num_markers = stringr::str_count(markers, "\\+") + 1)
   
   return(final_df)
 }

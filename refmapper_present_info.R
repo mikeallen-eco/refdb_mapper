@@ -3,70 +3,42 @@ source("R/setup_present.R")
 
 # ---- Step 1: get marker detectability data for a hydrobasin from coordinates
 
-# nj_data <- get_polygon_attributes_from_coords(-74.759831, 40.568704)
 ct_data <- get_polygon_attributes_from_coords(-72.92116, 41.31607, include_marine = F)
-pf_data <- get_polygon_attributes_from_coords(-59.912786, -2.069209, include_marine = F)
+ba_data <- get_polygon_attributes_from_coords(-59.821468, -1.523651, include_marine = F)
 
 # ---- Step 2: choose best combinations of markers
 
 ct_best <- pick_best_markers(ct_data)
-pf_best <- pick_best_markers(pf_data)
+ba_best <- pick_best_markers(ba_data)
 
-plot_best_markers(ct_best, metric = "c")
-ggsave("figures/best_markers_p_c_CT.png", height = 10, width = 10, dpi = 400)
-plot_best_markers(pf_best)
-ggsave("figures/best_markers_p_c_PF.png", height = 10, width = 10, dpi = 400)
+# ---- Step 3: plot best combinations of markers
 
-plot_best_markers(ct_best, metric = "i")
-ggsave("figures/best_markers_p_i_CT.png", height = 10, width = 10, dpi = 400)
-plot_best_markers(pf_best, metric = "i")
-ggsave("figures/best_markers_p_i_PF.png", height = 10, width = 10, dpi = 400)
+plot_best_markers(ct_best, num_markers = 1:3, top_n_rubrics = 2)
+ggsave("figures/best_markers_p_both_CT2.png", height = 10, width = 11, dpi = 400)
+plot_best_markers(ba_best, num_markers = 1:3, top_n_rubrics = 2)
+ggsave("figures/best_markers_p_both_BA2.png", height = 10, width = 11, dpi = 400)
 
-# ---- Step 3: plot % correct vs. % incorrect
+# ---- Step 4: plot % correct vs. % incorrect
 
-scatterplot_best_markers(ct_best, top_n = 10, num_markers = 1:2)
+scatterplot_best_markers(ct_best, top_n = 1, num_markers = 1:3)
 ggsave("figures/best_scatter_CT_top_n_all.png", height = 6, width = 7, dpi = 400)
 
-scatterplot_best_markers(pf_best, top_n = 10, num_markers = 1:2)
-ggsave("figures/best_scatter_PF_top_n_10.png", height = 6, width = 7, dpi = 400)
-
-scatterplot_best_markers(ct_best, top_n = 5, num_markers = 1:2)
-ggsave("figures/best_scatter_CT_top_n_5.png", height = 6, width = 7, dpi = 400)
-
-scatterplot_best_markers(pf_best, top_n = 5, num_markers = 1:2)
-ggsave("figures/best_scatter_PF_top_n_5.png", height = 6, width = 7, dpi = 400)
+scatterplot_best_markers(ba_best, top_n = 1, num_markers = 1:3)
+ggsave("figures/best_scatter_BA_top_n_all.png", height = 6, width = 7, dpi = 400)
 
 # ---- Step 4: phylogenetic visualization of detectability by marker
 
 make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_c", rubric = "rdp90")
 ggsave("figures/circular_phylogeny_rdp90_p_c_CT.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_c", rubric = "blast98")
-ggsave("figures/circular_phylogeny_blast98_p_c_CT.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = pf_data, metric = "p_c", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_c_PF.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = pf_data, metric = "p_c", rubric = "blast98")
-ggsave("figures/circular_phylogeny_blast98_p_c_PF.png", height = 12, width = 12, dpi = 400)
+
+make_hybas_phylogeny_plot(hybas_data = ba_data, metric = "p_c", rubric = "rdp90")
+ggsave("figures/circular_phylogeny_rdp90_p_c_BA.png", height = 12, width = 12, dpi = 400)
 
 make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_i", rubric = "rdp90")
 ggsave("figures/circular_phylogeny_rdp90_p_i_CT.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_i", rubric = "blast98")
-ggsave("figures/circular_phylogeny_blast98_p_i_CT.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = pf_data, metric = "p_i", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_i_PF.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = pf_data, metric = "p_i", rubric = "blast98")
-ggsave("figures/circular_phylogeny_blast98_p_i_PF.png", height = 12, width = 12, dpi = 400)
 
-make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_a", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_a_CT.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = nj_data, metric = "p_a", rubric = "blast98")
-ggsave("figures/circular_phylogeny_blast98_p_a_CT.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = pf_data, metric = "p_a", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_a_PF.png", height = 12, width = 12, dpi = 400)
-make_hybas_phylogeny_plot(hybas_data = pf_data, metric = "p_a", rubric = "blast98")
-ggsave("figures/circular_phylogeny_blast98_p_a_PF.png", height = 12, width = 12, dpi = 400)
-
-
-
+make_hybas_phylogeny_plot(hybas_data = ba_data, metric = "p_i", rubric = "rdp90")
+ggsave("figures/circular_phylogeny_rdp90_p_i_BA.png", height = 12, width = 12, dpi = 400)
 
 
 # ---- Step 0: plot error rate model effects by marker
