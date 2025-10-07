@@ -12,9 +12,12 @@ plot_predicted_loso_lopso_error <- function(preds = fits,
   
   LOSO_plots <- plot_predicted_LOSO_error(preds_loso = preds_rubric[[i]]$loso)
   LOSpO_plots <- plot_predicted_LOSpO_error(preds_lospo = preds_rubric[[i]]$lospo)
-
+  both_plots <- plot_predicted_error_both(preds_loso = preds_rubric[[i]]$loso,
+                                    preds_lospo = preds_rubric[[i]]$lospo)
+  
   return(list(loso = LOSO_plots,
-              lospo = LOSpO_plots))
+              lospo = LOSpO_plots,
+              both = both_plots))
   })
   
   names(marker_list) <- markers

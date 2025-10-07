@@ -21,6 +21,7 @@ plot_best_markers <- function(best_markers_df = ct_best,
       slice_head(n = 1) %>%
       arrange(desc(std_score)) %>%
       ungroup() %>%
+      arrange(desc(std_score)) %>%
       slice_head(n = top_n_rubrics)
     
     top_rubric <- bestrubrics$rubric[1]

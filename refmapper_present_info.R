@@ -5,6 +5,10 @@ source("R/setup_present.R")
 
 ct_data <- get_polygon_attributes_from_coords(-72.92116, 41.31607, include_marine = F)
 ba_data <- get_polygon_attributes_from_coords(-59.821468, -1.523651, include_marine = F)
+make_global_locator_map(-72.92116, 41.31607) # Peabody Museum, CT
+ggsave("figures/globe_locator_map_CT.png", height = 6, width = 6, dpi = 400)
+make_global_locator_map(-59.821468, -1.523651)
+ggsave("figures/globe_locator_map_BA.png", height = 6, width = 6, dpi = 400)
 
 # ---- Step 2: choose best combinations of markers
 
@@ -13,40 +17,54 @@ ba_best <- pick_best_markers(ba_data)
 
 # ---- Step 3: plot best combinations of markers
 
-plot_best_markers(ct_best, num_markers = 1:3, top_n_rubrics = 2)
-ggsave("figures/best_markers_p_both_CT4.png", height = 10, width = 11, dpi = 400)
+plot_best_markers(ct_best, num_markers = 1:2, top_n_rubrics = 2)
+ggsave("figures/best_markers_p_both_CT5.png", height = 10, width = 11, dpi = 400)
 
-plot_best_markers(ba_best, num_markers = 1:3, top_n_rubrics = 2)
-ggsave("figures/best_markers_p_both_BA4.png", height = 10, width = 11, dpi = 400)
+plot_best_markers(ba_best, num_markers = 1:2, top_n_rubrics = 2)
+ggsave("figures/best_markers_p_both_BA5.png", height = 10, width = 11, dpi = 400)
 
 # ---- Step 4: plot % correct vs. % incorrect
 
 scatterplot_best_markers(ct_best, top_n = 1, num_markers = 1:3)
-ggsave("figures/best_scatter_CT_top_n_all4.png", height = 6, width = 7, dpi = 400)
+ggsave("figures/best_scatter_CT_top_n_all5.png", height = 6, width = 7, dpi = 400)
 
 scatterplot_best_markers(ba_best, top_n = 1, num_markers = 1:3)
-ggsave("figures/best_scatter_BA_top_n_all4.png", height = 6, width = 7, dpi = 400)
+ggsave("figures/best_scatter_BA_top_n_all5.png", height = 6, width = 7, dpi = 400)
 
 # ---- Step 5: phylogenetic visualization of detectability by marker
 
 make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_c", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_c_CT4.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_c_CT5.png", height = 12, width = 12, dpi = 400)
 
 make_hybas_phylogeny_plot(hybas_data = ba_data, metric = "p_c", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_c_BA4.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_c_BA5.png", height = 12, width = 12, dpi = 400)
 
 make_hybas_phylogeny_plot(hybas_data = ct_data, metric = "p_i", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_i_CT4.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_i_CT5.png", height = 12, width = 12, dpi = 400)
 
 make_hybas_phylogeny_plot(hybas_data = ba_data, metric = "p_i", rubric = "rdp90")
-ggsave("figures/circular_phylogeny_rdp90_p_i_BA4.png", height = 12, width = 12, dpi = 400)
+ggsave("figures/circular_phylogeny_rdp90_p_i_BA5.png", height = 12, width = 12, dpi = 400)
 
 # ---- Step 6: plot error rate model effects by marker
 
 eplots <- plot_predicted_loso_lopso_error(preds = fits, markers = markers, rubrics = rubrics)
-eplots$rdp90$Vences_16S$loso$i
-eplots$rdp90$Vences_16S$lospo$i
-eplots$rdp90$Vences_16S$loso$c
+
+# CT
+top_markers_eplot_CT <- create_error_plots_2_markers(eplots, rubric = "rdp90", 
+                                                  marker_pair = markers[2:3],
+                                                  sp_data = ct_data)
+ggsave("figures/top_markers_eplot_CT.png", plot = top_markers_eplot_CT, 
+       height = 10, width = 14, dpi = 400)
+
+# BR
+top_markers_eplot_BA <- create_error_plots_2_markers(eplots, rubric = "rdp90", 
+                                                     marker_pair = markers[2:3],
+                                                     sp_data = ba_data)
+ggsave("figures/top_markers_eplot_BA.png", plot = top_markers_eplot_BA, 
+       height = 10, width = 14, dpi = 400)
+
+
+
 
 
 ### TABLE
@@ -110,7 +128,4 @@ kableExtra::save_kable(alpha_table_html, "figures/conceptual/eg_alpha_table.html
 
 # ---- Step x: global locator map for hydrobasin coordinates
 
-make_global_locator_map(-72.92116, 41.31607) # Peabody Museum, CT
-ggsave("figures/globe_locator_map_CT.png", height = 6, width = 6, dpi = 400)
-make_global_locator_map(lon = -59.912786, lat = -2.069209)
-ggsave("figures/globe_locator_map_PF.png", height = 6, width = 6, dpi = 400)
+
