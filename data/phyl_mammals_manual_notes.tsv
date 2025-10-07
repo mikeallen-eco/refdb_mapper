@@ -1,0 +1,63 @@
+uid	bb_name	bb_name2	bb_name3	bb_name4	source	notes
+Marmosa_regina	Marmosa germana	Marmosa rapposa	Marmosa rutteri	NA	MDD	all split from regina
+Pteropus_argentatus	Pteropus chrysoproctus	NA	NA	NA	MDD	only listed as synonym under chrysoproctus
+Abrothrix_hershkovitzi	Abrothrix olivacea	NA	NA	NA	MDD	includes hershkovitzi
+Abrothrix_markhami	Abrothrix olivacea	NA	NA	NA	MDD	olivacea includes markhami
+Acomys_airensis	Acomys chudeaui	NA	NA	NA	MDD	includes airensis
+Akodon_leucolimnaeus	Akodon spegazzinii	NA	NA	NA	MDD	includes leucolimnaeus
+Akodon_neocenus	Akodon dolores	NA	NA	NA	MDD	dolores includes molinae and neocenus
+Alces_americanus	Alces alces	NA	NA	NA	MDD	Alces alces includes americanus
+Anoura_canishina	Anoura latidens	NA	NA	NA	MDD	canishina appears to be a misspelling of carishina which is included in latidens; see also https://doi.org/10.1515/mammalia-2020-0183
+Brucepattersonius_guarani	Brucepattersonius iheringi	NA	NA	NA	MDD	iheringi includes guarani, misionensis, paradisus
+Brucepattersonius_igniventris	Brucepattersonius soricinus	NA	NA	NA	MDD	soricinus includes igniventris
+Brucepattersonius_misionensis	Brucepattersonius iheringi	NA	NA	NA	MDD	iheringi includes guarani, misionensis, paradisus
+Brucepattersonius_paradisus	Brucepattersonius iheringi	NA	NA	NA	MDD	iheringi includes guarani, misionensis, paradisus
+Canis_anthus	Canis lupaster	NA	NA	NA	MDD	MDD: the name lupaster is recommended over anthus as the specific epithet since anthus appears to represent a numen dubium due to the lost type specimen possibly representing either this species of Lupulella adusta
+Chaetophractus_nationi	Chaetophractus vellerosus	NA	NA	NA	MDD	vellerosus includes nationi
+Chelemys_delfini	Geoxus michaelseni	NA	NA	NA	MDD	G michaelseni includes delfini
+Chodsigoa_lamula	Chodsigoa hypsibia	NA	NA	NA	MDD	hypsibia includes lamula
+Clyomys_bishopi	Clyomys laticeps	NA	NA	NA	MDD	laticeps includes bishopi
+Crocidura_gmelini	Crocidura suaveolens	NA	NA	NA	MDD	includes gmelini
+Cryptonanus_ignitus	Cryptonanus chacoensis	NA	NA	NA	MDD	chacoensis includes ignitus as a snonym
+Ctenomys_budini	Ctenomys frater	NA	NA	NA	MDD	frater includes C. budini and C. sylvanus
+Ctenomys_goodfellowi	Ctenomys boliviensis	NA	NA	NA	MDD	boliviensis includes goodfellowi
+Ailurus_fulgens	Ailurus fulgens	Ailurus styani	NA	NA	MDD	MDD: stayani split from A. fulgens (both are MOL Accepted), although there is debated in the literature over whether the distinctions between the two Ailurus taxa should warrant species or subspecies status; the species status of the two species are retained here for now pending further studies
+Apodemus_draco	Apodemus draco	Apodemus ilex	NA	NA	MDD	MOL splits ilex from draco but phylogeny does not
+Dermanura_aztecus	Artibeus aztecus	NA	NA	NA	MDD	MDD: moved to Dermanura from Artibeus, although some recent publications do not agree with this split
+Dermanura_cinereus	Artibeus cinereus	NA	NA	NA	MDD	MDD: moved to Dermanura from Artibeus, although some recent publications do not agree with this split
+Dermanura_glaucus	Artibeus glaucus	NA	NA	NA	MDD	MDD: moved to Dermanura from Artibeus, although some recent publications do not agree with this split
+Artibeus_jamaicensis	Artibeus jamaicensis	Artibeus schwartzi	NA	NA	MDD	schwartzi split from A. jamaicensis; split recognized by MOL but not phylogney
+Dermanura_toltecus	Artibeus toltecus	NA	NA	NA	MDD	MDD: moved to Dermanura from Artibeus, although some recent publications do not agree with this split
+Arvicola_amphibius	Arvicola amphibius	Arvicola italicus	NA	NA	MDD	split from A. amphibius; a split recognized by MOL but not by phylogeny
+Balaenoptera_edeni	Balaenoptera edeni	Balaenoptera brydei	Balaenoptera ricei	NA	MDD	brydei split from B. edeni; ricei is new species previously confused with brydei, split & new sp recognized by MOL but not phylogeny
+Equus_africanus	Equus africanus	Equus asinus	NA	NA	MDD	asinus is domestic form of E. africanus; asinus recognized as species by MOL but not by phylogeny
+Dasyprocta_cristata	Dasyprocta leporina	NA	NA	NA	MDD	previously included D. croconota and includes cristata
+Dermanura_gnomus	Artibeus gnomus	NA	NA	NA	MDD	MDD: moved to Dermanura from Artibeus, although some recent publications do not agree with this split
+Dermanura_incomitatus	Artibeus watsoni	NA	NA	NA	MDD	MDD: watsoni includes incomitatus; moved to Dermanura from Artibeus
+Barbastella_leucomelas	Barbastella leucomelas	Barbastella darjelingensis	Barbastella caspica	NA	MDD	MDD: caspica split from B. darjelingensis, which was previously included under B. leucomelas; phylogeny lumps them all under leucomelas
+Bubalus_arnee	Bubalus arnee	Bubalus bubalis	NA	NA	MDD	bubalis is domestic form of arnee; split in MOL/MDD but not in phylogeny
+Chimarrogale_himalayica	Chimarrogale himalayica	Chimarrogale leander	NA	NA	MDD	leander split from C. himalayica; split recognized by MOL but not by phylogeny
+Giraffa_camelopardalis	Giraffa camelopardalis	Giraffa giraffa	Giraffa tippelskirchi	NA	MDD	camelopardalis split into 3; recognized by MOL/MDD but not phylogeny
+Gerbilliscus_robustus	Gerbilliscus robustus	Gerbilliscus vicinus	NA	NA	MDD	vicinus split from G. robustus in MOL but not in phyogeny
+Geomys_bursarius	Geomys bursarius	Geomys jugossicularis	NA	NA	MDD	jugossicularis split from G. bursarius in MOL but not in phylogeny
+Eptesicus_bobrinskoi	Eptesicus gobiensis	NA	NA	NA	MDD	gobiensis includes bobrinskoi; moved from Eptesicus to Cnephaeus in MDD but not MOL
+Eptesicus_kobayashii	NA	NA	NA	NA	MDD	kaboayashii is present in phylogeny, along with bottae and serotinus; MOL only contains bottae and serotinus; MDD: kaboayashii tentatively recognized as a distinct species, but may be a synonym of E. serotinus or E. bottae
+Hippopotamus_guldbergi	Hippopotamus madagascariensis	NA	NA	NA	MDD	includes the recently described guldbergi
+Monodelphis_maraxina	Monodelphis glirina	NA	NA	NA	MDD	glirina includes maraxina
+Gazella_saudiya	Gazella dorcas	NA	NA	NA	MDD	dorcas includes saudiya and pelzelnii
+Microtus_breweri	Microtus pennsylvanicus	NA	NA	NA	MDD	includes breweri
+Abrothrix_longipilis	Abrothrix longipilis	Abrothrix hirta	NA	NA	MDD	hirta split from longipilis by MOL but not phylogeny
+Abrothrix_olivaceus	Abrothrix olivacea	Abrothrix xanthorhina	NA	NA	MDD	MDD: olivacea includes xanthorhina; spelled 'olivacea' to match generic gender
+Acomys_spinosissimus	Acomys spinosissimus	Acomys selousi	NA	NA	MDD	selousi split from A. spinosissimus
+Mico_chrysoleucus	Mico chrysoleucos	NA	NA	NA	MDD	M. chrysoleucus is a synonym of M. chrysoleucos
+Crocidura_suaveolens	Crocidura suaveolens	Crocidura gueldenstaedtii	NA	NA	MDD	gueldenstaedtii split from C. suaveolens in MOL but not phylogeny
+Felis_silvestris	Felis silvestris	Felis lybica	NA	NA	MDD	lybica split from F. silvestris in MOL but not in phylogeny
+Jaculus_jaculus	Jaculus jaculus	Jaculus hirtipes	NA	NA	MDD	hirtipes split from J. jaculus in MOL but not in phylogeny
+Sorex_palustris	Sorex palustris	Sorex albibarbis	NA	NA	MDD	albibarbis split from S. palustris in MOL/MDD but not in phylogeny
+Sorex_cinereus	Sorex cinereus	Sorex fontinalis	NA	NA	MDD	MDD: cinereus tentatively includes fontinalis; MOL treats as distinct species but phylogeny does not
+Rhinopoma_hardwickii	Rhinopoma hardwickii	Rhinopoma cystops	NA	NA	MDD	cystops split from R. hardwickii in MOL but not phylogeny
+Cervus_elaphus	Cervus elaphus	Cervus canadensis	NA	NA	MDD	canadensis split from elaphus in MOL but not phylogeny
+Microtus_pennsylvanicus	Microtus pennsylvanicus	Microtus drummondii	NA	NA	MDD	drummondii split from M. pennsylvanicus in MOL but not phylogeny
+Myonycteris_angolensis	Lissonycteris angolensis	NA	NA	NA	MDD	occasionally included under the genus Lissonycteris, although most recent publications include the species under Myonycteris
+Mimon_crenulatum	Gardnerycteris crenulatum	Gardnerycteris keenani	NA	NA	MDD	keenani split from G. crenulata; moved from Mimon to Gardnerycteris
+Euneomys_mordax	Euneomys fossor	NA	NA	NA	MDD	fossor includes mordax in MOL but both appear in phylogeny

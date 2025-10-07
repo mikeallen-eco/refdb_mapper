@@ -1,0 +1,109 @@
+uid	bb_name	bb_name2	bb_name3	bb_name4	source	notes
+Arctophoca_australis	Arctocephalus australis	NA	NA	NA	MDD	MDD: has been moved to Arctophoca by a number of molecular studies using mtDNA, which found that Arctocephalus pusillus was not related to other members of the genus, but the paraphyly presented in earlier studies is likely a result of mitonuclear discordance and the genus Arctocephalus is now retained following recent studies using nuclear and mitochondrial markers; phyl uses Arctocephalus australis
+Artibeus_watsoni	Dermanura watsoni	Dermanura incomitatus	NA	NA	MDD	watsoni includes incomitatus; moved to Dermanura from Artibeus, although some recent publications do not agree with this split, there seems to be more publications using this revised taxonomy rather than leaving all species under Artibeus
+Cheracebus_torquatus	Callicebus torquatus	Callicebus purinus	NA	NA	MDD	moved from Callicebus to the recently described Cheracebus, although this arrangement is considered tentative, as some recent publications prefer to recognize Cheracebus and Plecturocebus as subgenera of Callicebus; purinus is now a synonym of C. torquatus since the type locality and specimen of C. torquatus was proven to be from populations previously attributed to C. purinus; thus, the species previously known as C. purinus is now known as C. torquatus
+Heterogeomys_cherriei	Orthogeomys cherriei	Orthogeomys matagalpae	NA	NA	MDD	includes matagalpae; moved to Heterogeomys from Orthogeomys
+Heterogeomys_dariensis	Orthogeomys dariensis	Orthogeomys thaeleri	NA	NA	MDD	includes thaeleri; moved to Heterogeomys from Orthogeomys
+Hylopetes_sagitta	Petinomys sagitta	Hylopetes lepidus	NA	NA	MDD	includes lepidus; moved from Petinomys to Hylopetes
+Laephotis_capensis	Neoromicia capensis	Neoromicia melckorum	NA	NA	MDD	includes melckorum; moved from Neoromicia to Laephotis
+Lagothrix_lagothricha	Lagothrix lagotricha	Lagothrix cana	Lagothrix poeppigii	Lagothrix lugens	MDD	includes lugens, cana, and poeppigii
+Lycalopex_gymnocercus	Pseudalopex gymnocercus	NA	NA	NA	MDD	both griseus and gymnocercus are seprate in phylogeny and MOL; MDD: there is considerable confusion regarding the species boundaries between L. griseus and L. gymnocercus, with some studies supporting a single species, two traditional species, or two species that don't match the current distribution of either species; both species are retained here until more conclusive studies are available; Lycalopex has priority over Pseudalopex, although some publications use Pseudalopex
+Mirostrellus_joffrei	Pipistrellus anthonyi	Pipistrellus joffrei	NA	NA	MDD	moved from Hypsugo to the recently described Mirostrellus; includes anthonyi
+Rhinopoma_cystops	Rhinopoma hardwickii	Rhinopoma macinnesi	NA	NA	MDD	split from R. hardwickii and includes macinnesi
+Cervus_canadensis	Cervus elaphus	NA	NA	NA	MDD	split from C. elaphus, includes alashanicus, macneilli, wallichii, xanthopygus
+Microtus_drummondii	Microtus pennsylvanicus	NA	NA	NA	MDD	split from M. pennsylvanicus
+Lissonycteris_angolensis	Myonycteris angolensis	NA	NA	NA	MDD	occasionally included under the genus Lissonycteris, although most recent publications include the species under Myonycteris
+Metachirus_myosuros	Metachirus nudicaudatus	NA	NA	NA	MDD	split from M. nudicaudatus
+Urva_auropunctata	Herpestes javanicus	NA	NA	NA	MDD	auropuctata split from U. javanica; moved from Herpestes to Urva, species misspelled: -us -> -a; phylogeny has H. javanicus only
+Tragelaphus_sylvaticus	Tragelaphus scriptus	NA	NA	NA	MDD	split from T. scriptus based on molecular data; phylogeny only contains scriptus
+Lasiurus_villosissimus	Lasiurus cinereus	NA	NA	NA	MDD	split from cinereus; phylogeny only contains cinereus
+Myotis_sibiricus	Myotis brandtii	NA	NA	NA	MDD	split from M. brandtii; includes gracilis; phylogeny only contains brandtii
+Giraffa_giraffa	Giraffa camelopardalis	NA	NA	NA	MDD	MDD: camelopardalis previously included G. giraffa, G. reticulata, and G. tippelskirchi; phylogeny lumps them all as camelopardalis
+Giraffa_tippelskirchi	Giraffa camelopardalis	NA	NA	NA	MDD	MDD: camelopardalis previously included G. giraffa, G. reticulata, and G. tippelskirchi; phylogeny lumps them all as camelopardalis
+Berardius_minimus	Berardius bairdii	NA	NA	NA	MDD	described in 2019; previously confused with bairdii which is represented in the phylogeny
+Thomasomys_fumeus	Thomasomys rhoadsi	NA	NA	NA	MDD	split from rhoadsi in MOL but not in phylogeny
+Canis_lupaster	Canis_anthus	NA	NA	NA	MDD	split from C. aureus; the name lupaster is recommended over anthus as the specific epithet since anthus appears to represent a numen dubium due to the lost type specimen possibly representing either this species of Lupulella adusta
+Crocidura_anhuiensis	Crocidura attenuata	NA	NA	NA	MDD	recently described; part of the C attenuata complex; lumped as C attenuata in phylogeny
+Crocidura_dongyangjiangensis	Crocidura attenuata	NA	NA	NA	MDD	recently described; part of the C attenuata complex; lumped as C attenuata in phylogeny
+Cyclopes_dorsalis	Cyclopes didactylus	NA	NA	NA	MDD	split from C. didactylus in MOL but not phylogeny
+Cyclopes_thomasi	Cyclopes didactylus	NA	NA	NA	MDD	recently described and previously confused with C didactylus
+Cyclopes_xinguensis	Cyclopes didactylus	NA	NA	NA	MDD	recently described and previously confused with C didactylus
+Crocidura_beata	Crocidura beatus	NA	NA	NA	MDD	generally spelt 'beatus', but this spelling has been changed for gender agreement
+Sundasciurus_natunensis	Sundasciurus lowii	NA	NA	NA	MDD	split from lowii in MOL but not in phylogeny
+Trachops_ehrhardti	Trachops cirrhosus	NA	NA	NA	MDD	split from cirrhosus
+Myotis_browni	Myotis muricola	NA	NA	NA	MDD	muricola tentatively includes browni, which may represent a distinct species but further research is needed to confirm this
+Sorex_fontinalis	Sorex cinereus	NA	NA	NA	MDD	MDD: cinereus tentatively includes fontinalis, although further studies using integrative taxonomic methods are needed and some authors still retain fontinalis as a distinct species; MOL treats as distinct
+Peromyscus_micropus	Peromyscus melanophrys	NA	NA	NA	MDD	MDD: split from P. melanophrys in MOL but not in phylogeny
+Cynomops_kuizha	Cynomops abrasus	NA	NA	NA	MDD	recently described in 2021; kuizha was previously confused with C abrasus and not included in phylogeny
+Cynomops_mastivus	Cynomops abrasus	NA	NA	NA	MDD	split from C. abrasus in MOL but not in phylogeny
+Crocidura_caudipilosa	NA	NA	NA	NA	MDD	described in 2019; part of a complex; caudipilosa does not appear in phylogeny
+Lupulella_adustus	Canis adustus	NA	NA	NA	MDD	moved from Canis to Lupulella
+Nothocricetulus_migratorius	Cricetulus migratorius	NA	NA	NA	MDD	moved from Cricetulus to the recently described Nothocricetulus
+Lasiopodomys_gregalis	Microtus gregalis	NA	NA	NA	MDD	MDD: split from gregalis; moved from Microtus to either Lasiopodomys or Stenocranius; we include the species under Stenocranius following the most recent revision
+Lupulella_mesomelas	Canis mesomelas	NA	NA	NA	MDD	moved from Canis to Lupulella
+Plecturocebus_cupreus	Callicebus cupreus	NA	NA	NA	MDD	previously included P. toppini; moved from Callicebus to the recently described Plecturocebus, although this arrangement is considered tentative, as some recent publications prefer to recognize Cheracebus and Plecturocebus as subgenera of Callicebus
+Plecturocebus_grovesi	NA	NA	NA	NA	MDD	new species described in 2019; not included in phylogeny
+Saimiri_cassiquiarensis	Saimiri sciureus	NA	NA	NA	MDD	cassiquiarensis split from sciureus in MOL but not in phylogeny
+Saimiri_macrodon	Saimiri_sciureus	NA	NA	NA	MDD	split from S. sciureus in MOL but not in phylogeny
+Saguinus_ursula	Saguinus niger	NA	NA	NA	MDD	split from S. niger in MOL but not in phylogeny
+Saguinus_fuscus	Leontocebus fuscicollis	NA	NA	NA	MDD	MDD: split from S. fuscicollis; recently moved from Saguinus to Leontocebus ...
+Saguinus_fuscicollis	Leontocebus fuscicollis	NA	NA	NA	MDD	MDD: recently moved from Saguinus to Leontocebus ...
+Plecturocebus_caligatus	Callicebus caligatus	Callicebus dubius	NA	NA	MDD	caligatus includes dubius; moved from Callicebus to the recently described Plecturocebus; phylogeny splits them
+Equus_asinus	Equus africanus	NA	NA	NA	MDD	E asinus is domestic form of africanus; asinus not in phylogeny
+Arctophoca_forsteri	Arctocephalus forsteri	NA	NA	NA	MDD	has been moved to Arctophoca by a number of molecular studies using mtDNA
+Sorex_eximius	Sorex hoyi	NA	NA	NA	MDD	eximius split from hoyi in MOL but not in phylogeny
+Pteronotus_rubiginosus	Pteronotus parnellii	NA	NA	NA	MDD	split from P. parnellii in MOL but not in phylogeny
+Tonatia_maresi	Tonatia saurophila	NA	NA	NA	MDD	split from T. saurophila in MOL but not in phylogeny
+Suncus_megalurus	Suncus megalura	NA	NA	NA	MDD	MDD: changed from 'megalura' to 'megalurus' for gender agreement; MOL uses 'us' ending
+Aonyx_cinereus	Aonyx cinerea	NA	NA	NA	MDD	MOL uses 'us' ending
+Rhinolophus_damarensis	Rhinolophus darlingi	NA	NA	NA	MDD	damarensis split from R. darlingi in MOL but not in phylogeny
+Reithrodon_caurinus	Reithrodon auritus	NA	NA	NA	MDD	MDD: split from R. auritus in HMW7, although the reason why is not discussed and there aren't any publications to support it otherwise; the species is tentatively recognized here pending further investigation; MOL splits but phylogeny doesn't
+Trachypithecus_mauritius	Trachypithecus auratus	NA	NA	NA	MDD	split from T. auratus in MOL but not phylogeny
+Lasiurus_frantzii	Lasiurus blossevillii	NA	NA	NA	MDD	split from L. blossevillii by MOL but not by phylogeny
+Arctonyx_albogularis	Arctonyx collaris	NA	NA	NA	MDD	split from collaris in MOL but not in phylogeny
+Mesoplodon_hotaula	Mesoplodon ginkgodens	NA	NA	NA	MDD	split from M. ginkgodens in MOL but not in phylogeny
+Cricetomys_ansorgei	Cricetomys gambianus	NA	NA	NA	MDD	MDD: has been considered a synonym of C. gambianus or C. emini, but it is considered distinct following recent publications; appears to be mainly historically synonymous with C gambianus, rarely C emini
+Cryptotis_parvus	Cryptotis parva	NA	NA	NA	MDD	ending changed from -a to -us through all of Cryptotis
+Sorex_albibarbis	Sorex palustris	NA	NA	NA	MDD	split from palustris in MOL but not in phylogeny
+Platyrrhinus_incarum	Platyrrhinus helleri	NA	NA	NA	MDD	split from helleri but not in phylogeny
+Sorex_obscurus	Sorex monticolus	NA	NA	NA	MDD	split from S. monticolus; populations in coastal west Canada and Alaska are now attributed to S. pacificus
+Cyclopes_rufus	Cyclopes didactylus	NA	NA	NA	MDD	recently described; previously confused with didactylus
+Cebus_unicolor	Cebus albifrons	NA	NA	NA	MDD	MDD: tentatively includes aequatorialis, cesarae, cuscinus, leucocephalus, malitiosus, unicolor, versicolor, yuracus, and trinitatis
+Cebus_imitator	Cebus capucinus	NA	NA	NA	MDD	MDD: tentatively includes imitator, which is considered a distinct species by some authors; split by MOL, lumped by phylogeny
+Cebus_castaneus	Cebus olivaceus	NA	NA	NA	MDD	MDD: tentatively includes castaneus and brunneus; split by MOL, lumped by phylogeny
+Alticola_montosus	Alticola montosa	NA	NA	NA	MDD	MDD & MOL spell with a 'us'
+Acrobates_frontalis	Acrobates pygmaeus	NA	NA	NA	MDD	MDD: previously included A. frontalis; MDD splits; phylogeny lumps
+Cynomops_milleri	Cynomops paranus	NA	NA	NA	MDD	split from paranus in MOL but not in phylogeny
+Chiropotes_sagulatus	Chiropotes chiropotes	NA	NA	NA	MDD	split from C. chiropotes; sagulatus applies to the populations previously attributed to C. israelita
+Philander_pebas	Philander opossum	NA	NA	NA	MDD	described in 2018; previously confused with 3 species but mainly sister species P canus, which was reently split from P opossum; splits and new species not reflected in phylogeny
+Marmosa_macrotarsus	Marmosa quichua	NA	NA	NA	MDD	MDD: split from M. murina and includes quichua; phylogeny contains both murina and quichua but not macrotarsus
+Rhinolophus_nippon	Rhinolophus ferrumequinum	NA	NA	NA	MDD	split from R. ferrumequinum based on molecular and morphological distinction
+Pteropus_medius	Pteropus giganteus	NA	NA	NA	MDD	MDD: the name medius is used instead of giganteus because giganteus is now considered a synonym of P. vampyrum; P. intermedius has been included under this species or under P. vampyrus, but the species is tentatively recognized here until further research is done
+Lichonycteris_degener	Lichonycteris obscura	NA	NA	NA	MDD	split from obscura in MOL but not in phylogeny
+Rhinolophus_perniger	Rhinolophus luctus	NA	NA	NA	MDD	split from R. luctus; previously known as lanosus, but perniger has nomenclatural priority
+Leopardus_emiliae	Leopardus tigrinus	NA	NA	NA	MDD	MDD: the name emiliae has been considered a distinct species, but recent work has desmonstrated that this name represents true L. tigrinus; MOL splits; phylogeny lumps
+Neomys_milleri	Neomys anomalus	NA	NA	NA	MDD	split from anomalus in MOL but not in phylogeny
+Tylonycteris_fulvida	Tylonycteris pachypus	NA	NA	NA	MDD	split from T. pachypus in MOL but not in phylogeny
+Dasypus_beniensis	Dasypus kappleri	NA	NA	NA	MDD	split from D. kappleri in MOL but not in phylogeny
+Sorex_navigator	Sorex palustris	Sorex alaskanus	NA	NA	MDD	split from S. palustris; includes alaskanus in MOL but not phylogeny
+Alexandromys_middendorffii	Microtus middendorffii	NA	NA	NA	MDD	MOL moved to genus Alexandromys; phylogeny still in Microtus
+Hipposideros_gentilis	Hipposideros pomona	Hipposideros megalotis	NA	NA	MDD	split from H. pomona; includes the name megalotis, which was considered a distinct species in its own genus, Paracoelops
+Molossus_fluminensis	Molossus rufus	NA	NA	NA	MDD	split from M. rufus in MOL but not in phylogeny
+Miniopterus_arenarius	Miniopterus natalensis	NA	NA	NA	MDD	split from M. natalensis; moved from Vespertilionidae to Miniopteridae
+Dasypus_pastasae	Dasypus kappleri	NA	NA	NA	MDD	split from D. kappleri in MOL but not in phylogeny
+Pteronotus_alitonus	Prionailurus rubiginosus	NA	NA	NA	MDD	MDD: recently described; GBIF: Pteronotus alitonus was split from P. rubiginosus based on molecular, morphological, and acoustic evidence
+Sturnira_giannae	Sturnira lilium	NA	NA	NA	MDD	MDD: recently described; source publication: which was previously confused with S. lilium
+Acomys_chudeaui	Acomys airensis	NA	NA	NA	MDD	chudeaui includes airensis and is a synonym per MDD
+Barbastella_darjelingensis	Barbastella leucomelas	NA	NA	NA	MDD	MDD: split from B. leucomeles in MOL but not in phylogeny; phylogeny spelling ends in 'as'
+Leopardus_braccatus	Leopardus colocolo	NA	NA	NA	MDD	MDD: split from L. colocola after being transferred back into the species; phylogeny spelling ends in 'o'
+Meles_canescens	Meles meles	NA	NA	NA	MDD	split from M meles in MOL but not in phylogeny
+Rhinolophus_lobatus	Rhinolophus landeri	NA	NA	NA	MDD	MDD: split from landeri and included populations now attributed to the recently described R. webalai
+Hipposideros_swinhoei	Hipposideros pratti	NA	NA	NA	MDD	MDD: previously known under the name H. pratti, but the name swinhoii was shown to be the appropriate name for the species; the name swinhoii was previously considered a synonym of H. armiger; often spelt 'swinhoei', but the name was originally spelt 'swinhoii' and 'swinhoei' is an unjustified emendation (not appearing to be in prevailing use), so the spelling has been changed to match the original description
+Micromys_erythrotis	Micromys minutus	NA	NA	NA	MDD	MDD: split from M. minutus and previously included M. pygmaeus; MOL splits, phylogeny lumps
+Miniopterus_blepotis	Miniopterus fuliginosus	NA	NA	NA	MDD	MDD: split from M. schreibersii and tentatively includes blepotis, which has been recognized by some authors with limited data; moved from Vespertilionidae to Miniopteridae
+Lophuromys_ansorgei	Lophuromys sikapusi	NA	NA	NA	MDD	MDD: the name major is tentatively included under this species based on morphological data and geographic proximity, however, the name may apply to another species in the sikapusi group
+Martes_caurina	Martes americana	NA	NA	NA	MDD	split from americana in MOL but not in phylogeny
+Meriones_psammophilus	Meriones meridianus	Meriones chengi	NA	NA	MDD	MDD: split from M. meridianus and includes chengi
+Grammomys_poensis	NA	NA	NA	NA	MDD	moved from Grammomys to Thamnomys but neither nor the former name rutilans are in phylogeny
+Miniopterus_pallidus	Miniopterus schreibersii	NA	NA	NA	MDD	split from M. schreibersii; moved from Vespertilionidae to Miniopteridae
+Ovis_vignei	Ovis orientalis	NA	NA	NA	MDD	MDD: split from O. gmelini (previously orientalis); includes arabica, punjabiensis, cycloceros, and bochariensis, which were considered distinct by Groves & Grubb 2011; for additional information regarding the MDD's decision to not follow the Groves & Grubb 2011 Ungulate Taxonomy, see 'Subjective decisions' on the 'About' tab

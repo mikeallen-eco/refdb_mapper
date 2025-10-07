@@ -2,7 +2,13 @@
 .Rhistory
 .RData
 .Ruserdata
-/data
+/data/*.tre
+/data/*.gsheet
+/data/*.rds
+/data/*.txt
+/data/phyltax.csv
+/data/geotax.csv
+/data/geotax_phyl_mammals.csv
 .DS*
 /figures
 /writing

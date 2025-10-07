@@ -1,0 +1,100 @@
+uid	bb_name	bb_name2	bb_name3	bb_name4	source	notes
+Allocebus_trichotus	Allocebus trichotis	NA	NA	NA	MDD	not explicitly stated in MDD but spelling is off by one letter and other web sources say it is a synonym
+Anteliomys_chinensis	Eothenomys chinensis	NA	NA	NA	MDD	current MDD genus is Anteliomys but not in current MOL
+Anteliomys_olitor	Eothenomys olitor	NA	NA	NA	MDD	current MDD genus is Anteliomys but not in current MOL
+Bisbalus_citus	Mazama americana	NA	NA	NA	MDD	MDD lists as a former subspecies of M. americana; genus moved into Bisbalus in 2024
+Bramus_fuscocapillus	Ellobius fuscocapillus	NA	NA	NA	MDD	moved from Ellobius to Bramus
+Bramus_lutescens	Ellobius lutescens	NA	NA	NA	MDD	moved from Ellobius to Bramus
+Bubalus_kerabau	Bubalus bubalis	NA	NA	NA	MDD	subspecies of bubalis; domestic
+Canis_himalayensis	Canis lupus	NA	NA	NA	MDD	included in lupus as Canis lupus chanco
+Canis_indica	Canis lupus	NA	NA	NA	MDD	included in lupus
+Eupetaurus_nivamons	Eupetaurus cinereus	NA	NA	NA	MDD	nivamons was described in 2021 from populations previously confused with cinereus
+Gardnerycteris_crenulata	Gardnerycteris crenulatum	NA	NA	NA	MDD	misspelled in NCBI
+Giraffa_reticulata	Giraffa camelopardalis	NA	NA	NA	MDD	reticulata is now a valid species in MDD split in 2021 from camelopardalis; MOL still lumps into camelopardalis
+Guerlinguetus_brasiliensis	Sciurus aestuans	NA	NA	NA	MDD	lots of proposed revisions in 2020 but this change not adopted by MDD or MOL yet: split from S. aestuans; under a new proposed taxonomic arrangement for Sciurini, S. brasiliensis (along with S. aestuans) would be moved to the genus Guerlinguetus; this arrangement is tentatively not followed here pending further investigation
+Hadrosciurus_igniventris	Sciurus igniventris	NA	NA	NA	MDD	move into Hadrosciurus genus is proposed but not adopted yet by MDD or MOL
+Hadrosciurus_pyrrhinus	Sciurus pyrrhinus	NA	NA	NA	MDD	move into Hadrosciurus genus is proposed but not adopted yet by MDD or MOL
+Hadrosciurus_spadiceus	Sciurus spadiceus	NA	NA	NA	MDD	move into Hadrosciurus genus is proposed but not adopted yet by MDD or MOL
+Hesperosciurus_griseus	Sciurus griseus	NA	NA	NA	MDD	move into Hesperosciurus genus proposed but not followed yet by MDD or MOL
+Hylomys_macarong	Hylomys suillus	NA	NA	NA	MDD	new species described in 2023; previously confused with suillus
+Hylomys_peguensis	Hylomys suillus	NA	NA	NA	MDD	split from H. suillus in 2023
+Hylomys_vorax	Hylomys suillus	NA	NA	NA	MDD	new species described in 2023; previously confused with suillus
+Leopardus_pardinoides	Leopardus tigrinus	NA	NA	NA	MDD	pardinoides split from tigrinus in 2024
+Lepilemur_grewcocki	Lepilemur grewcockorum	NA	NA	NA	MDD	MDD prefers grewcocki version
+Lepilemur_jamesi	Lepilemur jamesorum	NA	NA	NA	MDD	MDD prefers jamesi version
+Lepilemur_wrighti	Lepilemur wrightae	NA	NA	NA	MDD	MDD prefers wrighti version
+Leptosciurus_mimulus	Microsciurus mimulus	NA	NA	NA	MDD	move into Leptosciurus genus proposed but not followed yet by MDD or MOL
+Cercartetus_nana	Cercartetus nanus	NA	NA	NA	MDD	MDD indicates that nanus was changed to nana
+Huetia_leucorhinus	Huetia leucorhina	NA	NA	NA	MDD	MDD indicates that leucorhina is correct to match Huetia genus
+Leptosciurus_otinus	Microsciurus flaviventer	NA	NA	NA	MDD	recommendation to move into genus Leptosciurus not yet followed by MDD; MOL lumps with M. flaviventer as ssp otinus while MDD recognizes otinus as a full species split from flaviventer
+Leptosciurus_pucheranii	Sciurus pucheranii	NA	NA	NA	MDD	recommendation to move into genus Leptosciurus not yet followed by MDD or MOL
+Leptosciurus_similis	Microsciurus flaviventer	NA	NA	NA	MDD	recommendation to move into genus Leptosciurus not yet followed by MDD; MOL lumps with M. flaviventer as a ssp while MDD recognizes it as a full species split from flaviventer
+Lepus_saharae	Lepus capensis	NA	NA	NA	MDD	recently described based on populations previously attributed to L. capensis
+Leucocephalophus_adersi	Cephalophus adersi	NA	NA	NA	MDD	MDD moved into new genus described in 2022
+Lophostoma_evote	Lophostoma evotis	NA	NA	NA	MDD	MDD changed evotis to evote to match genus
+Macaca_balantak	Macaca tonkeana	NA	NA	NA	MSW3	Balantak subspecies considered a full species by some
+Manis_mysteria	Manis culionensis	NA	NA	NA	MDD	described in a 2023 PNAS paper https://doi.org/10.1073/pnas.230409612; previously confused with Philipine Pangolin
+Marmosops_dorothea	Marmosops noctivagus	NA	NA	NA	MDD	includes dorathea
+Mesechinus_orientalis	Mesechinus hughi	NA	NA	NA	MDD	orientalis described in 2023; previously confused with hughi
+Mesoplodon_eueu	Mesoplodon mirus	NA	NA	NA	MDD	eueu described in 2021; previously confused with mirus
+Micromys_pygmaeus	Micromys erythrotis	NA	NA	NA	MDD	pygmaeus split from erythrotis in 2023
+Microtus_yuldaschi	Microtus juldaschi	NA	NA	NA	MDD	MDD: previously spelt 'juldaschi', but this was a subsequent mispelling from the original description and the correct original spelling is 'yuldaschi'
+Mictomicrotus_liangshanensis	Proedromys liangshanensis	NA	NA	NA	MDD	MDD: moved from Proedromys to the recently described Mictomicrotus
+Mogera_hainana	Mogera insularis	NA	NA	NA	MDD	split from M. insularis in 2021
+Molossus_barnesi	Molossus coibensis	NA	NA	NA	MDD	coibensis includes barnesi
+Molossus_melini	Molossus molossus	NA	NA	NA	MDD	described in 2021; previously confused with molossus and possibly currentium
+Montemys_delectorum	Praomys delectorum	NA	NA	NA	MDD	moved from Praomys to the recently described Montemys in 2021
+Mops_plicatus	Chaerephon plicatus	NA	NA	NA	MDD	MDD: moved from Chaerephon to Mops, although further research is needed to confirm this placement (2020)
+Mops_pumilus	Chaerephon pumilus	NA	NA	NA	MDD	MDD: moved from Chaerephon to Mops, although further research is needed to confirm this placement (2020)
+Myonycteris_angolensis	Lissonycteris angolensis	NA	NA	NA	MDD	MDD: occasionally included under the genus Lissonycteris; most recent publications include the species under Myonycteris
+Nannospalax_ceyhanus	Nannospalax ehrenbergi	NA	NA	NA	MDD	ceyhanus is subspecies of ehrenbergi
+Nannospalax_galili	Nannospalax ehrenbergi	NA	NA	NA	MDD	ehrenbergi includes carmeli, galili, golani, and judaei
+Nannospalax_golani	Nannospalax ehrenbergi	NA	NA	NA	MDD	ehrenbergi includes carmeli, galili, golani, and judaei
+Nannospalax_hellenicus	Nannospalax leucodon	NA	NA	NA	MDD	split from N. leucodon in 2023
+Nannospalax_hungaricus	Nannospalax leucodon	NA	NA	NA	MDD	split from N. leucodon in 2023
+Nannospalax_judaei	Nannospalax ehrenbergi	NA	NA	NA	MDD	ehrenbergi includes carmeli, galili, golani, and judaei
+Nannospalax_montanoserbicus	Nannospalax leucodon	NA	NA	NA	MDD	split from N. leucodon in 2023
+Nannospalax_monticola	Nannospalax leucodon	NA	NA	NA	MDD	split from N. leucodon in 2023
+Nannospalax_serbicus	Nannospalax leucodon	NA	NA	NA	MDD	split from N. leucodon in 2023
+Nannospalax_turcicus	Nannospalax leucodon	NA	NA	NA	MDD	split from N. leucodon in 2023
+Neodon_bershulaensis	NA	NA	NA	NA	MDD	newly described in 2022; not clear which species it was previously confused with but likely Neodon clarkei or Neodon irene
+Neodon_chayuensis	NA	NA	NA	NA	MDD	newly described in 2022; not clear which species it was previously confused with
+Neodon_liaoruii	NA	NA	NA	NA	MDD	newly described in 2022; not clear which species it was previously confused with
+Neodon_namchabarwaensis	NA	NA	NA	NA	MDD	newly described in 2022; not clear which species it was previously confused with
+Neodon_shergylaensis	NA	NA	NA	NA	MDD	newly described in 2022; not clear which species it was previously confused with
+Neoeptesicus_brasiliensis	Eptesicus brasiliensis	NA	NA	NA	MDD	moved from Eptesicus to the recently described Neoeptesicus in 2023
+Neoeptesicus_chiriquinus	Eptesicus chiriquinus	NA	NA	NA	MDD	moved from Eptesicus to the recently described Neoeptesicus in 2023
+Neoeptesicus_diminutus	Eptesicus diminutus	NA	NA	NA	MDD	moved from Eptesicus to the recently described Neoeptesicus in 2023
+Neoeptesicus_furinalis	Eptesicus furinalis	NA	NA	NA	MDD	moved from Eptesicus to the recently described Neoeptesicus in 2023
+Neoeptesicus_ulapesensis	Eptesicus ulapesensis	NA	NA	NA	MDD	moved from Eptesicus to the recently described Neoeptesicus in 2023
+Neogale_vison	Mustela vison	NA	NA	NA	MDD	moved to Mustela from Neovison, then to Neogale
+Neotoma_isthmica	Neotoma ferruginea	NA	NA	NA	MDD	MDD: a subspecies of ferruginea
+Ochotona_himalayana	Ochotona roylii	NA	NA	NA	MDD	MDD: roylii includes himalayana, although it may still be a distinct species
+Ochotona_muliensis	Ochotona erythrotis	NA	NA	NA	MDD	erythrotis includes gloveri and muliensis
+Ochromyscus_brockmani	Myomyscus brockmani	NA	NA	NA	MDD	brockmani moved from Myomyscus to the recently described Ochromyscus
+Otolemur_monteiri	Otolemur crassicaudatus	NA	NA	NA	MDD	crassicaudatus includes monteiri
+Otomys_maximus	Otomys angoniensis	NA	NA	NA	MDD	angoniensis includes maximus
+Prionailurus_iriomotensis	Prionailurus bengalensis	NA	NA	NA	MDD	includes iriomotensis
+Parasciurus_arizonensis	Sciurus arizonensis	NA	NA	NA	MDD	MDD: under a new proposed taxonomic arrangement for Sciurini, S. arizonensis (along with S. niger, S. nayaritensis, S. alleni, and S. oculatus) would be moved to the genus Parasciurus; this arrangement is tentatively not followed here pending further investigation
+Parasciurus_nayaritensis	Sciurus nayaritensis	NA	NA	NA	MDD	MDD: under a new proposed taxonomic arrangement for Sciurini, S. arizonensis (along with S. niger, S. nayaritensis, S. alleni, and S. oculatus) would be moved to the genus Parasciurus; this arrangement is tentatively not followed here pending further investigation
+Spalax_carmeli	Nannospalax ehrenbergi	NA	NA	NA	MDD	moved to Nannospalax from Spalax; includes carmeli, galili, golani, and judaei
+Stenocranius_gregalis	Lasiopodomys gregalis	NA	NA	NA	MDD	MDD: moved from Microtus to either Lasiopodomys or Stenocranius; we include the species under Stenocranius following the most recent revision; current version of MOL uses Lasiopodomys
+Stenocranius_raddei	Lasiopodomys raddei	NA	NA	NA	MDD	MDD: moved from Microtus to either Lasiopodomys or Stenocranius; we include the species under Stenocranius following the most recent revision; current version of MOL uses Lasiopodomys
+Passalites_nemorivagus	Mazama nemorivaga	NA	NA	NA	MDD	moved from Mazama to Passalites in 2023; MOL uses Mazama and spells ending in a
+Planigale_kendricki	NA	NA	NA	NA	MDD	newly described; previously confused as one of 2 species
+Plecotus_gobiensis	NA	NA	NA	NA	MDD	newly described
+Subulo_gouazoubira	Mazama gouazoubira	NA	NA	NA	MDD	moved from Mazama to Subulo; previously included M. nemorivaga; MOL still uses Mazama
+Tupaia_moellendorffi	Tupaia palawanensis	NA	NA	NA	MDD	includes moellendorffi
+Trachops_coffini	Trachops cirrhosus	NA	NA	NA	MDD	split from T. cirrhosus
+Thainycteris_torquata	Thainycteris torquatus	NA	NA	NA	MDD	MOL spells it with 'us' ending
+Suncus_madagascariensis	Suncus etruscus	NA	NA	NA	MDD	etruscus includes madagascariensis
+Styloctenium_mindorense	Styloctenium mindorensis	NA	NA	NA	MDD	MDD: recently described; specific epithet is usually spelt 'mindorensis', but the name is an adjective and must match the generic gender, in which case the spelling is 'mindorense'; MOL uses mindorensis
+Xanthonycticebus_pygmaeus	Nycticebus pygmaeus	NA	NA	NA	MDD	MDD: previously included X. intermediusmoved from Nycticebus to the recently described Xanthonycticebus
+Vernaya_nushanensis	Vernaya fulva	NA	NA	NA	MDD	nushanensis described in 2023; previously referred to as V fulva which is the only species recognized by MOL
+Vernaya_meiguites	Vernaya fulva	NA	NA	NA	MDD	meiguites described in 2023; previously referred to as V fulva which is the only species recognized by MOL
+Tursiops_australis	Tursiops aduncus	NA	NA	NA	MDD	includes australis, which was recently described as a distinct species, although there is some disagreement regarding whether australis is separate or not
+Stenonycteris_lanosa	Stenonycteris lanosus	NA	NA	NA	MDD	MDD lists 'a' and 'us' endings as synonyms 
+Soriculus_beibengensis	Soriculus nigrescens	NA	NA	NA	MDD	recently described (2024) and previously confused with nigrescens
+Simosciurus_stramineus	Sciurus stramineus	NA	NA	NA	MDD	MDD: under a new proposed taxonomic arrangement for Sciurini, S. stramineus (along with nebouxii, which is not yet recognized here pending further investigation) would be moved to the genus Simosciurus; this arrangement is tentatively not followed here pending further investigation
+Simosciurus_nebouxii	Sciurus stramineus	NA	NA	NA	MDD	MDD: split from S. stramineus; under a new proposed taxonomic arrangement for Sciurini, S. nebouxii (along with S. stramineus) would be moved to the genus Simosciurus; this arrangement is tentatively not followed here pending further investigation
+Serengetimys_pernanus	Mastomys pernanus	NA	NA	NA	MDD	MDD: moved from Mastomys to the recently described Serengetimys

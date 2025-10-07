@@ -57,7 +57,26 @@ mod_object <- glm(
   mod_formula,
   family = binomial,
   data = outcomes_df
-); summary(mod_object)
+)
+
+# to shrink model object size
+drop_these <- c("data", "residuals", "fitted.values", "y",
+                "linear.predictors", "weights", "prior.weights", "effects")
+mod_object[drop_these] <- NULL
+
+# shrink QR but don't remove it entirely
+if (!is.null(mod_object$qr) && is.list(mod_object$qr)) {
+  mod_object$qr$qr <- NULL
+}
+
+# strip environment to drop reference to big data
+if (!is.null(mod_object$terms)) {
+  attr(mod_object$terms, ".Environment") <- baseenv()
+}
+if (!is.null(mod_object$formula)) {
+  environment(mod_object$formula) <- baseenv()
+}
+
 
 preds <- predict(
   mod_object,

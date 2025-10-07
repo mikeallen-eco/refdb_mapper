@@ -49,6 +49,7 @@ mol_to_phyl_harmonized <- harmonize_with_backbone(query = mol_format,
                                                   manual_tax = "data/mol_to_phyl_mammals_manual_notes.tsv")
 write.csv(mol_to_phyl_harmonized, "data/mol_to_phyl_mammals_harmonized.csv", row.names = F)
 
+
 # ---- Step 2 tally n seqs per species & marker & join to hydrobasins
 
 hydrobasin_refdb_info <- tally_sequences(hydrobasin_species_path, 
@@ -63,8 +64,8 @@ priority_species_to_harmonize(harmonized_df = mol_to_phyl_harmonized, show = 10)
 hybas_nnd <- get_NDD_per_sp_all_hydrobasins_and_markers(hydrobasin_refdb_info,
                                                         markers = markers, n_cores = 4)
 
-# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251006.rds")
-hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251006.rds") 
+# saveRDS(hybas_nnd, "~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251007.rds")
+hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_markers_20251007.rds") 
 
 # ---- Step 4 LOSO/LOSpO analysis (takes many hours, saves csv files for convenience)
 
@@ -159,7 +160,7 @@ fits <- lapply(rubrics, function(x) {
                         outcomes = mdat)
 })
 names(fits) <- rubrics
-saveRDS(fits, "data/fits_20251006c.rds")
+# saveRDS(fits, "~/Documents/mikedata/refdb_mapper/fits_20251007.rds")
         
 # ---- Step 8 - predict error rates for species within hydrobasins
 
@@ -179,9 +180,7 @@ names(hybas_preds) <- rubrics
 final_sf <- make_complete_hybas_data_sf(complete_hybas_preds = hybas_preds,
                                                       map = hydrobasin_map)
 
-saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006c.rds")
-final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251006c.rds")
-
+saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251007.rds")
 
 
 

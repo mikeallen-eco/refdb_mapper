@@ -64,6 +64,16 @@ ggsave("figures/top_markers_eplot_BA.png", plot = top_markers_eplot_BA,
        height = 10, width = 14, dpi = 400)
 
 
+# ---- Step 7: global map of refefence database completeness
+
+# % with at least 1 sequence from 1 marker from a list of markers
+
+# ---- Step 8: best pair of markers mapped globally
+
+#  (categrorical)
+
+
+
 
 
 
