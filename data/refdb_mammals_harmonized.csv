@@ -2822,9 +2822,14 @@
 "Parasciurus_nayaritensis","Parasciurus nayaritensis","8.0 - manual - no automatic matches","Sciurus nayaritensis",NA,NA,NA,"Chordata","Mammalia","Rodentia","Sciuridae",NA
 "Passalites_nemorivagus","Passalites nemorivagus","8.0 - manual - no automatic matches","Mazama nemorivaga",NA,NA,NA,"Chordata","Mammalia","Artiodactyla","Cervidae",NA
 "Prionailurus_iriomotensis","Prionailurus iriomotensis","8.0 - manual - no automatic matches","Prionailurus bengalensis",NA,NA,NA,"Chordata","Mammalia","Carnivora","Felidae",NA
+"Serengetimys_pernanus","Serengetimys pernanus","8.0 - manual - no automatic matches","Mastomys pernanus",NA,NA,NA,"Chordata","Mammalia","Rodentia","Muridae",NA
+"Simosciurus_nebouxii","Simosciurus nebouxii","8.0 - manual - no automatic matches","Sciurus stramineus",NA,NA,NA,"Chordata","Mammalia","Rodentia","Sciuridae",NA
+"Simosciurus_stramineus","Simosciurus stramineus","8.0 - manual - no automatic matches","Sciurus stramineus",NA,NA,NA,"Chordata","Mammalia","Rodentia","Sciuridae",NA
+"Soriculus_beibengensis","Soriculus beibengensis","8.0 - manual - no automatic matches","Soriculus nigrescens",NA,NA,NA,"Chordata","Mammalia","Eulipotyphla","Soricidae",NA
 "Spalax_carmeli","Spalax carmeli","8.0 - manual - no automatic matches","Nannospalax ehrenbergi",NA,NA,NA,"Chordata","Mammalia","Rodentia","Spalacidae",NA
 "Stenocranius_gregalis","Stenocranius gregalis","8.0 - manual - no automatic matches","Lasiopodomys gregalis",NA,NA,NA,"Chordata","Mammalia","Rodentia","Cricetidae",NA
 "Stenocranius_raddei","Stenocranius raddei","8.0 - manual - no automatic matches","Lasiopodomys raddei",NA,NA,NA,"Chordata","Mammalia","Rodentia","Cricetidae",NA
+"Stenonycteris_lanosa","Stenonycteris lanosa","8.0 - manual - no automatic matches","Stenonycteris lanosus",NA,NA,NA,"Chordata","Mammalia","Chiroptera","Pteropodidae",NA
 "Styloctenium_mindorense","Styloctenium mindorense","8.0 - manual - no automatic matches","Styloctenium mindorensis",NA,NA,NA,"Chordata","Mammalia","Chiroptera","Pteropodidae",NA
 "Subulo_gouazoubira","Subulo gouazoubira","8.0 - manual - no automatic matches","Mazama gouazoubira",NA,NA,NA,"Chordata","Mammalia","Artiodactyla","Cervidae",NA
 "Suncus_madagascariensis","Suncus madagascariensis","8.0 - manual - no automatic matches","Suncus etruscus",NA,NA,NA,"Chordata","Mammalia","Eulipotyphla","Soricidae",NA
@@ -2845,8 +2850,3 @@
 "Praomys_mattheyi","Praomys mattheyi","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Rodentia","Muridae",NA
 "Priapomys_leonardi","Priapomys leonardi","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Rodentia","Sciuridae",NA
 "Proechimys_poliopus","Proechimys poliopus","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Rodentia","Echimyidae",NA
-"Serengetimys_pernanus","Serengetimys pernanus","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Rodentia","Muridae",NA
-"Simosciurus_nebouxii","Simosciurus nebouxii","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Rodentia","Sciuridae",NA
-"Simosciurus_stramineus","Simosciurus stramineus","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Rodentia","Sciuridae",NA
-"Soriculus_beibengensis","Soriculus beibengensis","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Eulipotyphla","Soricidae",NA
-"Stenonycteris_lanosa","Stenonycteris lanosa","9.2 - still unmatched (no automatic matches)",NA,NA,NA,NA,"Chordata","Mammalia","Chiroptera","Pteropodidae",NA

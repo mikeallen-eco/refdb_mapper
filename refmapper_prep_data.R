@@ -4,24 +4,46 @@ source("R/setup_data_prep.R")
 # ---- Step 0 Make taxon-specific reference databases for LOSO analysis (takes ~ 10 min)
 
 source("R/settings_Vences_16S.R")
-curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
                  out = out_path, l = l, L = L, db_name = db_name)
 
 source("R/settings_Taylor_16S.R")
-curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
                  out = out_path, l = l, L = L, db_name = db_name)
 
 source("R/settings_V5_12S.R")
-curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
                  out = out_path, l = l, L = L, db_name = db_name)
 
 source("R/settings_MiMamm_12S.R")
-curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
                  out = out_path, l = l, L = L, db_name = db_name)
 
 source("R/settings_Mamm01_12S.R")
-curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev,
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
                  out = out_path, l = l, L = L, db_name = db_name)
+
+source("R/settings_EvansAc_12S_ncbi.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = NULL,
+                 out = out_path, l = l, L = L, db_name = db_name, keep_all = T)
+
+source("R/settings_EvansAc_12S_midori.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
+                 out = out_path, l = l, L = L, db_name = db_name, keep_all = T)
+
+# crabs --merge --input 'mammals_EvansAc_12S_midori/crabs_amplicons_pga.txt;mammals_EvansAc_12S_ncbi/crabs_amplicons_pga.txt' --uniq --output mammals_EvansAc_12S/crabs_amplicons_pga.txt
+
+clean_amplicons_crabs(input = "crabs_amplicons_pga.txt",
+                                  out = "~/Documents/mikedata/refdb_mapper/mammals_EvansAc_12S/", 
+                                  l, L,
+                                  db_name = "EvansAc_12S_mammalia_ncbi20251008_midori265_tax20250609",
+                                  taxon = "Mammalia",
+                                  conda_dir = "/Users/mikea/miniconda3/bin/conda",
+                                  conda_env = "crb2",
+                                  crabs_path = "crabs", # or "python ~/path/to/reference_database_creator/crabs" to use the newest version
+                                  keep_imported = TRUE,
+                                  keep_all = TRUE,
+                                  verbose = TRUE)
 
 # ---- Step 1 Harmonize ref db taxonomy to MOL & MOL to phylogeny
 
@@ -73,7 +95,7 @@ hybas_nnd <- readRDS("~/Documents/mikedata/refdb_mapper/hybas_nnd_world_all_mark
 LOSO_ghostblaster(refdb = refdb_Vences_16S,
                   out = paste0(dirname(refdb_Vences_16S),"/"), start_seq = 1)
 
-LOSO_models(refdb = refdb_Vences_16S, out = paste0(dirname(refdb_Vences_16S), "/loso_rdp/"),
+LOSO_models(refdb = refdb_Vences_16S, out = dirname(refdb_Vences_16S),
             start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_Vences_16S,
@@ -86,7 +108,7 @@ LOSpO_models(refdb = refdb_Vences_16S, out = dirname(refdb_Vences_16S),
 LOSO_ghostblaster(refdb = refdb_RiazVert1_12S,
                   out = paste0(dirname(refdb_RiazVert1_12S),"/"), start_seq = 1)
 
-LOSO_models(refdb = refdb_RiazVert1_12S, out = paste0(dirname(refdb_RiazVert1_12S), "/loso_rdp/"),
+LOSO_models(refdb = refdb_RiazVert1_12S, out = dirname(refdb_RiazVert1_12S),
             start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_RiazVert1_12S,
@@ -99,7 +121,7 @@ LOSpO_models(refdb = refdb_RiazVert1_12S, out = dirname(refdb_RiazVert1_12S),
 LOSO_ghostblaster(refdb = refdb_MiMammalU_12S,
                   out = paste0(dirname(refdb_MiMammalU_12S),"/"), start_seq = 1)
 
-LOSO_models(refdb = refdb_MiMammalU_12S, out = paste0(dirname(refdb_MiMammalU_12S), "/loso_rdp/"),
+LOSO_models(refdb = refdb_MiMammalU_12S, out = dirname(refdb_MiMammalU_12S),
             start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_MiMammalU_12S,
@@ -112,7 +134,7 @@ LOSpO_models(refdb = refdb_MiMammalU_12S, out = dirname(refdb_MiMammalU_12S),
 LOSO_ghostblaster(refdb = refdb_Mamm01_12S,
                   out = paste0(dirname(refdb_Mamm01_12S),"/"), min_length = 40, start_seq = 1)
 
-LOSO_models(refdb = refdb_Mamm01_12S, out = paste0(dirname(refdb_Mamm01_12S), "/loso_rdp/"),
+LOSO_models(refdb = refdb_Mamm01_12S, out = dirname(refdb_Mamm01_12S),
             start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_Mamm01_12S,
@@ -125,13 +147,26 @@ LOSpO_models(refdb = refdb_Mamm01_12S, out = dirname(refdb_Mamm01_12S),
 LOSO_ghostblaster(refdb = refdb_Taylor_16S,
                   out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
 
-LOSO_models(refdb = refdb_Taylor_16S, out = paste0(dirname(refdb_Taylor_16S), "/loso_rdp/"),
+LOSO_models(refdb = refdb_Taylor_16S, out = dirname(refdb_Taylor_16S),
             start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_Taylor_16S,
                    out = paste0(dirname(refdb_Taylor_16S),"/"), min_length = 40, start_seq = 1)
 
 LOSpO_models(refdb = refdb_Taylor_16S, out = dirname(refdb_Taylor_16S),
+             start_sp = 1)
+
+# EvansAc_12S (390 bp)
+LOSO_ghostblaster(refdb = refdb_EvansAc_12S_midori,
+                  out = paste0(dirname(refdb_EvansAc_12S_midori),"/"), start_seq = 100)
+
+LOSO_models(refdb = refdb_EvansAc_12S_midori, out = dirname(refdb_EvansAc_12S_midori),
+            start_seq = 1)
+
+LOSpO_ghostblaster(refdb = refdb_EvansAc_12S_midori,
+                   out = paste0(dirname(refdb_EvansAc_12S_midori),"/"), start_seq = 1)
+
+LOSpO_models(refdb = refdb_EvansAc_12S_midori, out = dirname(refdb_EvansAc_12S_midori),
              start_sp = 1)
 
 # ---- Step 5 build predictor data for error model
@@ -195,10 +230,6 @@ saveRDS(final_sf, "~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_2025100
 # ... processes below here were (or will be) moved to refmapper_present_info.R script
 
 
-# ---- Step 10 - return tables & info based on coordinates
-
-hybas_info <- get_polygon_attributes_from_coords(hybas_data = final_sf)
-
 # ideas
 # marker combo that maximizes coverage
 # marker combo that minimizes % incorrect 
@@ -207,23 +238,10 @@ hybas_info <- get_polygon_attributes_from_coords(hybas_data = final_sf)
   # for target sp list?
 
 
-# ---- Step 10 - make model plots
-
-eplots <- plot_predicted_loso_lopso_error(preds = fits, markers = markers[1:3])
-eplots$RiazVert1_12S$loso$i
-eplots$MiMammalU_12S$loso$i
-eplots$Vences_16S$loso$i
 
 # ---- Step 10 map all results by hydrobasin
 
-# map results
-to_plot = c("pct_ghosts", "med_seqs", "nnd_med", "total_species")
-ghost_plot <- map_ghosts(df = hydrobasin_ref_nnd_info_sum,
-                         hydrobasin_map = hydrobasin_map,
-                         markers = markers,
-                         to_plot = to_plot)
-ghost_plot$Vences_16S$pct_ghosts
-ghost_plot$MiMammalU_12S$pct_ghosts
+
 
 
 predicted_loso_lospo_error_plots <- plot_predicted_loso_lopso_error(preds = preds_loso_lospo)

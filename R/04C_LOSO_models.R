@@ -76,8 +76,7 @@ LOSO_models <- function(refdb,
       select(-gen, -sp)
     
     write.csv(RDP_df, 
-              file = paste0(out, "RDP_LOSO_", 
-                            RDP_df$qseqid[1],".csv"),
+              file = file.path(out, "loso_rdp", paste0("RDP_loso_", i, "_", RDP_df$qseqid[1], ".csv")),
               row.names = F)
     
     # BA_df <- run_BayesANT(q_seqs = seqs,

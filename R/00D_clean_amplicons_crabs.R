@@ -1,6 +1,7 @@
 # function that takes a MIDORI2 RDP-format reference database and extracts amplicons
 
 clean_amplicons_crabs <- function(input = "crabs_amplicons_pga.txt",
+                                  refdb = refdb,
                                   out, l, L,
                                   db_name = "amplicon_source_date",
                                   taxon = "Mammalia",
@@ -8,6 +9,7 @@ clean_amplicons_crabs <- function(input = "crabs_amplicons_pga.txt",
                                   conda_env = "crb2",
                                   crabs_path = "crabs", # or "python ~/path/to/reference_database_creator/crabs" to use the newest version
                                   keep_imported = TRUE,
+                                  keep_all = TRUE,
                                   verbose = FALSE) {
 
 # dereplicate amplicon-species combinations
@@ -45,18 +47,19 @@ system2(conda_dir,
                  "--export-format 'rdp'"), 
         stdout = TRUE, stderr = TRUE)
 
-# re-subset database by taxon
+# re-subset database by taxon (if taxon != NULL)
+if(!is.null(taxon)){
   # (required due to some higher taxonomy errors in midori2 that were fixed by importing into crabs)
 r <- subset_raw_refdb_by_taxon(paste0(out, "refdb_", db_name, ".fasta"),
                                taxon = taxon)
 
 # over-write final fasta with re-subsetted version
 writeXStringSet(r, paste0(out, "refdb_", db_name, ".fasta"), append = FALSE)
+}
 
 # Remove temporary files created for crabs
 unlink(paste0(out, "raw_seqs.fasta"))
-unlink(paste0(out, "crabs_amplicons*"))
-
+if(keep_all == FALSE) {unlink(paste0(out, "crabs_amplicons*"))}
 if(keep_imported == FALSE){unlink(paste0(out, "crabs_raw_seqs.txt"))}
 
 # export read length distribution with readlength.sh (from bbmap installed in same conda environment)

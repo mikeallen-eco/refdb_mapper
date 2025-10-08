@@ -11,9 +11,4 @@ rubrics <- c("blast97", "blast98", "blast99", "ecotag",
 markers = c("RiazVert1_12S", "MiMammalU_12S", "Vences_16S", "Mamm01_12S", "Taylor_16S")
 
 final_sf <- readRDS("~/Documents/mikedata/refdb_mapper/final_hybas_data_sf_20251007.rds")
-fits <- readRDS("data/fits_20251007.rds")
-
-marine <- c("Balaenopteridae", "Delphinidae", "Ziphiidae", "Dugongidae", 
-            "Kogiidae", "Physeteridae", "Balaenidae", "Cetotheriidae", 
-            "Otariidae", "Trichechidae", "Phocidae", "Phocoenidae", 
-            "Monodontidae", "Odobenidae")
+fits <- readRDS("~/Documents/mikedata/refdb_mapper/fits_20251007.rds")

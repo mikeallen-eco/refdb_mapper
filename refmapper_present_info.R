@@ -6,9 +6,9 @@ source("R/setup_present.R")
 ct_data <- get_polygon_attributes_from_coords(-72.92116, 41.31607, include_marine = F)
 ba_data <- get_polygon_attributes_from_coords(-59.821468, -1.523651, include_marine = F)
 make_global_locator_map(-72.92116, 41.31607) # Peabody Museum, CT
-ggsave("figures/globe_locator_map_CT.png", height = 6, width = 6, dpi = 400)
+# ggsave("figures/globe_locator_map_CT.png", height = 6, width = 6, dpi = 400)
 make_global_locator_map(-59.821468, -1.523651)
-ggsave("figures/globe_locator_map_BA.png", height = 6, width = 6, dpi = 400)
+# ggsave("figures/globe_locator_map_BA.png", height = 6, width = 6, dpi = 400)
 
 # ---- Step 2: choose best combinations of markers
 
@@ -64,9 +64,18 @@ ggsave("figures/top_markers_eplot_BA.png", plot = top_markers_eplot_BA,
        height = 10, width = 14, dpi = 400)
 
 
-# ---- Step 7: global map of refefence database completeness
+# ---- Step 7: global map of reference database completeness
 
-# % with at least 1 sequence from 1 marker from a list of markers
+# % sp with at least 1 sequence from 1 marker from a list of markers
+
+# map results
+to_plot = c("pct_ghosts", "med_seqs", "nnd_med", "total_species")
+ghost_plot <- map_ghosts(df = final_sf,
+                         hydrobasin_map = hydrobasin_map,
+                         markers = markers,
+                         to_plot = to_plot)
+ghost_plot$Vences_16S$pct_ghosts
+ghost_plot$MiMammalU_12S$pct_ghosts
 
 # ---- Step 8: best pair of markers mapped globally
 
