@@ -27,17 +27,17 @@ refdb_MiMammalU_12S <- "~/Documents/mikedata/refdb_mapper/mammals_MiMammalU_12S/
 refdb_Vences_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Vences_16S/refdb_V16S_mammalia_midori265_tax20250609.fasta"
 refdb_Mamm01_12S <- "~/Documents/mikedata/refdb_mapper/mammals_Mamm01_12S/refdb_Mamm01_12S_mammalia_midori265_tax20250609.fasta"
 refdb_Taylor_16S <- "~/Documents/mikedata/refdb_mapper/mammals_Taylor_16S/refdb_Taylor_16S_mammalia_midori265_tax20250609.fasta"
-refdb_EvansAc_12S <- "~/Documents/mikedata/refdb_mapper/mammals_EvansAc_12S_midori/refdb_EvansAc_12S_mammalia_midori265_tax20250609.fasta"
+refdb_EvansAc_12S <- "~/Documents/mikedata/refdb_mapper/mammals_EvansAc_12S/refdb_EvansAc_12S_mammalia_ncbi20251008_midori265_tax20250609.fasta"
 refdb_EvansAc_12S_midori <- "~/Documents/mikedata/refdb_mapper/mammals_EvansAc_12S_midori/refdb_EvansAc_12S_mammalia_midori265_tax20250609.fasta"
 
 markers = c("RiazVert1_12S", "MiMammalU_12S", "Vences_16S", "Mamm01_12S", "Taylor_16S", "EvansAc_12S")
 rubrics <- c("blast97", "blast98", "blast99", "ecotag", 
              "rdp70", "rdp80", "rdp90", "rdp95")
 refdb_cur <- c(refdb_RiazVert1_12S, refdb_MiMammalU_12S, refdb_Vences_16S, 
-               refdb_Mamm01_12S, refdb_Taylor_16S, refdb_EvansAc_12S)
+               refdb_Mamm01_12S, refdb_Taylor_16S)
 refdb_cur_paths <- c(RiazVert1_12S = refdb_RiazVert1_12S, MiMammalU_12S = refdb_MiMammalU_12S, 
                      Vences_16S = refdb_Vences_16S, Mamm01_12S = refdb_Mamm01_12S, 
-                     Taylor_16S = refdb_Taylor_16S, EvansAc_12S = refdb_EvansAc_12S)
+                     Taylor_16S = refdb_Taylor_16S)
 
 ncbi_extinct <- c("Homo_heidelbergensis", "Acratocnus_ye",
              "Arctodus_simus", "Bison_priscus",
@@ -75,7 +75,7 @@ phyl_extinct <- c("Archaeolemur_majori", "Coelodonta_antiquitatis",
 data_env <- prepare_target_data_for_harmonization(mol_tax = mol_tax,
                                                   mol_group = "Mammals",
                                                   tree_names = tree_names,
-                                                  refdb_cur = refdb_cur,
+                                                  refdb_cur = c(refdb_cur, "~/Documents/mikedata/refdb_mapper/mammals_EvansAc_12S/refdb_EvansAc_12S_mammalia_ncbi20251008_midori265_tax20250609.fasta"),
                                                   extinct = c(ncbi_extinct, phyl_extinct))
 
 # load mol names for checking

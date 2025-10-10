@@ -16,3 +16,7 @@ length(unique(mid$seqs))
 length(unique(both$id))
 length(unique(ncbi$id))
 length(unique(mid$id))
+
+summary(nchar(both$seqs))
+summary(nchar(ncbi$seqs))
+summary(nchar(mid$seqs))

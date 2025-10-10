@@ -17,8 +17,8 @@ LOSO_models <- function(refdb,
   RDP_out <- out
   
   # create directories if needed
-  if (!dir.exists(RDP_out)) {
-    dir.create(RDP_out)
+  if (!dir.exists(file.path(RDP_out, "loso_rdp"))) {
+    dir.create(file.path(RDP_out, "loso_rdp"))
   }
   
   # read in broader reference database fasta or DNA stringset
@@ -53,7 +53,7 @@ LOSO_models <- function(refdb,
   
   # loop through species list to test for
   for (i in start_seq:length(seqnums_vector)) { 
-    message("Testing sequence ", i, " of ", length(test_seqnums_vector), ": ", rn[seqnums_vector[i],]$s)
+    message("Testing sequence ", i, " of ", length(seqnums_vector), ": ", rn[seqnums_vector[i],]$s)
     
     seq_num <- seqnums_vector[i]
     

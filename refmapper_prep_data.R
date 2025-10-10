@@ -23,13 +23,14 @@ source("R/settings_Mamm01_12S.R")
 curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
                  out = out_path, l = l, L = L, db_name = db_name)
 
-source("R/settings_EvansAc_12S_ncbi.R")
-curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = NULL,
-                 out = out_path, l = l, L = L, db_name = db_name, keep_all = T)
-
 source("R/settings_EvansAc_12S_midori.R")
 curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
                  out = out_path, l = l, L = L, db_name = db_name, keep_all = T)
+
+source("R/settings_MiFishU_12S_midori_mammals.R")
+curate_amplicons(refdb = raw_refdb_path, fwd = fwd, rev = rev, taxon = "Mammalia",
+                 out = out_path, l = l, L = L, db_name = db_name, keep_all = F)
+
 
 # crabs --merge --input 'mammals_EvansAc_12S_midori/crabs_amplicons_pga.txt;mammals_EvansAc_12S_ncbi/crabs_amplicons_pga.txt' --uniq --output mammals_EvansAc_12S/crabs_amplicons_pga.txt
 
@@ -45,13 +46,17 @@ clean_amplicons_crabs(input = "crabs_amplicons_pga.txt",
                                   keep_all = TRUE,
                                   verbose = TRUE)
 
+# remove weird sp names
+# filter(!grepl(uid, pattern = "_sp\\.|_cf\\.|_aff\\."))
+
 # ---- Step 1 Harmonize ref db taxonomy to MOL & MOL to phylogeny
 
 # ref db to MOL
 refdb_harmonized <- harmonize_with_backbone(backbone = data_env$mol,
                                             query = data_env$refdb,
                                             fuzzy_threshold = 0.97,
-                                            manual_tax = manual_tax_refdb)
+                                            manual_tax = manual_tax_refdb) %>%
+  filter(!grepl(uid, pattern = "_sp\\.|_cf\\.|_aff\\."))
 
 write.csv(refdb_harmonized, "data/refdb_mammals_harmonized.csv", row.names = F)
 
@@ -158,13 +163,26 @@ LOSpO_models(refdb = refdb_Taylor_16S, out = dirname(refdb_Taylor_16S),
 
 # EvansAc_12S (390 bp)
 LOSO_ghostblaster(refdb = refdb_EvansAc_12S_midori,
-                  out = paste0(dirname(refdb_EvansAc_12S_midori),"/"), start_seq = 100)
+                  out = paste0(dirname(refdb_EvansAc_12S_midori),"/"), start_seq = 5660)
 
 LOSO_models(refdb = refdb_EvansAc_12S_midori, out = dirname(refdb_EvansAc_12S_midori),
             start_seq = 1)
 
 LOSpO_ghostblaster(refdb = refdb_EvansAc_12S_midori,
-                   out = paste0(dirname(refdb_EvansAc_12S_midori),"/"), start_seq = 1)
+                   out = paste0(dirname(refdb_EvansAc_12S_midori),"/"), start_seq = 1732)
+
+LOSpO_models(refdb = refdb_EvansAc_12S_midori, out = dirname(refdb_EvansAc_12S_midori),
+             start_sp = 1)
+
+# MiFishU_12S (170 bp)
+LOSO_ghostblaster(refdb = refdb_MiFishU_12S_midori,
+                  out = paste0(dirname(refdb_MiFishU_12S_midori),"/"), start_seq = 5660)
+
+LOSO_models(refdb = refdb_MiFishU_12S_midori, out = dirname(refdb_MiFishU_12S_midori),
+            start_seq = 1)
+
+LOSpO_ghostblaster(refdb = refdb_EvansAc_12S_midori,
+                   out = paste0(dirname(refdb_EvansAc_12S_midori),"/"), start_seq = 1732)
 
 LOSpO_models(refdb = refdb_EvansAc_12S_midori, out = dirname(refdb_EvansAc_12S_midori),
              start_sp = 1)
